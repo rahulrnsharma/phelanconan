@@ -9,10 +9,10 @@ export class Admin{
     @Prop({type:String,required:true})
     name: string;
 
-    @Prop({type:String,required:true})
+    @Prop({type:String,required:true,index:true})
     username: string;
 
-    @Prop({type:String,required:true})
+    @Prop({type:String})
     password: string; 
 }
 
