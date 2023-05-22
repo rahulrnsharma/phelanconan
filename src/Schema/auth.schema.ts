@@ -9,6 +9,13 @@ export class Login{
 username: string;
 @Prop({type:String,required:true})
 password:string
+
+@Prop({ type: Boolean, default: true })
+isLoggedIn: boolean;
+@Prop({ type: Date, required: true })
+loggedInAt: Date;
+@Prop({ type: Date })
+loggedOutAt: Date;
 }
 
 export const LoginSchema = SchemaFactory.createForClass(Login);

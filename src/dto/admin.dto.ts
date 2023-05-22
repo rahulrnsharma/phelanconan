@@ -23,16 +23,3 @@ export class AdminDto{
 }
 
 
-export class LoginDto {
-     @ApiProperty()
-     @IsNotEmpty({message:"username must be required"})
-     @IsString()
-     username:string;
-
-     @ApiProperty()
-     @IsNotEmpty({message:"Password must be required"})
-     @IsString()
-     password: string;
-
-
-} 

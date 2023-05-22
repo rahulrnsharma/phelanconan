@@ -16,6 +16,11 @@ export class AdminController{
     create(@Body() adminDto:AdminDto){
         return this.adminService.create(adminDto)
     }
+
+    @Get('')
+    hello(){
+        
+    }
  
 }
 

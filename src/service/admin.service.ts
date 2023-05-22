@@ -11,7 +11,7 @@ export class AdminService {
     constructor(@InjectModel(AdminModel.name) private adminModel: Model<AdminDocument>) {
     }
     async create(adminDto: AdminDto) {
-        adminDto.password = PasswordService.hash(adminDto.password)
+        adminDto.password =await PasswordService.hash(adminDto.password)
        return new this.adminModel({...adminDto}).save()
     }
 }
