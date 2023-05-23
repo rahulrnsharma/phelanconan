@@ -23,5 +23,11 @@ logout(@CurrentUser() user){
     return this.authService.logout(user)
 }
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Post('/addEvent')
+addEvent(@Body() eventDto){
+    
+}
 
 }

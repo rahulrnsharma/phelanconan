@@ -8,6 +8,7 @@ async function bootstrap() {
                        .setDescription('This is phelanconan form')
                        .setVersion('v1')
                        .addTag('Form')
+                       .addBearerAuth()
                        .build();
   const document = SwaggerModule.createDocument(app,config)
   SwaggerModule.setup('api',app,document);

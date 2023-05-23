@@ -6,7 +6,7 @@ export type AdminDocument = HydratedDocument<Admin>
 
 @Schema({timestamps:true})
 export class Admin{
-    @Prop({type:String,required:true})
+    @Prop({type:String})
     name: string;
 
     @Prop({type:String,required:true,index:true})

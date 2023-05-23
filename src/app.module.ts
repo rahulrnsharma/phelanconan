@@ -6,12 +6,23 @@ import { AppDatabaseModule } from './module/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { AppAuthModule } from './module/auth/auth.module';
 import { AuthService } from './service/auth.service';
+import { AppInstituteModule } from './module/institute/institute.module';
+import { AppCourseModule } from './module/course/course.module';
+
+const MODULE =[  
+  AdminModule,
+  AppAuthModule,
+  AppInstituteModule,
+  AppCourseModule
+]
+
 
 
 @Module({
-  imports: [AdminModule,AppAuthModule,ConfigModule.forRoot({
+  imports: [ConfigModule.forRoot({
     isGlobal:true
-  }),AppDatabaseModule.forRootConnection()],
+  }),AppDatabaseModule.forRootConnection()
+,...MODULE],
   controllers: [AppController],
   providers: [],
 })

@@ -13,11 +13,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    // async validate(payload: any) {
-    //     let _detail: any = await this.authService.getLoggedInDetail(payload.userId);
-    //     if (_detail?._id == payload.loggedInId)
-    //         return payload;
-    //     else
-    //         throw new UnauthorizedException()
-    // }
+    async validate(payload: any) {
+        console.log(payload);
+        let _detail: any = await this.authService.getLoggedInDetail(payload.userId);
+        if (_detail?._id == payload.loggedInId)
+            return payload;
+        else
+            throw new UnauthorizedException('You are unauthrized')
+    }
 }

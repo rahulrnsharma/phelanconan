@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { AuthService } from "src/service/auth.service";
 import { AuthController } from "./auth.controller";
 import { MongooseModule } from "@nestjs/mongoose";
-import { LOGIN_SCHEMA } from "src/Schema/index.schema";
+import { ADMIN_SCHEMA, LOGIN_SCHEMA } from "src/Schema/index.schema";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { AppConfigService } from "src/service/config.service";
@@ -15,7 +15,7 @@ imports:[ JwtModule.registerAsync({
         secret: configService.get('JWT_SECRET')
     }),
     inject: [ConfigService]
-}),MongooseModule.forFeature([LOGIN_SCHEMA])],
+}),MongooseModule.forFeature([LOGIN_SCHEMA,ADMIN_SCHEMA])],
     controllers:[AuthController],
     providers:[AuthService,AppConfigService,JwtStrategy],
     exports:[]

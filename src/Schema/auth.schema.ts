@@ -7,7 +7,7 @@ export type LoginDocument = HydratedDocument<Login>
 export class Login{
 @Prop({type:String,required:true})
 username: string;
-@Prop({type:String,required:true})
+@Prop({type:String})
 password:string
 
 @Prop({ type: Boolean, default: true })
@@ -19,4 +19,4 @@ loggedOutAt: Date;
 }
 
 export const LoginSchema = SchemaFactory.createForClass(Login);
-export const LoginModel = {name:'admin',schema:LoginSchema}
+export const LoginModel = {name:'login',schema:LoginSchema}
