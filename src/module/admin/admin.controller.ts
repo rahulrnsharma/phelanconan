@@ -17,10 +17,7 @@ export class AdminController{
         return this.adminService.create(adminDto)
     }
 
-    @Get('')
-    hello(){
-        
-    }
+   
  
 }
 

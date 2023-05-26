@@ -13,7 +13,7 @@ date: Date;
 time: string;
 @Prop({type:mongoose.Schema.Types.ObjectId,required:true})
 faculty: ObjectId;
-@Prop({type:mongoose.Schema.Types.ObjectId,required:true})
+@Prop({type:mongoose.Schema.Types.ObjectId,required:true,unique:true})
 course:ObjectId;
 @Prop({type:Number,required:true})
 price:Number

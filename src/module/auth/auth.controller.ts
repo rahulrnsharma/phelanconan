@@ -24,11 +24,6 @@ logout(@CurrentUser() user:IAdmin){
     return this.authService.logout(user)
 }
 
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
-@Post('/addEvent')
-addEvent(@Body() eventDto){
-    
-}
+
 
 }
