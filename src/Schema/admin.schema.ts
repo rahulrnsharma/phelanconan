@@ -9,18 +9,12 @@ export class Admin{
     @Prop({type:String})
     name: string;
 
-    @Prop({type:String,required:true,index:true})
+    @Prop({type:String,required:true,index:true,unique:true})
     username: string;
 
-    @Prop({type:String})
+    @Prop({type:String,trim:true})
     password: string; 
 
-    @Prop({ type: Boolean, default: true })
-    isLoggedIn: boolean;
-    @Prop({ type: Date, required: true })
-    loggedInAt: Date;
-    @Prop({ type: Date })
-    loggedOutAt: Date;
 }
 
 export const AdminSchema = SchemaFactory.createForClass(Admin)

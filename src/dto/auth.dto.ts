@@ -1,7 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsIP, IsNotEmpty, IsString, ValidateIf } from "class-validator";
 
-export class LoginDto {
+
+
+export class AdminLoginDto {
     @ApiProperty()
     @IsNotEmpty({message:"username must be required"})
     @IsString()
@@ -11,12 +13,5 @@ export class LoginDto {
     @IsNotEmpty({message:"Password must be required"})
     @IsString()
     password: string;
-    @ApiProperty()
-    isLoggedIn:boolean;
-    @ApiProperty()
-    loggedInAt:Date;
-    @ApiProperty()
-    loggedOutAt:Date
-
-
-} 
+}
+ 

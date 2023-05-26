@@ -6,10 +6,6 @@ export class InstituteDto{
     @ApiProperty()
     @IsString()
     @IsNotEmpty({message:"Institute must be required"})
-    institute:string;
-    @ApiProperty()
-    @IsString()
-    @IsNotEmpty({message:"Institute must be required"})
-    code:string;
+    name:string;
 
 }

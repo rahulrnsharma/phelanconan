@@ -1,8 +1,6 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
-import { CurrentUser } from "src/decorator/current-user.decorator";
 import { InstituteDto } from "src/dto/institute.dto";
-import { IAdmin } from "src/interface/admin.interface";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
 import { InstituteService } from "src/service/institute.service";
 
@@ -14,15 +12,15 @@ export class InstituteController{
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  add(@Body() instituteDto:InstituteDto,@CurrentUser() admin:IAdmin){
-    return this.instituteService.add(instituteDto,admin) 
+  add(@Body() instituteDto:InstituteDto){
+    return this.instituteService.add(instituteDto) 
   }
 
   
   @ApiBearerAuth()
   @ApiParam({name:'id'})
   @UseGuards(JwtAuthGuard)
-  @Post('update/:id')
+  @Put('update/:id')
   update(@Body() instituteDto:InstituteDto,@Param('id') id:string){
     return this.instituteService.update(instituteDto,id)
   }
@@ -30,7 +28,7 @@ export class InstituteController{
   @ApiBearerAuth()
   @ApiParam({name:'id'})
   @UseGuards(JwtAuthGuard)
-  @Post('delete/:id')
+  @Delete('delete/:id')
   delete(@Param('id') id:string){
     return this.instituteService.delete(id)
   }

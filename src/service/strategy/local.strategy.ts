@@ -10,6 +10,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(username: any, password: any): Promise<any> {
+        console.log("Hello Local")
         const user = await this.authService.validateAdminUser({ username: username, password: password });
         if (!user) {
             throw new BadRequestException("Invalid credential.");

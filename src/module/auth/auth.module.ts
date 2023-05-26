@@ -7,6 +7,8 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { AppConfigService } from "src/service/config.service";
 import { JwtStrategy } from "src/service/strategy/jwt.strategy";
+import { LocalStrategy } from "src/service/strategy/local.strategy";
+import { AdminService } from "src/service/admin.service";
 
 @Module({
 imports:[ JwtModule.registerAsync({
@@ -17,7 +19,7 @@ imports:[ JwtModule.registerAsync({
     inject: [ConfigService]
 }),MongooseModule.forFeature([LOGIN_SCHEMA,ADMIN_SCHEMA])],
     controllers:[AuthController],
-    providers:[AuthService,AppConfigService,JwtStrategy],
+    providers:[AuthService,AdminService,AppConfigService,JwtStrategy,LocalStrategy],
     exports:[]
 })
 
