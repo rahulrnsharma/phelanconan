@@ -25,7 +25,7 @@ export class CeremonyDto {
     time:string;
     @ApiProperty()
     @IsNotEmpty({message:"Please Select the Date"})
-    @IsDate()
+    // @IsDate()
     date:string;
 
 }

@@ -8,6 +8,7 @@ import { AppInstituteModule } from './module/institute/institute.module';
 import { AppCourseModule } from './module/course/course.module';
 import { AppFacultyModule } from './module/faculty/faculty.module';
 import { AppCeremonyModule } from './module/ceremony/ceremony.module';
+import { AppDropdownModule } from './module/dropdown/dropdown.module';
 
 const MODULE =[  
   AdminModule,
@@ -15,7 +16,8 @@ const MODULE =[
   AppInstituteModule,
   AppCourseModule,
   AppFacultyModule,
-  AppCeremonyModule
+  AppCeremonyModule,
+  AppDropdownModule
 ]
 
 
