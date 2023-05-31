@@ -6,7 +6,7 @@ import { IAdmin } from "src/interface/admin.interface";
 import { CourseService } from "src/service/course.service";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
 
-@ApiTags('course')
+@ApiTags('Course')
 @Controller('course')
 export class CourseController {
   constructor(private CourseService: CourseService) { }

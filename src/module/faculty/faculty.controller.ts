@@ -7,7 +7,7 @@ import { FacultyService } from "src/service/faculty.service";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
 
 
-@ApiTags('faculty')
+@ApiTags('Faculty')
 @Controller('faculty')
 export class FacultyController {
   constructor(private facultyService: FacultyService) { }

@@ -8,7 +8,7 @@ import { AdminService } from "src/service/admin.service";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
 
 
-@ApiTags('admin')
+@ApiTags('Admin')
 @Controller('admin')
 export class AdminController {
     constructor(private adminService: AdminService) { }

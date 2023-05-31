@@ -8,8 +8,8 @@ import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
 import { LocalAuthGuard } from "src/service/guard/local-auth.guard";
 
 
-@ApiTags('auth')
-@Controller()
+@ApiTags('Auth')
+@Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) { }
 
