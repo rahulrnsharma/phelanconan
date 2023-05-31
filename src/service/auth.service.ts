@@ -27,8 +27,7 @@ export class AuthService {
     }
 
     async getLoggedInDetail(id: any) {
-        const loginedUser = await this.loginModel.findOne({ user: new Types.ObjectId(id), isLoggedIn: true }).exec();
-        return loginedUser;
+        return this.loginModel.findOne({ user: new Types.ObjectId(id), isLoggedIn: true }, {}, { sort: { createdAt: -1 } }).exec();
     }
 
     async loginDetail(userId: any) {

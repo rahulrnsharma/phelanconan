@@ -1,11 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, StreamableFile, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiConsumes, ApiParam, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "src/decorator/current-user.decorator";
-import { CeremonyDto } from "src/dto/ceremony.dto";
+import { CeremonyDto, ExcelFileDto } from "src/dto/ceremony.dto";
 import { IAdmin } from "src/interface/admin.interface";
 import { CeremonyService } from "src/service/ceremony.service";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
+import { UtilityService } from "src/service/utility.service";
 
 @ApiTags('Ceremony')
 @Controller('ceremony')
@@ -17,6 +18,15 @@ export class CeremonyController {
     @Post('')
     add(@Body() ceremonyDto: CeremonyDto, @CurrentUser() user: IAdmin) {
         return this.ceremonyService.add(ceremonyDto, user);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Post('excel/verify')
+    @ApiConsumes('multipart/form-data')
+    @UseInterceptors(FileInterceptor('excel', UtilityService.excelFileFilter()))
+    async uploadVerify(@Body() excelFileDto: ExcelFileDto, @CurrentUser() user: IAdmin, @UploadedFile() file: Express.Multer.File) {
+        return this.ceremonyService.uploadVerify(file);
     }
 
     @ApiBearerAuth()
@@ -48,16 +58,4 @@ export class CeremonyController {
     delete(@Param('id') id: string, @CurrentUser() user: IAdmin) {
         return this.ceremonyService.delete(id, user)
     }
-    @Post('upload')
-    @UseInterceptors(FileInterceptor('file'))
-    fileUpload(@UploadedFile() file:Express.Multer.File){
-        if (!file) {
-            return 'No file uploaded.';
-          }
-          const data = this.ceremonyService.readExcelFile(file.path);
-        //   console.log(this.ceremonyService.importInstitute(file.path))
-          console.log(data[0]);
-        //   const insertData = this.ceremonyService.addDataFromfile(data)
-          return data;
-        }
 }

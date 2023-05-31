@@ -35,3 +35,9 @@ export class CeremonyDto {
     @Type(() => Date)
     date: string;
 }
+
+
+export class ExcelFileDto {
+    @ApiProperty({ type: 'file', format: 'binary', required: true })
+    excel: Express.Multer.File;
+}

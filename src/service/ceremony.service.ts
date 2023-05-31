@@ -4,7 +4,7 @@ import { Model } from "mongoose";
 import { Ceremony, CeremonyDocument, CeremonyModel } from "src/Schema/ceremony.schema";
 import { CeremonyDto } from "src/dto/ceremony.dto";
 import { IAdmin } from "src/interface/admin.interface";
-var XLSX = require("xlsx");
+import { UtilityService } from "./utility.service";
 
 @Injectable()
 export class CeremonyService {
@@ -40,36 +40,8 @@ export class CeremonyService {
     async getById(id: any) {
         return this.ceremonyModel.findById(id);
     }
-
-    readExcelFile(filePath: string): CeremonyDto[] {
-        const workbook = XLSX.readFile(filePath);
-        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        const data:CeremonyDto[] = XLSX.utils.sheet_to_json(worksheet, { header: 2 });
-        return data;
-      }
-    // async addDataFromfile(ceremonyDto:CeremonyDto[]){
-    //     return new this.ceremonyModel(ceremonyDto).save();
-    // }
-
-
-    // async importInstitute(filePath){
-    //     csvtojson({
-        
-    //     })
-    //     const instituteData = excelToJson({
-    //         sourceFile: filePath,
-    //         sheets:[{
-    //             header:{
-    //                 rows:1
-    //             },
-    //             columnToKey:{
-    //                 A:'_id'
-    //             }
-    //         }]
-    //     });
-    //    return instituteData
-    // }
-
-
+    async uploadVerify(file: any) {
+        return UtilityService.readExcelFileData(file);
+    }
 }
 
