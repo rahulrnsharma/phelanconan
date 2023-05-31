@@ -3,6 +3,9 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { CeremonyDocument, CeremonyModel } from "src/Schema/ceremony.schema";
 import { CeremonyDto } from "src/dto/ceremony.dto";
+var XLSX = require("xlsx");
+var excelToJson = require('convert-excel-to-json')
+
 
 
 @Injectable()
@@ -39,4 +42,36 @@ export class CeremonyService{
         }
         return await this.ceremonyModel.findById(id).exec();
     }
+
+    readExcelFile(filePath: string): CeremonyDto[] {
+        const workbook = XLSX.readFile(filePath);
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const data:CeremonyDto[] = XLSX.utils.sheet_to_json(worksheet, { header: 2 });
+        return data;
+      }
+    // async addDataFromfile(ceremonyDto:CeremonyDto[]){
+    //     return new this.ceremonyModel(ceremonyDto).save();
+    // }
+
+
+    // async importInstitute(filePath){
+    //     csvtojson({
+        
+    //     })
+    //     const instituteData = excelToJson({
+    //         sourceFile: filePath,
+    //         sheets:[{
+    //             header:{
+    //                 rows:1
+    //             },
+    //             columnToKey:{
+    //                 A:'_id'
+    //             }
+    //         }]
+    //     });
+    //    return instituteData
+    // }
+
+
 }
+
