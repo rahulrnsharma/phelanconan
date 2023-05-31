@@ -1,49 +1,49 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
+import { CurrentUser } from "src/decorator/current-user.decorator";
 import { CourseDto } from "src/dto/course.dto";
+import { IAdmin } from "src/interface/admin.interface";
 import { CourseService } from "src/service/course.service";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
 
 @ApiTags('course')
 @Controller('course')
-export class CourseController{
-    constructor(private CourseService:CourseService){}
+export class CourseController {
+  constructor(private CourseService: CourseService) { }
 
-    @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
-    @Post('add')
-    add(@Body() CourseDto:CourseDto){
-      return this.CourseService.add(CourseDto)
-    }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('')
+  add(@Body() courseDto: CourseDto, @CurrentUser() user: IAdmin) {
+    return this.CourseService.add(courseDto, user)
+  }
 
-    
-    @ApiBearerAuth()
-    @ApiParam({name:'id'})
-    @UseGuards(JwtAuthGuard)
-    @Put('update/:id')
-    update(@Body() CourseDto:CourseDto,@Param('id') id:string){
-      return this.CourseService.update(CourseDto,id)
-    }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('')
+  getAll() {
+    return this.CourseService.getAll()
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  @ApiParam({ name: 'id' })
+  getById(@Param('id') id: string) {
+    return this.CourseService.getById(id)
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Put(':id')
+  @ApiParam({ name: 'id' })
+  update(@Body() courseDto: CourseDto, @Param('id') id: string, @CurrentUser() user: IAdmin) {
+    return this.CourseService.update(courseDto, id, user)
+  }
 
-    @ApiBearerAuth()
-    @ApiParam({name:'id'})
-    @UseGuards(JwtAuthGuard)
-    @Delete('delete/:id')
-    delete(@Param('id') id:string){
-      return this.CourseService.delete(id)
-    }
-
-    @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
-    @Get('')
-    getAll(){
-        return this.CourseService.getAll()
-    }
-    @ApiBearerAuth()
-    @ApiParam({name:'id'})
-    @UseGuards(JwtAuthGuard)
-    @Get(':id')
-    get(@Param('id') id:string){
-        return this.CourseService.get(id)
-    }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  @ApiParam({ name: 'id' })
+  delete(@Param('id') id: string, @CurrentUser() user: IAdmin) {
+    return this.CourseService.delete(id, user)
+  }
 }

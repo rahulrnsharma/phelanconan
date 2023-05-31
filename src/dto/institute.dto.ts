@@ -1,11 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString, minLength } from "class-validator";
+import { IsNotEmpty, IsString } from "class-validator";
 
 
-export class InstituteDto{
+export class InstituteDto {
     @ApiProperty()
-    @IsString()
-    @IsNotEmpty({message:"Institute must be required"})
-    name:string;
-
+    @IsString({ message: "Institute must be string" })
+    @IsNotEmpty({ message: "Institute must be required" })
+    name: string;
 }

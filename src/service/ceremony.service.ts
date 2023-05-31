@@ -1,42 +1,43 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { CeremonyDocument, CeremonyModel } from "src/Schema/ceremony.schema";
+import { Ceremony, CeremonyDocument, CeremonyModel } from "src/Schema/ceremony.schema";
 import { CeremonyDto } from "src/dto/ceremony.dto";
+import { IAdmin } from "src/interface/admin.interface";
 
 
 @Injectable()
-export class CeremonyService{
-    constructor(@InjectModel(CeremonyModel.name) private readonly ceremonyModel:Model<CeremonyDocument>){}
-    async add(ceremonyDto:CeremonyDto){
-        return new this.ceremonyModel({...ceremonyDto}).save();
+export class CeremonyService {
+    constructor(@InjectModel(CeremonyModel.name) private readonly ceremonyModel: Model<CeremonyDocument>) { }
+    async add(ceremonyDto: CeremonyDto, user: IAdmin) {
+        return new this.ceremonyModel({ ...ceremonyDto, createdBy: user.userId }).save();
     }
 
-    async update(ceremonyDto:CeremonyDto,id:string){
-        const ceremony = await this.ceremonyModel.findById(id).exec()
-        if(!ceremony){
-            return new BadRequestException('Ceremony Does not exist')
+    async update(ceremonyDto: CeremonyDto, id: string, user: IAdmin) {
+        const _doc: Ceremony = await this.ceremonyModel.findByIdAndUpdate(id, { $set: { ...ceremonyDto, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        if (_doc) {
+            return _doc;
         }
-        return await this.ceremonyModel.findByIdAndUpdate(id,ceremonyDto).exec()
-    }
-
-    async delete(id:string){
-        const ceremony = await this.ceremonyModel.findById(id).exec()
-        if(!ceremony){
-            return new BadRequestException('Ceremony Does not exist')
+        else {
+            throw new BadRequestException("Resource you are update does not exist.");
         }
-        return await this.ceremonyModel.findByIdAndDelete(id).exec();
     }
 
-    async getAll(){
-        return await this.ceremonyModel.find().exec();
-    }
-
-    async get(id){
-        const ceremony = await this.ceremonyModel.findById(id).exec()
-        if(!ceremony){
-            return new BadRequestException('Ceremony Does not exist')
+    async delete(id: string, user: IAdmin) {
+        const _doc: Ceremony = await this.ceremonyModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        if (_doc) {
+            return _doc;
         }
-        return await this.ceremonyModel.findById(id).exec();
+        else {
+            throw new BadRequestException("Resource you are delete does not exist.");
+        }
+    }
+
+    async getAll() {
+        return this.ceremonyModel.find().exec();
+    }
+
+    async getById(id: any) {
+        return this.ceremonyModel.findById(id);
     }
 }

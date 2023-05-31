@@ -1,44 +1,45 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { CourseDocument, CourseModel } from "src/Schema/course.schema";
+import { Course, CourseDocument, CourseModel } from "src/Schema/course.schema";
 import { CourseDto } from "src/dto/course.dto";
+import { IAdmin } from "src/interface/admin.interface";
 
 
 
 @Injectable()
-export class CourseService{
-constructor(@InjectModel(CourseModel.name) private courseModel:Model<CourseDocument>){}
+export class CourseService {
+    constructor(@InjectModel(CourseModel.name) private courseModel: Model<CourseDocument>) { }
 
-async add(CourseDto:CourseDto){
-    return await new this.courseModel({...CourseDto}).save()
-}
-
-async update(CourseDto:CourseDto,id:string){
-     const course = await this.courseModel.findById(id);
-     if(!course){
-        return await new this.courseModel({...CourseDto}).save()
-     }
-     return await this.courseModel.findByIdAndUpdate(id,CourseDto).exec()
-}
-
-async delete(id:string){
-    const course = await this.courseModel.findById(id);
-    if(!course){
-        return new BadRequestException('course Does Not exist')
+    async add(courseDto: CourseDto, user: IAdmin) {
+        return new this.courseModel({ ...courseDto, createdBy: user.userId }).save()
     }
-    return await this.courseModel.findByIdAndDelete(id)
-}
 
-async getAll(){
-    return await this.courseModel.find().exec();
-}
-
-async get(id:string){
-    const course = await this.courseModel.findById(id)
-    if (!course) {
-        return new BadRequestException('course Does Not exist');
+    async update(courseDto: CourseDto, id: string, user: IAdmin) {
+        const _doc: Course = await this.courseModel.findByIdAndUpdate(id, { $set: { ...courseDto, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        if (_doc) {
+            return _doc;
+        }
+        else {
+            throw new BadRequestException("Resource you are update does not exist.");
+        }
     }
-    return course;
-}
+
+    async delete(id: string, user: IAdmin) {
+        const _doc: Course = await this.courseModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        if (_doc) {
+            return _doc;
+        }
+        else {
+            throw new BadRequestException("Resource you are delete does not exist.");
+        }
+    }
+
+    async getAll() {
+        return this.courseModel.find().exec();
+    }
+
+    async getById(id: string) {
+        return this.courseModel.findById(id);
+    }
 }

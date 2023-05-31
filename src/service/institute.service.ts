@@ -1,47 +1,43 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { InstituteDocument, InstituteModel } from "src/Schema/institute.schema";
+import { Institute, InstituteDocument, InstituteModel } from "src/Schema/institute.schema";
 import { InstituteDto } from "src/dto/institute.dto";
 import { IAdmin } from "src/interface/admin.interface";
 
 @Injectable()
-export class InstituteService{
-    constructor(@InjectModel(InstituteModel.name) private instituteModel:Model<InstituteDocument>){}
+export class InstituteService {
+    constructor(@InjectModel(InstituteModel.name) private instituteModel: Model<InstituteDocument>) { }
 
-    async add(instituteDto:InstituteDto){
-        const institute = await this.instituteModel.findOne({name:instituteDto.name}).exec()
-        if(institute){
-            return new BadRequestException('Institute already exist')
+    async add(instituteDto: InstituteDto, user: IAdmin) {
+        return new this.instituteModel({ ...instituteDto, createdBy: user.userId }).save()
+    }
+
+    async update(instituteDto: InstituteDto, id: string, user: IAdmin) {
+        const _doc: Institute = await this.instituteModel.findByIdAndUpdate(id, { $set: { ...instituteDto, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        if (_doc) {
+            return _doc;
         }
-        return await new this.instituteModel({...instituteDto}).save()
-    }
-
-    async update(instituteDto:InstituteDto,id:string){
-         const institute = await this.instituteModel.findById(id);
-         if(!institute){
-            return await new this.instituteModel({...instituteDto}).save()
-         }
-         return await this.instituteModel.findByIdAndUpdate(id,instituteDto).exec()
-    }
-
-    async delete(id:string){
-        const institute = await this.instituteModel.findById(id);
-        if(!institute){
-            return new BadRequestException('Institute Does Not exist')
+        else {
+            throw new BadRequestException("Resource you are update does not exist.");
         }
-        return await this.instituteModel.findByIdAndDelete(id)
     }
 
-    async getAll(){
-        return await this.instituteModel.find().exec();
-    }
-
-    async get(id:string){
-        const institute = await this.instituteModel.findById(id)
-        if (!institute) {
-            return new BadRequestException('Institute Does Not exist');
+    async delete(id: string, user: IAdmin) {
+        const _doc: Institute = await this.instituteModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        if (_doc) {
+            return _doc;
         }
-        return institute;
+        else {
+            throw new BadRequestException("Resource you are delete does not exist.");
+        }
+    }
+
+    async getAll() {
+        return this.instituteModel.find().exec();
+    }
+
+    async getById(id: string) {
+        return this.instituteModel.findById(id);
     }
 }

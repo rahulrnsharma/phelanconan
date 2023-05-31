@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AuthService } from '../auth.service';
+import { IAdmin } from 'src/interface/admin.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -13,10 +14,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(payload: any) {
+    async validate(payload: IAdmin) {
         let _detail: any = await this.authService.getLoggedInDetail(payload.userId);
         if (_detail?._id == payload.loggedInId)
-            return payload;     
+            return payload;
         else
             throw new UnauthorizedException('You are unauthrized')
     }

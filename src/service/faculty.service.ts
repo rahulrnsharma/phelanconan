@@ -1,48 +1,45 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
-import { FacultyDocument, FacultyModel } from "src/Schema/faculty.schema";
+import { Faculty, FacultyDocument, FacultyModel } from "src/Schema/faculty.schema";
 import { FacultyDto } from "src/dto/faculty.dto";
+import { IAdmin } from "src/interface/admin.interface";
 
 
 
 @Injectable()
-export class FacultyService{
-    constructor(@InjectModel(FacultyModel.name) private readonly facultyModel:Model<FacultyDocument>){}
-    
-async add(FacultyDto:FacultyDto){
-    const faculty = await this.facultyModel.findOne({...FacultyDto}).exec()
-    if(faculty){
-        return new BadRequestException('faculty already exist')
+export class FacultyService {
+    constructor(@InjectModel(FacultyModel.name) private readonly facultyModel: Model<FacultyDocument>) { }
+
+    async add(facultyDto: FacultyDto, user: IAdmin) {
+        return new this.facultyModel({ ...facultyDto, createdBy: user.userId }).save()
     }
-    return await  new this.facultyModel({...FacultyDto}).save()
-}
 
-async update(FacultyDto:FacultyDto,id:string){
-     const faculty = await this.facultyModel.findById(id);
-     if(!faculty){
-        return await new this.facultyModel({...FacultyDto}).save()
-     }
-     return await this.facultyModel.findByIdAndUpdate(id,FacultyDto).exec()
-}
-
-async delete(id:string){
-    const faculty = await this.facultyModel.findById(id);
-    if(!faculty){
-        return new BadRequestException('faculty Does Not exist')
+    async update(facultyDto: FacultyDto, id: string, user: IAdmin) {
+        const _doc: Faculty = await this.facultyModel.findByIdAndUpdate(id, { $set: { ...facultyDto, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        if (_doc) {
+            return _doc;
+        }
+        else {
+            throw new BadRequestException("Resource you are update does not exist.");
+        }
     }
-    return await this.facultyModel.findByIdAndDelete(id)
-}
 
-async getAll(){
-    return await this.facultyModel.find().exec();
-}
-
-async get(id:string){
-    const faculty = await this.facultyModel.findById(id)
-    if (!faculty) {
-        return new BadRequestException('faculty Does Not exist');
+    async delete(id: string, user: IAdmin) {
+        const _doc: Faculty = await this.facultyModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        if (_doc) {
+            return _doc;
+        }
+        else {
+            throw new BadRequestException("Resource you are delete does not exist.");
+        }
     }
-    return faculty;
-}
+
+    async getAll() {
+        return this.facultyModel.find().exec();
+    }
+
+    async getById(id: string) {
+        return this.facultyModel.findById(id);
+    }
 }
