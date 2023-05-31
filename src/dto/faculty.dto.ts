@@ -1,13 +1,16 @@
-import { ApiParam, ApiProperty } from "@nestjs/swagger";
-import { IsMongoId, IsNotEmpty, IsOptional, IsString } from "class-validator";
-export class FacultyDto{
+import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import { IsMongoId, IsNotEmpty, IsString } from "class-validator";
+import { Types } from "mongoose";
+
+export class FacultyDto {
     @ApiProperty()
-    @IsNotEmpty({message:'Faculty Name must be required'})
-    @IsString()
-    name: string
-  
-    @ApiProperty()
-    @IsNotEmpty({message:"Please Select the Institute before Faculty"})
-    @IsString()
-    institute:string
+    @IsString({ message: "Faculty must be string" })
+    @IsNotEmpty({ message: "Faculty must be required" })
+    name: string;
+
+    @ApiProperty({ type: 'string' })
+    @IsMongoId({ message: 'Institute not valid.' })
+    @Type(() => Types.ObjectId)
+    institute: Types.ObjectId
 }

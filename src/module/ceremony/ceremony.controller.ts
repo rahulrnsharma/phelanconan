@@ -1,54 +1,53 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, StreamableFile, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
-import { createReadStream } from "fs";
+import { CurrentUser } from "src/decorator/current-user.decorator";
 import { CeremonyDto } from "src/dto/ceremony.dto";
+import { IAdmin } from "src/interface/admin.interface";
 import { CeremonyService } from "src/service/ceremony.service";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
 
-@ApiTags('ceremony')
+@ApiTags('Ceremony')
 @Controller('ceremony')
-export class CeremonyController{
-    constructor(private ceremonyService:CeremonyService){}
+export class CeremonyController {
+    constructor(private ceremonyService: CeremonyService) { }
 
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
-    @Post('add')
-    add(@Body() ceremonyDto:CeremonyDto){
-        return this.ceremonyService.add(ceremonyDto);
-    }
-
-    @ApiBearerAuth()
-    @ApiParam({name:'id'})
-    @UseGuards(JwtAuthGuard)
-    @Put('update/:id')
-    update(@Body() ceremonyDto:CeremonyDto,@Param('id') id:string){
-    return this.ceremonyService.update(ceremonyDto,id)
-    }
-
-    @ApiBearerAuth()
-    @ApiParam({name:'id'})
-    @UseGuards(JwtAuthGuard)
-    @Delete('delete/:id')
-    delete(@Param('id') id:string){
-        return this.ceremonyService.delete(id)
-    }
-
-    @ApiBearerAuth()
-    @ApiParam({name:'id'})
-    @UseGuards(JwtAuthGuard)
-    @Get('/:id')
-    get(@Param('id') id:string){
-        return this.ceremonyService.get(id);
+    @Post('')
+    add(@Body() ceremonyDto: CeremonyDto, @CurrentUser() user: IAdmin) {
+        return this.ceremonyService.add(ceremonyDto, user);
     }
 
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
     @Get('')
-    getAll(){
+    getAll() {
         return this.ceremonyService.getAll()
     }
 
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get(':id')
+    @ApiParam({ name: 'id' })
+    getById(@Param('id') id: string) {
+        return this.ceremonyService.getById(id);
+    }
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Put(':id')
+    @ApiParam({ name: 'id' })
+    update(@Body() ceremonyDto: CeremonyDto, @Param('id') id: string, @CurrentUser() user: IAdmin) {
+        return this.ceremonyService.update(ceremonyDto, id, user)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    @ApiParam({ name: 'id' })
+    delete(@Param('id') id: string, @CurrentUser() user: IAdmin) {
+        return this.ceremonyService.delete(id, user)
+    }
     @Post('upload')
     @UseInterceptors(FileInterceptor('file'))
     fileUpload(@UploadedFile() file:Express.Multer.File){
@@ -60,5 +59,5 @@ export class CeremonyController{
           console.log(data[0]);
         //   const insertData = this.ceremonyService.addDataFromfile(data)
           return data;
-    }
+        }
 }

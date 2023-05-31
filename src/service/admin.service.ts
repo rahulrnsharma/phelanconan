@@ -5,6 +5,7 @@ import { AdminDocument, AdminModel } from "src/Schema/admin.schema";
 import { AdminDto } from "src/dto/admin.dto";
 import { PasswordService } from "./password.service";
 import { AdminLoginDto } from "src/dto/auth.dto";
+import { IAdmin } from "src/interface/admin.interface";
 
 
 @Injectable()
@@ -25,5 +26,8 @@ export class AdminService {
             return admin;
         }
         throw new BadRequestException("Invalid Credentials.");
+    }
+    async profile(user: IAdmin) {
+        return this.adminModel.findById(user.userId, { name: 1 });
     }
 }

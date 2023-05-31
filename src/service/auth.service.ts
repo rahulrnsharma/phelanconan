@@ -16,15 +16,13 @@ export class AuthService {
         private jwtService: JwtService,
         private appConfigService: AppConfigService) { }
 
-    async login(adminloginDto: AdminLoginDto) {
-        const admin = await this.adminService.findByUserNameAndPassword(adminloginDto);
-        const login = await this.loginDetail(admin._id);
-        return {
-            token: this.jwtService.sign({ loggedInId: login._id, userId: admin._id }, { expiresIn: this.appConfigService.userExpireIn })
-        };
+    async login(user: IAdmin) {
+        const login = await this.loginDetail(user.userId);
+        user.loggedInId = login._id;
+        return { token: this.jwtService.sign(user, { expiresIn: this.appConfigService.adminExpireIn }) };
     }
 
-    async logout(user) {
+    async logout(user: IAdmin) {
         return await this.loginModel.findByIdAndUpdate(user.loggedInId, { isLoggedIn: false })
     }
 
