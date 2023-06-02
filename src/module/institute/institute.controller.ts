@@ -27,6 +27,13 @@ export class InstituteController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @Get('dropdown')
+  dropdown() {
+    return this.instituteService.dropdown()
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiParam({ name: 'id' })
   getById(@Param('id') id: string) {

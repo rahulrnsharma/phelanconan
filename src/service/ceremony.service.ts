@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, PipelineStage } from "mongoose";
 import { Ceremony, CeremonyDocument, CeremonyModel } from "src/Schema/ceremony.schema";
 import { CeremonyDto } from "src/dto/ceremony.dto";
 import { IAdmin } from "src/interface/admin.interface";
@@ -34,7 +34,55 @@ export class CeremonyService {
     }
 
     async getAll() {
-        return this.ceremonyModel.find().exec();
+        let query: PipelineStage[] = [
+            { $match: { isActive: true } },
+            {
+                $lookup: {
+                    from: "institutes",
+                    localField: "institute",
+                    foreignField: "_id",
+                    pipeline: [{ $project: { name: 1 } }],
+                    as: "institute"
+                }
+            },
+            {
+                $lookup: {
+                    from: "faculties",
+                    localField: "faculty",
+                    foreignField: "_id",
+                    pipeline: [{ $project: { name: 1 } }],
+                    as: "faculty"
+                }
+            },
+            {
+                $lookup: {
+                    from: "courses",
+                    localField: "course",
+                    foreignField: "_id",
+                    pipeline: [{ $project: { name: 1 } }],
+                    as: "course"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$institute",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $unwind: {
+                    path: "$faculty",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $unwind: {
+                    path: "$course",
+                    preserveNullAndEmptyArrays: true
+                }
+            }
+        ]
+        return this.ceremonyModel.aggregate(query).exec();
     }
 
     async getById(id: any) {

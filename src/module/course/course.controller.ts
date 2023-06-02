@@ -24,6 +24,14 @@ export class CourseController {
   getAll() {
     return this.CourseService.getAll()
   }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('dropdown')
+  dropdown() {
+    return this.CourseService.dropdown()
+  }
+
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get(':id')

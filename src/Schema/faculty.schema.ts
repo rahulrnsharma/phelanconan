@@ -8,9 +8,6 @@ export type FacultyDocument = HydratedDocument<Faculty>
 export class Faculty extends Base {
     @Prop({ type: String, required: true, unique: true })
     name: string
-
-    @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
-    institute: ObjectId;
 }
 
 export const FacultySchema = SchemaFactory.createForClass(Faculty);

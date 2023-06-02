@@ -5,8 +5,6 @@ import { Base } from "./base.schema";
 export type CourseDocument = HydratedDocument<Course>
 @Schema({})
 export class Course extends Base {
-    @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
-    faculty: ObjectId;
     @Prop({ type: String, require: true, unique: true })
     name: string;
 }

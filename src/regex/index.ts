@@ -1,1 +1,1 @@
-export const TIME_REGEX = /[0-1][012]:[0-5][0-9]:[0-5][0-9] [AP][M]/;
+export const TIME_REGEX = /[0-2][0123]:[0-5][0-9]:[0-5][0-9]/;

@@ -28,6 +28,13 @@ export class FacultyController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @Get('dropdown')
+  dropdown() {
+    return this.facultyService.dropdown()
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiParam({ name: 'id' })
   getById(@Param('id') id: string) {

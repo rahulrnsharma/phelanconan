@@ -8,9 +8,4 @@ export class FacultyDto {
     @IsString({ message: "Faculty must be string" })
     @IsNotEmpty({ message: "Faculty must be required" })
     name: string;
-
-    @ApiProperty({ type: 'string' })
-    @IsMongoId({ message: 'Institute not valid.' })
-    @Type(() => Types.ObjectId)
-    institute: Types.ObjectId
 }

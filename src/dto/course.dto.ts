@@ -9,9 +9,4 @@ export class CourseDto {
     @IsString({ message: "Course must be string" })
     @IsNotEmpty({ message: "Course must be required" })
     name: string;
-
-    @ApiProperty({ type: 'string' })
-    @IsMongoId({ message: 'Faculty not valid.' })
-    @Type(() => Types.ObjectId)
-    faculty: Types.ObjectId
 }

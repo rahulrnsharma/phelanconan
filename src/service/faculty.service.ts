@@ -42,4 +42,7 @@ export class FacultyService {
     async getById(id: string) {
         return this.facultyModel.findById(id);
     }
+    async dropdown() {
+        return this.facultyModel.find({ isActive: true }).exec();
+    }
 }

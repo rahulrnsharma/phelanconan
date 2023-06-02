@@ -7,15 +7,15 @@ export type CeremonyDocument = HydratedDocument<Ceremony>
 @Schema({ timestamps: true })
 export class Ceremony extends Base {
     @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
-    institute: ObjectId
-    @Prop({ type: Date, required: true })
-    date: Date;
-    @Prop({ type: String, required: true })
-    time: string;
+    institute: ObjectId;
     @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
     faculty: ObjectId;
     @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
     course: ObjectId;
+    @Prop({ type: Date, required: true })
+    date: Date;
+    @Prop({ type: String, required: true })
+    time: string;
     @Prop({ type: Number, required: true })
     price: number
 }

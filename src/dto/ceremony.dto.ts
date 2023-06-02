@@ -24,9 +24,10 @@ export class CeremonyDto {
     @ApiProperty()
     @IsInt({ message: 'Price should be number.' })
     @IsNotEmpty({ message: 'Price is required.' })
+    @Type(() => Number)
     price: number;
     @ApiProperty()
-    @IsTime({ message: "Time should be in (hh:mm:ss am/pm) formate" })
+    @IsTime({ message: "Time should be in (hh:mm:ss) formate" })
     @IsNotEmpty({ message: "Time is required." })
     time: string;
     @ApiProperty({ type: 'string' })

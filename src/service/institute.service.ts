@@ -40,4 +40,7 @@ export class InstituteService {
     async getById(id: string) {
         return this.instituteModel.findById(id);
     }
+    async dropdown() {
+        return this.instituteModel.find({ isActive: true }).exec();
+    }
 }
