@@ -3,9 +3,10 @@ import mongoose, { HydratedDocument, ObjectId } from "mongoose";
 import { Base } from "./base.schema";
 
 export type CourseDocument = HydratedDocument<Course>
-@Schema({})
+
+@Schema({ timestamps: true })
 export class Course extends Base {
-    @Prop({ type: String, require: true, unique: true })
+    @Prop({ type: String, require: true, unique: true, trim: true })
     name: string;
 }
 

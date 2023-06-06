@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsDate, IsInt, IsMongoId, IsNotEmpty } from "class-validator";
+import { ArrayMinSize, IsArray, IsDate, IsInt, IsMongoId, IsNotEmpty } from "class-validator";
 import { Types } from "mongoose";
 import { IsTime } from "src/decorator/validation/time.decorator";
 
@@ -41,4 +41,11 @@ export class CeremonyDto {
 export class ExcelFileDto {
     @ApiProperty({ type: 'file', format: 'binary', required: true })
     excel: Express.Multer.File;
+}
+export class UploadExcelData {
+    @ApiProperty({ type: [Object] })
+    @IsArray()
+    @ArrayMinSize(1)
+    @IsNotEmpty({ message: 'Data is required.' })
+    data: Object[]
 }

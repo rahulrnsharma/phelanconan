@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { BadRequestException, ValidationError, ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './filters/http-exception.filter';
 import helmet from 'helmet';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -29,6 +30,8 @@ async function bootstrap() {
       return new BadRequestException(Object.values(_error?.constraints)[0]);
     }
   }));
+  app.use(bodyParser.json({ limit: '1mb' }));
+  app.use(bodyParser.urlencoded({ limit: '1mb', extended: true }));
   app.enableCors();
   await app.listen(3000);
 }

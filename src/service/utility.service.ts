@@ -18,4 +18,25 @@ export class UtilityService {
         const sheetName = workbook.SheetNames;
         return XLSX.utils.sheet_to_json(workbook.Sheets[sheetName[0]]);
     }
+    static excelDate(value: number, offset: number) {
+        return new Date(0, 0, value - 1, 0, -offset, 0);
+    }
+    static excelTime(value: number) {
+        let _day = value - Math.floor(value) + 0.0000001;
+        let _seconds = Math.floor(86400 * _day);
+        let ss = _seconds % 60;
+        _seconds -= ss;
+        let hh = Math.floor(_seconds / (60 * 60));
+        let mm = Math.floor(_seconds / 60) % 60;
+        return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
+    }
+    static validExcelHeader(shouldBeHeader: any[], excelHeader: any) {
+        return shouldBeHeader.sort().join(",") == Object.keys(excelHeader).sort().join(",");
+    }
+    static groupBy(array: any[], key: any) {
+        return array.reduce(function (rv, x) {
+            (rv[x[key]] = rv[x[key]] || []).push(x);
+            return rv;
+        }, {});
+    }
 }

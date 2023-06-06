@@ -5,7 +5,7 @@ import { Base } from "./base.schema";
 export type InstituteDocument = HydratedDocument<Institute>
 @Schema({ timestamps: true })
 export class Institute extends Base {
-    @Prop({ type: String, required: true, unique: true })
+    @Prop({ type: String, required: true, unique: true, trim: true })
     name: string;
 }
 

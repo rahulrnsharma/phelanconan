@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFile, UseGuard
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBearerAuth, ApiConsumes, ApiParam, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "src/decorator/current-user.decorator";
-import { CeremonyDto, ExcelFileDto } from "src/dto/ceremony.dto";
+import { CeremonyDto, ExcelFileDto, UploadExcelData } from "src/dto/ceremony.dto";
 import { IAdmin } from "src/interface/admin.interface";
 import { CeremonyService } from "src/service/ceremony.service";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
@@ -25,8 +25,15 @@ export class CeremonyController {
     @Post('excel/verify')
     @ApiConsumes('multipart/form-data')
     @UseInterceptors(FileInterceptor('excel', UtilityService.excelFileFilter()))
-    async uploadVerify(@Body() excelFileDto: ExcelFileDto, @CurrentUser() user: IAdmin, @UploadedFile() file: Express.Multer.File) {
-        return this.ceremonyService.uploadVerify(file);
+    async verify(@Body() excelFileDto: ExcelFileDto, @CurrentUser() user: IAdmin, @UploadedFile() file: Express.Multer.File) {
+        return this.ceremonyService.verify(file);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Post('excel/upload')
+    async upload(@Body() uploadExcelData: UploadExcelData, @CurrentUser() user: IAdmin) {
+        return this.ceremonyService.upload(uploadExcelData.data, user);
     }
 
     @ApiBearerAuth()
