@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBearerAuth, ApiConsumes, ApiParam, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "src/decorator/current-user.decorator";
 import { CeremonyDto, ExcelFileDto, UploadExcelData } from "src/dto/ceremony.dto";
+import { SearchDto } from "src/dto/search.dto";
 import { IAdmin } from "src/interface/admin.interface";
 import { CeremonyService } from "src/service/ceremony.service";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
@@ -39,8 +40,8 @@ export class CeremonyController {
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
     @Get('')
-    getAll() {
-        return this.ceremonyService.getAll()
+    getAll(@Query() searchDto: SearchDto) {
+        return this.ceremonyService.getAll(searchDto)
     }
 
     @ApiBearerAuth()

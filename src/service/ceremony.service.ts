@@ -8,6 +8,9 @@ import { UtilityService } from "./utility.service";
 import { InstituteDocument, InstituteModel } from "src/Schema/institute.schema";
 import { CourseDocument, CourseModel } from "src/Schema/course.schema";
 import { FacultyDocument, FacultyModel } from "src/Schema/faculty.schema";
+import { SearchDto } from "src/dto/search.dto";
+import { ActiveStatusEnum } from "src/enum/common.enum";
+import { PaginationResponse } from "src/model/pagination.model";
 
 @Injectable()
 export class CeremonyService {
@@ -82,56 +85,40 @@ export class CeremonyService {
         }
     }
 
-    async getAll() {
-        let query: PipelineStage[] = [
-            { $match: { isActive: true } },
-            {
-                $lookup: {
-                    from: "institutes",
-                    localField: "institute",
-                    foreignField: "_id",
-                    pipeline: [{ $project: { name: 1 } }],
-                    as: "institute"
-                }
+    async getAll(searchDto: SearchDto) {
+        let _match: any = {};
+        if (searchDto.status) {
+            _match.isActive = searchDto.status == ActiveStatusEnum.ACTIVE;
+        }
+        // if (searchDto.search) {
+        //     _match.name = {
+        //         $regex: new RegExp(`${searchDto.search}`, "ig"),
+        //     }
+        // }
+        let query: PipelineStage[] = [UtilityService.getMatchPipeline(_match)];
+        query.push({
+            $facet: {
+                count: [{ $count: "total" }],
+                data: [
+                    UtilityService.getSortPipeline('createdAt', 'desc'),
+                    UtilityService.getSkipPipeline(searchDto.currentPage, searchDto.pageSize),
+                    UtilityService.getLimitPipeline(searchDto.pageSize),
+                    UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1 })]),
+                    UtilityService.getLookupPipeline("faculties", "faculty", "_id", "faculty", [UtilityService.getProjectPipeline({ name: 1 })]),
+                    UtilityService.getLookupPipeline("courses", "course", "_id", "course", [UtilityService.getProjectPipeline({ name: 1 })]),
+                    UtilityService.getUnwindPipeline("institute"),
+                    UtilityService.getUnwindPipeline("faculty"),
+                    UtilityService.getUnwindPipeline("course"),
+                    UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 })
+                ],
             },
-            {
-                $lookup: {
-                    from: "faculties",
-                    localField: "faculty",
-                    foreignField: "_id",
-                    pipeline: [{ $project: { name: 1 } }],
-                    as: "faculty"
-                }
-            },
-            {
-                $lookup: {
-                    from: "courses",
-                    localField: "course",
-                    foreignField: "_id",
-                    pipeline: [{ $project: { name: 1 } }],
-                    as: "course"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$institute",
-                    preserveNullAndEmptyArrays: true
-                }
-            },
-            {
-                $unwind: {
-                    path: "$faculty",
-                    preserveNullAndEmptyArrays: true
-                }
-            },
-            {
-                $unwind: {
-                    path: "$course",
-                    preserveNullAndEmptyArrays: true
-                }
-            }
-        ]
-        return this.ceremonyModel.aggregate(query).exec();
+        });
+        query.push(UtilityService.getProjectPipeline({
+            data: 1,
+            count: { $ifNull: [{ $arrayElemAt: ["$count.total", 0] }, 0] }
+        }))
+        let _res: any[] = await this.ceremonyModel.aggregate(query).exec();
+        return new PaginationResponse(_res[0].data, _res[0].count, searchDto.currentPage, searchDto.pageSize);
     }
 
     async getById(id: any) {

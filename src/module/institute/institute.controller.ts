@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "src/decorator/current-user.decorator";
 import { InstituteDto } from "src/dto/institute.dto";
+import { SearchDto } from "src/dto/search.dto";
 import { IAdmin } from "src/interface/admin.interface";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
 import { InstituteService } from "src/service/institute.service";
@@ -21,8 +22,8 @@ export class InstituteController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('')
-  getAll() {
-    return this.instituteService.getAll()
+  getAll(@Query() searchDto: SearchDto) {
+    return this.instituteService.getAll(searchDto)
   }
 
   @ApiBearerAuth()

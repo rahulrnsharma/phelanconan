@@ -1,4 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
+import { PipelineStage } from "mongoose";
+import { SortOrderEnum } from "src/enum/common.enum";
 var XLSX = require("xlsx");
 
 @Injectable()
@@ -38,5 +40,38 @@ export class UtilityService {
             (rv[x[key]] = rv[x[key]] || []).push(x);
             return rv;
         }, {});
+    }
+    static getMatchPipeline(_match: any): PipelineStage.Match {
+        return { $match: _match };
+    }
+    static getSortPipeline(field: string, order: string): PipelineStage.Sort {
+        let _sort: any = {};
+        _sort[field] = order == SortOrderEnum.ASC ? 1 : -1;
+        return { $sort: _sort };
+    }
+    static getSkipPipeline(page: number, limit: number): PipelineStage.Skip {
+        return { $skip: (page - 1) * limit };
+    }
+    static getLimitPipeline(limit: number): PipelineStage.Limit {
+        return { $limit: limit };
+    }
+    static getUnwindPipeline(path: string): PipelineStage.Unwind {
+        return { $unwind: { path: `$${path}`, preserveNullAndEmptyArrays: true } };
+    }
+    static getLookupPipeline(from: string, localField: string, foreignField: string, as: string, pipeline: Exclude<PipelineStage, PipelineStage.Merge | PipelineStage.Out>[]): PipelineStage.Lookup {
+        return {
+            $lookup: {
+                from: from,
+                localField: localField,
+                foreignField: foreignField,
+                pipeline: pipeline,
+                as: as
+            }
+        };
+    }
+    static getProjectPipeline(project: any): PipelineStage.Project {
+        return {
+            $project: { ...project }
+        };
     }
 }

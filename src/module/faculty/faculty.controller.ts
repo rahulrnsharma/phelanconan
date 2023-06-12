@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "src/decorator/current-user.decorator";
 import { FacultyDto } from "src/dto/faculty.dto";
+import { SearchDto } from "src/dto/search.dto";
 import { IAdmin } from "src/interface/admin.interface";
 import { FacultyService } from "src/service/faculty.service";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
@@ -22,8 +23,8 @@ export class FacultyController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('')
-  getAll() {
-    return this.facultyService.getAll()
+  getAll(@Query() searchDto: SearchDto) {
+    return this.facultyService.getAll(searchDto)
   }
 
   @ApiBearerAuth()
