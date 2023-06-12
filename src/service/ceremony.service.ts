@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, PipelineStage } from "mongoose";
+import mongoose, { Model, PipelineStage, Types } from "mongoose";
 import { Ceremony, CeremonyDocument, CeremonyModel } from "src/Schema/ceremony.schema";
 import { CeremonyDto } from "src/dto/ceremony.dto";
 import { IAdmin } from "src/interface/admin.interface";
@@ -17,11 +17,53 @@ export class CeremonyService {
         @InjectModel(FacultyModel.name) private readonly facultyModel: Model<FacultyDocument>
     ) { }
     async add(ceremonyDto: CeremonyDto, user: IAdmin) {
-        return new this.ceremonyModel({ ...ceremonyDto, createdBy: user.userId }).save();
+        if (!mongoose.isValidObjectId(ceremonyDto.institute)) {
+            let _lastInstitute = await this.instituteModel.findOne({ name: ceremonyDto.institute.trim() });
+            if (!_lastInstitute) {
+                _lastInstitute = await new this.instituteModel({ name: ceremonyDto.institute, createdBy: user.userId }).save();
+            }
+            ceremonyDto.institute = _lastInstitute._id.toString();
+        }
+        if (!mongoose.isValidObjectId(ceremonyDto.course)) {
+            let _lastCourse = await this.courseModel.findOne({ name: ceremonyDto.course.trim() });
+            if (!_lastCourse) {
+                _lastCourse = await new this.courseModel({ name: ceremonyDto.course, createdBy: user.userId }).save();
+            }
+            ceremonyDto.course = _lastCourse._id.toString();
+        }
+        if (!mongoose.isValidObjectId(ceremonyDto.faculty)) {
+            let _lastFaculty = await this.facultyModel.findOne({ name: ceremonyDto.faculty.trim() });
+            if (!_lastFaculty) {
+                _lastFaculty = await new this.facultyModel({ name: ceremonyDto.faculty, createdBy: user.userId }).save();
+            }
+            ceremonyDto.faculty = _lastFaculty._id.toString();
+        }
+        return new this.ceremonyModel({ institute: new Types.ObjectId(ceremonyDto.institute), faculty: new Types.ObjectId(ceremonyDto.faculty), course: new Types.ObjectId(ceremonyDto.course), price: ceremonyDto.price, date: ceremonyDto.date, time: ceremonyDto.time, createdBy: user.userId }).save();
     }
 
     async update(ceremonyDto: CeremonyDto, id: string, user: IAdmin) {
-        const _doc: Ceremony = await this.ceremonyModel.findByIdAndUpdate(id, { $set: { ...ceremonyDto, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        if (!mongoose.isValidObjectId(ceremonyDto.institute)) {
+            let _lastInstitute = await this.instituteModel.findOne({ name: ceremonyDto.institute.trim() });
+            if (!_lastInstitute) {
+                _lastInstitute = await new this.instituteModel({ name: ceremonyDto.institute, createdBy: user.userId }).save();
+            }
+            ceremonyDto.institute = _lastInstitute._id.toString();
+        }
+        if (!mongoose.isValidObjectId(ceremonyDto.course)) {
+            let _lastCourse = await this.courseModel.findOne({ name: ceremonyDto.course.trim() });
+            if (!_lastCourse) {
+                _lastCourse = await new this.courseModel({ name: ceremonyDto.course, createdBy: user.userId }).save();
+            }
+            ceremonyDto.course = _lastCourse._id.toString();
+        }
+        if (!mongoose.isValidObjectId(ceremonyDto.faculty)) {
+            let _lastFaculty = await this.facultyModel.findOne({ name: ceremonyDto.faculty.trim() });
+            if (!_lastFaculty) {
+                _lastFaculty = await new this.facultyModel({ name: ceremonyDto.faculty, createdBy: user.userId }).save();
+            }
+            ceremonyDto.faculty = _lastFaculty._id.toString();
+        }
+        const _doc: Ceremony = await this.ceremonyModel.findByIdAndUpdate(id, { $set: { institute: new Types.ObjectId(ceremonyDto.institute), faculty: new Types.ObjectId(ceremonyDto.faculty), course: new Types.ObjectId(ceremonyDto.course), price: ceremonyDto.price, date: ceremonyDto.date, time: ceremonyDto.time, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
         if (_doc) {
             return _doc;
         }

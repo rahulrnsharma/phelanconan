@@ -6,21 +6,18 @@ import { IsTime } from "src/decorator/validation/time.decorator";
 
 
 export class CeremonyDto {
-    @ApiProperty({ type: 'string' })
-    @IsMongoId({ message: 'Institute not valid.' })
+    @ApiProperty()
+    // @IsMongoId({ message: 'Institute not valid.' })
     @IsNotEmpty({ message: 'Institute is required.' })
-    @Type(() => Types.ObjectId)
-    institute: Types.ObjectId
-    @ApiProperty({ type: 'string' })
-    @IsMongoId({ message: 'Faculty not valid.' })
+    institute: string
+    @ApiProperty()
+    // @IsMongoId({ message: 'Faculty not valid.' })
     @IsNotEmpty({ message: 'Faculty is required.' })
-    @Type(() => Types.ObjectId)
-    faculty: Types.ObjectId;
-    @ApiProperty({ type: 'string' })
-    @IsMongoId({ message: 'Course not valid.' })
+    faculty: string;
+    @ApiProperty()
+    // @IsMongoId({ message: 'Course not valid.' })
     @IsNotEmpty({ message: 'Course is required.' })
-    @Type(() => Types.ObjectId)
-    course: Types.ObjectId;
+    course: string;
     @ApiProperty()
     @IsInt({ message: 'Price should be number.' })
     @IsNotEmpty({ message: 'Price is required.' })
