@@ -73,6 +73,6 @@ export class CourseService {
         return this.courseModel.findById(id);
     }
     async dropdown() {
-        return this.courseModel.find({ isActive: true }).exec();
+        return this.courseModel.find().exec();
     }
 }

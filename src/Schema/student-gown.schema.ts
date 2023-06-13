@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose, { HydratedDocument, ObjectId } from "mongoose";
 import { Base } from "./base.schema";
-import { HeightTypeEnum } from "src/enum/common.enum";
+import { HeightTypeEnum, PaymentStatusEnum } from "src/enum/common.enum";
 
 export type StudentGownDocument = HydratedDocument<StudentGown>
 
@@ -23,7 +23,7 @@ export class StudentGown extends Base {
     height: string;
     @Prop({ type: String, required: true })
     size: string;
-    @Prop({ type: String, required: true })
+    @Prop({ type: String, default: "" })
     requirement: string;
     @Prop({ type: String, required: true })
     firstName: string;
@@ -43,6 +43,8 @@ export class StudentGown extends Base {
     city: string;
     @Prop({ type: String, required: true, trim: true })
     country: string;
+    @Prop({ type: String, enum: PaymentStatusEnum, trim: true, default: PaymentStatusEnum.PENDING })
+    paymentStatus: string;
 }
 
 export const StudentGownSchema = SchemaFactory.createForClass(StudentGown);

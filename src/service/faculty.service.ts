@@ -73,6 +73,6 @@ export class FacultyService {
         return this.facultyModel.findById(id);
     }
     async dropdown() {
-        return this.facultyModel.find({ isActive: true }).exec();
+        return this.facultyModel.find().exec();
     }
 }

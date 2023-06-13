@@ -1,9 +1,10 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsDate, IsEmail, IsIn, IsInt, IsMongoId, IsNotEmpty, IsString } from "class-validator";
+import { IsDate, IsEmail, IsIn, IsInt, IsMongoId, IsNotEmpty, IsString, ValidateIf } from "class-validator";
 import { Types } from "mongoose";
 import { IsTime } from "src/decorator/validation/time.decorator";
 import { HeightTypeEnum } from "src/enum/common.enum";
+import { PaginationDto } from "./pagination.dto";
 
 export class StudentGownDto {
     @ApiProperty({ type: 'string' })
@@ -44,10 +45,8 @@ export class StudentGownDto {
     @IsString({ message: "Size must be string" })
     @IsNotEmpty({ message: "Size is required." })
     size: string;
-    @ApiProperty()
-    @IsString({ message: "Requirement must be string" })
-    @IsNotEmpty({ message: "Requirement is required" })
-    requirement: string;
+    @ApiPropertyOptional()
+    requirement?: string;
     @ApiProperty()
     @IsString({ message: "firstName must be string" })
     @IsNotEmpty({ message: 'firstName is required.' })
@@ -81,4 +80,12 @@ export class StudentGownDto {
     @IsString({ message: "Country must be string" })
     @IsNotEmpty({ message: 'Country is required.' })
     country: string;
+}
+
+
+export class SearchGownDto extends PaginationDto {
+    @ApiPropertyOptional()
+    @IsString({ message: 'Name should be string.' })
+    @ValidateIf(o => o.search)
+    search?: string;
 }

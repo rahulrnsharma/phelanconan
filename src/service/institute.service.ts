@@ -71,6 +71,6 @@ export class InstituteService {
         return this.instituteModel.findById(id);
     }
     async dropdown() {
-        return this.instituteModel.find({ isActive: true }).exec();
+        return this.instituteModel.find().exec();
     }
 }
