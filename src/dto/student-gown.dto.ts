@@ -21,11 +21,11 @@ export class StudentGownDto {
     @IsNotEmpty({ message: 'Course is required.' })
     @Type(() => Types.ObjectId)
     course: Types.ObjectId;
-    // @ApiProperty()
-    // @IsInt({ message: 'Price should be number.' })
-    // @IsNotEmpty({ message: 'Price is required.' })
-    // @Type(() => Number)
-    // price: number;
+    @ApiProperty()
+    @IsInt({ message: 'Price should be number.' })
+    @IsNotEmpty({ message: 'Price is required.' })
+    @Type(() => Number)
+    price: number;
     @ApiProperty()
     @IsTime({ message: "Time should be in (hh:mm:ss) formate" })
     @IsNotEmpty({ message: "Time is required." })

@@ -3,7 +3,7 @@ import mongoose, { HydratedDocument, ObjectId } from "mongoose";
 import { Base } from "./base.schema";
 import { HeightTypeEnum } from "src/enum/common.enum";
 
-export type CeremonyDocument = HydratedDocument<StudentGown>
+export type StudentGownDocument = HydratedDocument<StudentGown>
 
 @Schema({ timestamps: true })
 export class StudentGown extends Base {
