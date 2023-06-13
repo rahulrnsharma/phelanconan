@@ -1,5 +1,7 @@
 import { Controller, Get, Query } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+import { SearchCourseDto, SearchDateDto, SearchFacultyDto, SearchTimeDto } from "src/dto/dropdown.dto";
+import { TimezoneDto } from "src/dto/pagination.dto";
 
 import { DropdownService } from "src/service/dropdown.service";
 
@@ -9,29 +11,29 @@ import { DropdownService } from "src/service/dropdown.service";
 export class DropdownController {
     constructor(private readonly dropdownService: DropdownService) { }
 
-    @Get('/institute')
-    getInstitute() {
-        return this.dropdownService.getInstitute();
+    @Get('institute')
+    getInstitute(@Query() query: TimezoneDto) {
+        return this.dropdownService.getInstitute(query);
     }
 
     @Get('date')
-    getDate(@Query('insituteId') instituteId: string) {
-        return this.dropdownService.getDate(instituteId);
+    getDate(@Query() query: SearchDateDto) {
+        return this.dropdownService.getDate(query);
     }
 
-    @Get('Time')
-    getTime(@Query('insituteId') instituteId: string, @Query('dateValue') dateValue: string) {
-        return this.dropdownService.getTime(instituteId, dateValue);
+    @Get('time')
+    getTime(@Query() query: SearchTimeDto) {
+        return this.dropdownService.getTime(query);
     }
 
-    @Get('/faculty')
-    getFaculty(@Query('instituteId') instituteId: string, @Query('dateValue') dateValue: string, @Query('timeValue') timeValue: string) {
-        return this.dropdownService.getFaculty(instituteId, dateValue, timeValue);
+    @Get('faculty')
+    getFaculty(@Query() query: SearchFacultyDto) {
+        return this.dropdownService.getFaculty(query);
     }
 
-    @Get('/course')
-    getCourse(@Query('instituteId') instituteId: string, @Query('dateValue') dateValue: string, @Query('timeValue') timeValue: string, @Query('facultyId') facultyId: string) {
-        return this.dropdownService.getCourse(instituteId, dateValue, timeValue, facultyId);
+    @Get('course')
+    getCourse(@Query() query: SearchCourseDto) {
+        return this.dropdownService.getCourse(query);
     }
 
 
