@@ -3,6 +3,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBearerAuth, ApiConsumes, ApiParam, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "src/decorator/current-user.decorator";
 import { CeremonyDto, ExcelFileDto, UploadExcelData } from "src/dto/ceremony.dto";
+import { ActiveDto } from "src/dto/pagination.dto";
 import { SearchDto } from "src/dto/search.dto";
 import { IAdmin } from "src/interface/admin.interface";
 import { CeremonyService } from "src/service/ceremony.service";
@@ -50,6 +51,13 @@ export class CeremonyController {
     @ApiParam({ name: 'id' })
     getById(@Param('id') id: string) {
         return this.ceremonyService.getById(id);
+    }
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Put('status/:id')
+    @ApiParam({ name: 'id' })
+    status(@Body() activeDto: ActiveDto, @Param('id') id: string, @CurrentUser() user: IAdmin) {
+        return this.ceremonyService.status(id, activeDto, user)
     }
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)

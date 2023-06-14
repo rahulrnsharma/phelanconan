@@ -1,11 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from "@nestjs/common";
+import { FileInterceptor, FilesInterceptor } from "@nestjs/platform-express";
+import { ApiBearerAuth, ApiConsumes, ApiParam, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "src/decorator/current-user.decorator";
-import { InstituteDto } from "src/dto/institute.dto";
+import { AddInstituteDto, InstituteDto, InstituteImageDto } from "src/dto/institute.dto";
+import { ActiveDto } from "src/dto/pagination.dto";
 import { SearchDto } from "src/dto/search.dto";
 import { IAdmin } from "src/interface/admin.interface";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
 import { InstituteService } from "src/service/institute.service";
+import { UtilityService } from "src/service/utility.service";
 
 @ApiTags('Institute')
 @Controller('institute')
@@ -15,8 +18,19 @@ export class InstituteController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post('')
-  add(@Body() instituteDto: InstituteDto, @CurrentUser() user: IAdmin) {
-    return this.instituteService.add(instituteDto, user)
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('image', UtilityService.imageFileFilter("institute")))
+  add(@Body() instituteDto: AddInstituteDto, @CurrentUser() user: IAdmin, @UploadedFile() file: Express.Multer.File) {
+    return this.instituteService.add(instituteDto, user, file)
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('upload/:id')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FilesInterceptor('gallery', 10, UtilityService.imageFileFilter("institute")))
+  @ApiParam({ name: 'id' })
+  async uploadProductImage(@Param('id') id: string, @Body() imageDto: InstituteImageDto, @CurrentUser() user: IAdmin, @UploadedFiles() files: Array<Express.Multer.File>) {
+    return this.instituteService.uploadImage(id, user, (files || []).map(ele => { return { image: `${ele.filename}` } }));
   }
 
   @ApiBearerAuth()
@@ -39,6 +53,21 @@ export class InstituteController {
   @ApiParam({ name: 'id' })
   getById(@Param('id') id: string) {
     return this.instituteService.getById(id)
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/gallery')
+  @ApiParam({ name: 'id' })
+  async getProductImages(@Param('id') id: string) {
+    return this.instituteService.getImages(id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Put('status/:id')
+  @ApiParam({ name: 'id' })
+  status(@Body() activeDto: ActiveDto, @Param('id') id: string, @CurrentUser() user: IAdmin) {
+    return this.instituteService.status(id, activeDto, user)
   }
 
   @ApiBearerAuth()

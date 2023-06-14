@@ -10,6 +10,8 @@ import { AppFacultyModule } from './module/faculty/faculty.module';
 import { AppCeremonyModule } from './module/ceremony/ceremony.module';
 import { AppDropdownModule } from './module/dropdown/dropdown.module';
 import { AppGownModule } from './module/gown/gown.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 const MODULE = [
   AdminModule,
@@ -30,6 +32,9 @@ const MODULE = [
       isGlobal: true,
     }),
     AppDatabaseModule.forRootConnection(),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
     ...MODULE],
   controllers: [AppController],
   providers: [],

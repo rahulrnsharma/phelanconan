@@ -25,3 +25,16 @@ export class TimezoneDto {
     @Type(() => Number)
     timezone: number;
 }
+export class ActiveDto {
+    @ApiProperty()
+    @Type(() => Boolean)
+    active: boolean;
+}
+export class ImageDto {
+    @ApiProperty({ type: 'file', format: 'binary', required: true })
+    image: Express.Multer.File
+}
+export class ImageOptionalDto {
+    @ApiProperty({ type: 'file', format: 'binary', required: false })
+    image: Express.Multer.File
+}

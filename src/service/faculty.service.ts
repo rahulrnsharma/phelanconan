@@ -8,6 +8,7 @@ import { ActiveStatusEnum } from "src/enum/common.enum";
 import { IAdmin } from "src/interface/admin.interface";
 import { UtilityService } from "./utility.service";
 import { PaginationResponse } from "src/model/pagination.model";
+import { ActiveDto } from "src/dto/pagination.dto";
 
 
 
@@ -36,6 +37,15 @@ export class FacultyService {
         }
         else {
             throw new BadRequestException("Resource you are delete does not exist.");
+        }
+    }
+    async status(id: string, activeDto: ActiveDto, user: IAdmin) {
+        const _doc: Faculty = await this.facultyModel.findByIdAndUpdate(id, { $set: { isActive: activeDto.active, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        if (_doc) {
+            return _doc;
+        }
+        else {
+            throw new BadRequestException("Resource you are update does not exist.");
         }
     }
 

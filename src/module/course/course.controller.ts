@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } fro
 import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "src/decorator/current-user.decorator";
 import { CourseDto } from "src/dto/course.dto";
+import { ActiveDto } from "src/dto/pagination.dto";
 import { SearchDto } from "src/dto/search.dto";
 import { IAdmin } from "src/interface/admin.interface";
 import { CourseService } from "src/service/course.service";
@@ -39,6 +40,13 @@ export class CourseController {
   @ApiParam({ name: 'id' })
   getById(@Param('id') id: string) {
     return this.CourseService.getById(id)
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Put('status/:id')
+  @ApiParam({ name: 'id' })
+  status(@Body() activeDto: ActiveDto, @Param('id') id: string, @CurrentUser() user: IAdmin) {
+    return this.CourseService.status(id, activeDto, user)
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)

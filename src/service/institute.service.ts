@@ -2,19 +2,26 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, PipelineStage } from "mongoose";
 import { Institute, InstituteDocument, InstituteModel } from "src/Schema/institute.schema";
-import { InstituteDto } from "src/dto/institute.dto";
+import { AddInstituteDto, InstituteDto } from "src/dto/institute.dto";
 import { SearchDto } from "src/dto/search.dto";
 import { ActiveStatusEnum } from "src/enum/common.enum";
 import { IAdmin } from "src/interface/admin.interface";
 import { UtilityService } from "./utility.service";
 import { PaginationResponse } from "src/model/pagination.model";
+import { ActiveDto } from "src/dto/pagination.dto";
 
 @Injectable()
 export class InstituteService {
     constructor(@InjectModel(InstituteModel.name) private instituteModel: Model<InstituteDocument>) { }
 
-    async add(instituteDto: InstituteDto, user: IAdmin) {
-        return new this.instituteModel({ ...instituteDto, createdBy: user.userId }).save()
+    async add(instituteDto: AddInstituteDto, user: IAdmin, image: Express.Multer.File) {
+        let _gallery = [];
+        if (image) {
+            _gallery.push({
+                image: image.filename
+            })
+        }
+        return new this.instituteModel({ name: instituteDto.name, price: instituteDto.price, gallery: _gallery, createdBy: user.userId }).save()
     }
 
     async update(instituteDto: InstituteDto, id: string, user: IAdmin) {
@@ -36,6 +43,15 @@ export class InstituteService {
             throw new BadRequestException("Resource you are delete does not exist.");
         }
     }
+    async status(id: string, activeDto: ActiveDto, user: IAdmin) {
+        const _doc: Institute = await this.instituteModel.findByIdAndUpdate(id, { $set: { isActive: activeDto.active, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        if (_doc) {
+            return _doc;
+        }
+        else {
+            throw new BadRequestException("Resource you are update does not exist.");
+        }
+    }
 
     async getAll(searchDto: SearchDto) {
         let _match: any = {};
@@ -55,7 +71,7 @@ export class InstituteService {
                     UtilityService.getSortPipeline('createdAt', 'desc'),
                     UtilityService.getSkipPipeline(searchDto.currentPage, searchDto.pageSize),
                     UtilityService.getLimitPipeline(searchDto.pageSize),
-                    UtilityService.getProjectPipeline({ name: 1, isActive: 1 })
+                    UtilityService.getProjectPipeline({ name: 1, price: 1, isActive: 1 })
                 ],
             },
         });
@@ -71,6 +87,25 @@ export class InstituteService {
         return this.instituteModel.findById(id);
     }
     async dropdown() {
-        return this.instituteModel.find().exec();
+        return this.instituteModel.find({}, { name: 1, price: 1 }).exec();
+    }
+    async uploadImage(id: any, user: IAdmin, files: any[]) {
+        const _doc: Institute = await this.instituteModel.findByIdAndUpdate(id, {
+            $push: {
+                gallery: {
+                    $each: files
+                }
+            },
+            updatedBy: user.userId
+        }, { runValidators: true }).exec();
+        if (_doc) {
+            return { success: true };
+        }
+        else {
+            throw new BadRequestException("Resource you are looking for not exist.");
+        }
+    }
+    async getImages(id: any): Promise<Institute> {
+        return this.instituteModel.findById(id, { gallery: 1 }).exec();
     }
 }

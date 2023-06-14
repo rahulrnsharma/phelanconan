@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { PipelineStage } from "mongoose";
+import { diskStorage } from "multer";
 import { SortOrderEnum } from "src/enum/common.enum";
 var XLSX = require("xlsx");
 
@@ -34,6 +35,23 @@ export class UtilityService {
         return _date;
     }
 
+    static imageFileFilter(folder: string) {
+        let options: any = {
+            storage: diskStorage({
+                destination: `./public/${folder}`,
+                filename: (req, file, cb) => {
+                    return cb(null, `${file.originalname}`)
+                }
+            }),
+            fileFilter: (req: any, file: any, cb: any) => {
+                if (!file.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
+                    return cb(new Error('Only images are allowed'), false);
+                }
+                cb(null, true);
+            }
+        };
+        return options
+    }
     static excelFileFilter() {
         return {
             fileFilter: (req: any, file: any, cb: any) => {

@@ -11,6 +11,7 @@ import { FacultyDocument, FacultyModel } from "src/Schema/faculty.schema";
 import { SearchDto } from "src/dto/search.dto";
 import { ActiveStatusEnum } from "src/enum/common.enum";
 import { PaginationResponse } from "src/model/pagination.model";
+import { ActiveDto } from "src/dto/pagination.dto";
 
 @Injectable()
 export class CeremonyService {
@@ -23,7 +24,7 @@ export class CeremonyService {
         if (!mongoose.isValidObjectId(ceremonyDto.institute)) {
             let _lastInstitute = await this.instituteModel.findOne({ name: ceremonyDto.institute.trim() });
             if (!_lastInstitute) {
-                _lastInstitute = await new this.instituteModel({ name: ceremonyDto.institute, createdBy: user.userId }).save();
+                _lastInstitute = await new this.instituteModel({ name: ceremonyDto.institute, price: ceremonyDto.price, createdBy: user.userId }).save();
             }
             ceremonyDto.institute = _lastInstitute._id.toString();
         }
@@ -48,7 +49,7 @@ export class CeremonyService {
         if (!mongoose.isValidObjectId(ceremonyDto.institute)) {
             let _lastInstitute = await this.instituteModel.findOne({ name: ceremonyDto.institute.trim() });
             if (!_lastInstitute) {
-                _lastInstitute = await new this.instituteModel({ name: ceremonyDto.institute, createdBy: user.userId }).save();
+                _lastInstitute = await new this.instituteModel({ name: ceremonyDto.institute, price: ceremonyDto.price, createdBy: user.userId }).save();
             }
             ceremonyDto.institute = _lastInstitute._id.toString();
         }
@@ -82,6 +83,15 @@ export class CeremonyService {
         }
         else {
             throw new BadRequestException("Resource you are delete does not exist.");
+        }
+    }
+    async status(id: string, activeDto: ActiveDto, user: IAdmin) {
+        const _doc: Ceremony = await this.ceremonyModel.findByIdAndUpdate(id, { $set: { isActive: activeDto.active, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        if (_doc) {
+            return _doc;
+        }
+        else {
+            throw new BadRequestException("Resource you are update does not exist.");
         }
     }
 
@@ -233,7 +243,7 @@ export class CeremonyService {
                     _lastInstitute = data[i]["_institute"];
                 }
                 else {
-                    _lastInstitute = new this.instituteModel({ name: data[i]["Institution"], createdBy: user.userId });
+                    _lastInstitute = new this.instituteModel({ name: data[i]["Institution"], price: data[i]["Price"], createdBy: user.userId });
                     await _lastInstitute.save();
                 }
                 institute.add(data[i]["Institution"]);
