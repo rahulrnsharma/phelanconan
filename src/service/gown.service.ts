@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, PipelineStage } from "mongoose";
+import { Model, PipelineStage, Types } from "mongoose";
 import { StudentGownDocument, StudentGownModel } from "src/Schema/student-gown.schema";
 import { SearchGownDto, StudentGownDto } from "src/dto/student-gown.dto";
 import { ActiveStatusEnum } from "src/enum/common.enum";
@@ -51,5 +51,18 @@ export class GownService {
         }))
         let _res: any[] = await this.studentGownModel.aggregate(query).exec();
         return new PaginationResponse(_res[0].data, _res[0].count, searchDto.currentPage, searchDto.pageSize);
+    }
+    async getById(id: any) {
+        let query: PipelineStage[] = [UtilityService.getMatchPipeline({ _id: new Types.ObjectId(id) })];
+        query.push(UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1 })]));
+        query.push(UtilityService.getLookupPipeline("faculties", "faculty", "_id", "faculty", [UtilityService.getProjectPipeline({ name: 1 })]));
+        query.push(UtilityService.getLookupPipeline("courses", "course", "_id", "course", [UtilityService.getProjectPipeline({ name: 1 })]));
+        query.push(UtilityService.getUnwindPipeline("institute"));
+        query.push(UtilityService.getUnwindPipeline("faculty"));
+        query.push(UtilityService.getUnwindPipeline("course"));
+        query.push(UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 }));
+
+        let _res: any[] = await this.studentGownModel.aggregate(query).exec();
+        return _res[0];
     }
 }
