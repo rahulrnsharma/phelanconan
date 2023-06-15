@@ -3,9 +3,10 @@ import { Type } from "class-transformer";
 import { ArrayMinSize, IsArray, IsDate, IsInt, IsMongoId, IsNotEmpty } from "class-validator";
 import { Types } from "mongoose";
 import { IsTime } from "src/decorator/validation/time.decorator";
+import { ImageOptionalDto } from "./pagination.dto";
 
 
-export class CeremonyDto {
+export class CeremonyDto extends ImageOptionalDto {
     @ApiProperty()
     // @IsMongoId({ message: 'Institute not valid.' })
     @IsNotEmpty({ message: 'Institute is required.' })

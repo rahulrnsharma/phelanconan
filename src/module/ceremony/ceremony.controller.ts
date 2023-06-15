@@ -18,8 +18,10 @@ export class CeremonyController {
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
     @Post('')
-    add(@Body() ceremonyDto: CeremonyDto, @CurrentUser() user: IAdmin) {
-        return this.ceremonyService.add(ceremonyDto, user);
+    @ApiConsumes('multipart/form-data')
+    @UseInterceptors(FileInterceptor('image', UtilityService.imageFileFilter("institute")))
+    add(@Body() ceremonyDto: CeremonyDto, @CurrentUser() user: IAdmin, @UploadedFile() file: Express.Multer.File) {
+        return this.ceremonyService.add(ceremonyDto, user, file);
     }
 
     @ApiBearerAuth()
@@ -37,6 +39,17 @@ export class CeremonyController {
     async upload(@Body() uploadExcelData: UploadExcelData, @CurrentUser() user: IAdmin) {
         return this.ceremonyService.upload(uploadExcelData.data, user);
     }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Post(':id')
+    @ApiConsumes('multipart/form-data')
+    @UseInterceptors(FileInterceptor('image', UtilityService.imageFileFilter("institute")))
+    @ApiParam({ name: 'id' })
+    update(@Body() ceremonyDto: CeremonyDto, @Param('id') id: string, @CurrentUser() user: IAdmin, @UploadedFile() file: Express.Multer.File) {
+        return this.ceremonyService.update(ceremonyDto, id, user, file)
+    }
+
 
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
@@ -59,14 +72,6 @@ export class CeremonyController {
     status(@Body() activeDto: ActiveDto, @Param('id') id: string, @CurrentUser() user: IAdmin) {
         return this.ceremonyService.status(id, activeDto, user)
     }
-    @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
-    @Put(':id')
-    @ApiParam({ name: 'id' })
-    update(@Body() ceremonyDto: CeremonyDto, @Param('id') id: string, @CurrentUser() user: IAdmin) {
-        return this.ceremonyService.update(ceremonyDto, id, user)
-    }
-
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
     @Delete(':id')

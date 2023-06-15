@@ -20,11 +20,18 @@ export class CeremonyService {
         @InjectModel(CourseModel.name) private readonly courseModel: Model<CourseDocument>,
         @InjectModel(FacultyModel.name) private readonly facultyModel: Model<FacultyDocument>
     ) { }
-    async add(ceremonyDto: CeremonyDto, user: IAdmin) {
+    async add(ceremonyDto: CeremonyDto, user: IAdmin, image: Express.Multer.File) {
         if (!mongoose.isValidObjectId(ceremonyDto.institute)) {
             let _lastInstitute = await this.instituteModel.findOne({ name: ceremonyDto.institute.trim() });
             if (!_lastInstitute) {
-                _lastInstitute = await new this.instituteModel({ name: ceremonyDto.institute, price: ceremonyDto.price, createdBy: user.userId }).save();
+                let _data = {
+                    name: ceremonyDto.institute,
+                    price: ceremonyDto.price
+                }
+                if (image) {
+                    _data['image'] = image.filename;
+                }
+                _lastInstitute = await new this.instituteModel({ ..._data, createdBy: user.userId }).save();
             }
             ceremonyDto.institute = _lastInstitute._id.toString();
         }
@@ -42,14 +49,40 @@ export class CeremonyService {
             }
             ceremonyDto.faculty = _lastFaculty._id.toString();
         }
-        return new this.ceremonyModel({ institute: new Types.ObjectId(ceremonyDto.institute), faculty: new Types.ObjectId(ceremonyDto.faculty), course: new Types.ObjectId(ceremonyDto.course), price: ceremonyDto.price, date: ceremonyDto.date, time: ceremonyDto.time, createdBy: user.userId }).save();
+        let _data = {
+            institute: new Types.ObjectId(ceremonyDto.institute),
+            faculty: new Types.ObjectId(ceremonyDto.faculty),
+            course: new Types.ObjectId(ceremonyDto.course),
+            price: ceremonyDto.price,
+            date: ceremonyDto.date,
+            time: ceremonyDto.time
+        }
+        if (image) {
+            _data['image'] = image.filename;
+            this.instituteModel.findByIdAndUpdate(new Types.ObjectId(ceremonyDto.institute), {
+                $push: {
+                    gallery: {
+                        image: image.filename
+                    }
+                },
+                updatedBy: user.userId
+            }, { runValidators: true }).exec();
+        }
+        return new this.ceremonyModel({ ..._data, createdBy: user.userId }).save();
     }
 
-    async update(ceremonyDto: CeremonyDto, id: string, user: IAdmin) {
+    async update(ceremonyDto: CeremonyDto, id: string, user: IAdmin, image: Express.Multer.File) {
         if (!mongoose.isValidObjectId(ceremonyDto.institute)) {
             let _lastInstitute = await this.instituteModel.findOne({ name: ceremonyDto.institute.trim() });
             if (!_lastInstitute) {
-                _lastInstitute = await new this.instituteModel({ name: ceremonyDto.institute, price: ceremonyDto.price, createdBy: user.userId }).save();
+                let _data = {
+                    name: ceremonyDto.institute,
+                    price: ceremonyDto.price
+                }
+                if (image) {
+                    _data['image'] = image.filename;
+                }
+                _lastInstitute = await new this.instituteModel({ ..._data, createdBy: user.userId }).save();
             }
             ceremonyDto.institute = _lastInstitute._id.toString();
         }
@@ -67,7 +100,26 @@ export class CeremonyService {
             }
             ceremonyDto.faculty = _lastFaculty._id.toString();
         }
-        const _doc: Ceremony = await this.ceremonyModel.findByIdAndUpdate(id, { $set: { institute: new Types.ObjectId(ceremonyDto.institute), faculty: new Types.ObjectId(ceremonyDto.faculty), course: new Types.ObjectId(ceremonyDto.course), price: ceremonyDto.price, date: ceremonyDto.date, time: ceremonyDto.time, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        let _data = {
+            institute: new Types.ObjectId(ceremonyDto.institute),
+            faculty: new Types.ObjectId(ceremonyDto.faculty),
+            course: new Types.ObjectId(ceremonyDto.course),
+            price: ceremonyDto.price,
+            date: ceremonyDto.date,
+            time: ceremonyDto.time
+        }
+        if (image) {
+            _data['image'] = image.filename;
+            this.instituteModel.findByIdAndUpdate(new Types.ObjectId(ceremonyDto.institute), {
+                $push: {
+                    gallery: {
+                        image: image.filename
+                    }
+                },
+                updatedBy: user.userId
+            }, { runValidators: true }).exec();
+        }
+        const _doc: Ceremony = await this.ceremonyModel.findByIdAndUpdate(id, { $set: { ..._data, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
         if (_doc) {
             return _doc;
         }
