@@ -123,4 +123,9 @@ export class UtilityService {
     static getGroupPipeline(group: any): PipelineStage.Group {
         return { $group: { ...group } };
     }
+    static getAddImageFieldPipeline(field: string, folder: string, key: any): PipelineStage.AddFields {
+        let _addField: any = {};
+        _addField[field] = { $concat: [process.env.DOC_BASE_URL, `${folder}/`, key] };
+        return { $addFields: _addField };
+    }
 }

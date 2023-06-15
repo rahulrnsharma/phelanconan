@@ -15,6 +15,8 @@ export class Institute extends Base {
     name: string;
     @Prop({ type: Number, required: true })
     price: number
+    @Prop({ type: String, default: null, get: (image: string) => `${process.env.DOC_BASE_URL}phelanconan/institute/${image}` })
+    image: string;
     @Prop({ type: [GallerySchema], required: false, default: [] })
     gallery: Gallery[];
 }

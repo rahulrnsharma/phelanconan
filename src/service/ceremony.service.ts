@@ -119,6 +119,7 @@ export class CeremonyService {
                     UtilityService.getUnwindPipeline("institute"),
                     UtilityService.getUnwindPipeline("faculty"),
                     UtilityService.getUnwindPipeline("course"),
+                    UtilityService.getAddImageFieldPipeline('image', 'phelanconan/institute', '$image'),
                     UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 })
                 ],
             },
@@ -136,7 +137,7 @@ export class CeremonyService {
     }
     async verify(file: any) {
         let _data: any[] = UtilityService.readExcelFileData(file);
-        const _header = ["Institution", "Price", "Graduation Date", "Ceremony Time", "Faculty", "Course"];
+        const _header = ["Institution", "Price", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image"];
         if (!UtilityService.validExcelHeader(_header, _data[0])) {
             throw new BadRequestException(`Excel sheet header should be ${_header}`)
         }
@@ -226,7 +227,7 @@ export class CeremonyService {
         return { unique, duplicate, already };
     }
     async upload(data: any[], user: IAdmin) {
-        const _header = ["Institution", "Price", "Graduation Date", "Ceremony Time", "Faculty", "Course", "_institute", "_course", "_faculty"];
+        const _header = ["Institution", "Price", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image", "_institute", "_course", "_faculty"];
         if (!UtilityService.validExcelHeader(_header, data[0])) {
             throw new BadRequestException(`Not a valid Data`);
         }
@@ -295,7 +296,8 @@ export class CeremonyService {
                     course: _lastCourse._id,
                     date: data[i]["Graduation Date"],
                     time: data[i]["Ceremony Time"],
-                    price: data[i]["Price"]
+                    price: data[i]["Price"],
+                    image: data[i]["Image"]
                 }).save();
             }
         }

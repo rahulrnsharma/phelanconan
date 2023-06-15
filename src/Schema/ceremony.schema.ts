@@ -18,6 +18,8 @@ export class Ceremony extends Base {
     time: string;
     @Prop({ type: Number, required: true })
     price: number
+    @Prop({ type: String, default: null, get: (image: string) => `${process.env.DOC_BASE_URL}phelanconan/institute/${image}` })
+    image: string;
 }
 
 export const CeremonySchema = SchemaFactory.createForClass(Ceremony);

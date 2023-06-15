@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, PipelineStage } from "mongoose";
 import { Institute, InstituteDocument, InstituteModel } from "src/Schema/institute.schema";
-import { AddInstituteDto, InstituteDto } from "src/dto/institute.dto";
+import { InstituteDto } from "src/dto/institute.dto";
 import { SearchDto } from "src/dto/search.dto";
 import { ActiveStatusEnum } from "src/enum/common.enum";
 import { IAdmin } from "src/interface/admin.interface";
@@ -14,18 +14,27 @@ import { ActiveDto } from "src/dto/pagination.dto";
 export class InstituteService {
     constructor(@InjectModel(InstituteModel.name) private instituteModel: Model<InstituteDocument>) { }
 
-    async add(instituteDto: AddInstituteDto, user: IAdmin, image: Express.Multer.File) {
-        let _gallery = [];
-        if (image) {
-            _gallery.push({
-                image: image.filename
-            })
+    async add(instituteDto: InstituteDto, user: IAdmin, image: Express.Multer.File) {
+        let _data = {
+            name: instituteDto.name,
+            price: instituteDto.price
         }
-        return new this.instituteModel({ name: instituteDto.name, price: instituteDto.price, gallery: _gallery, createdBy: user.userId }).save()
+        if (image) {
+            _data['image'] = image.filename;
+        }
+        return new this.instituteModel({ ..._data, createdBy: user.userId }).save()
     }
 
-    async update(instituteDto: InstituteDto, id: string, user: IAdmin) {
-        const _doc: Institute = await this.instituteModel.findByIdAndUpdate(id, { $set: { ...instituteDto, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+    async update(instituteDto: InstituteDto, id: string, user: IAdmin, image: Express.Multer.File) {
+        let _data = {
+            name: instituteDto.name,
+            price: instituteDto.price
+        }
+        if (image) {
+            _data['image'] = image.filename;
+        }
+        console.log(_data)
+        const _doc: Institute = await this.instituteModel.findByIdAndUpdate(id, { $set: { ..._data, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
         if (_doc) {
             return _doc;
         }
@@ -71,7 +80,8 @@ export class InstituteService {
                     UtilityService.getSortPipeline('createdAt', 'desc'),
                     UtilityService.getSkipPipeline(searchDto.currentPage, searchDto.pageSize),
                     UtilityService.getLimitPipeline(searchDto.pageSize),
-                    UtilityService.getProjectPipeline({ name: 1, price: 1, isActive: 1 })
+                    UtilityService.getAddImageFieldPipeline('image', 'phelanconan/institute', '$image'),
+                    UtilityService.getProjectPipeline({ name: 1, price: 1, image: 1, isActive: 1 })
                 ],
             },
         });

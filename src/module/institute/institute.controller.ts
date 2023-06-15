@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFile, U
 import { FileInterceptor, FilesInterceptor } from "@nestjs/platform-express";
 import { ApiBearerAuth, ApiConsumes, ApiParam, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "src/decorator/current-user.decorator";
-import { AddInstituteDto, InstituteDto, InstituteImageDto } from "src/dto/institute.dto";
+import { InstituteDto, InstituteImageDto } from "src/dto/institute.dto";
 import { ActiveDto } from "src/dto/pagination.dto";
 import { SearchDto } from "src/dto/search.dto";
 import { IAdmin } from "src/interface/admin.interface";
@@ -20,7 +20,7 @@ export class InstituteController {
   @Post('')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image', UtilityService.imageFileFilter("institute")))
-  add(@Body() instituteDto: AddInstituteDto, @CurrentUser() user: IAdmin, @UploadedFile() file: Express.Multer.File) {
+  add(@Body() instituteDto: InstituteDto, @CurrentUser() user: IAdmin, @UploadedFile() file: Express.Multer.File) {
     return this.instituteService.add(instituteDto, user, file)
   }
   @ApiBearerAuth()
@@ -31,6 +31,16 @@ export class InstituteController {
   @ApiParam({ name: 'id' })
   async uploadProductImage(@Param('id') id: string, @Body() imageDto: InstituteImageDto, @CurrentUser() user: IAdmin, @UploadedFiles() files: Array<Express.Multer.File>) {
     return this.instituteService.uploadImage(id, user, (files || []).map(ele => { return { image: `${ele.filename}` } }));
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post(':id')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('image', UtilityService.imageFileFilter("institute")))
+  @ApiParam({ name: 'id' })
+  update(@Body() instituteDto: InstituteDto, @Param('id') id: string, @CurrentUser() user: IAdmin, @UploadedFile() file: Express.Multer.File) {
+    return this.instituteService.update(instituteDto, id, user, file)
   }
 
   @ApiBearerAuth()
@@ -68,14 +78,6 @@ export class InstituteController {
   @ApiParam({ name: 'id' })
   status(@Body() activeDto: ActiveDto, @Param('id') id: string, @CurrentUser() user: IAdmin) {
     return this.instituteService.status(id, activeDto, user)
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Put(':id')
-  @ApiParam({ name: 'id' })
-  update(@Body() instituteDto: InstituteDto, @Param('id') id: string, @CurrentUser() user: IAdmin) {
-    return this.instituteService.update(instituteDto, id, user)
   }
 
   @ApiBearerAuth()
