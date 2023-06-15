@@ -30,8 +30,8 @@ async function bootstrap() {
       return new BadRequestException(Object.values(_error?.constraints)[0]);
     }
   }));
-  app.use(bodyParser.json({ limit: '10mb' }));
-  app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
   app.enableCors();
   await app.listen(3000);
 }

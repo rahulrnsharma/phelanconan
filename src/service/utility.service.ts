@@ -44,7 +44,7 @@ export class UtilityService {
                 }
             }),
             fileFilter: (req: any, file: any, cb: any) => {
-                if (!file.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
+                if (!file.originalname.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp)$/)) {
                     return cb(new Error('Only images are allowed'), false);
                 }
                 cb(null, true);
