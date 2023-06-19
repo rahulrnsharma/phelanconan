@@ -6,12 +6,17 @@ import { SearchGownDto, StudentGownDto } from "src/dto/student-gown.dto";
 import { ActiveStatusEnum } from "src/enum/common.enum";
 import { UtilityService } from "./utility.service";
 import { PaginationResponse } from "src/model/pagination.model";
+import { PaymentService } from "./payment.service";
+import { catchError, map } from "rxjs";
+import { TransactionDocument, TransactionModel } from "src/Schema/transaction.schema";
 
 
 
 @Injectable()
 export class GownService {
-    constructor(@InjectModel(StudentGownModel.name) private readonly studentGownModel: Model<StudentGownDocument>) { }
+    constructor(@InjectModel(StudentGownModel.name) private readonly studentGownModel: Model<StudentGownDocument>,
+        @InjectModel(TransactionModel.name) private readonly transactionModel: Model<TransactionDocument>,
+        private readonly paymentService: PaymentService) { }
 
     async addStudentGown(studentGownDto: StudentGownDto) {
         return new this.studentGownModel({ ...studentGownDto }).save()
@@ -64,5 +69,60 @@ export class GownService {
 
         let _res: any[] = await this.studentGownModel.aggregate(query).exec();
         return _res[0];
+    }
+    async testpay() {
+        return this.paymentService.checkVersion().pipe(
+            catchError((err: any) => { console.log(err.response); throw new BadRequestException(err.response.data.error_description) }),
+            map(async (res: any) => {
+                await new this.transactionModel({ transactionId: res.data.server_trans_id, data: [res.data] }).save()
+                return res.data;
+            })
+        )
+    }
+    async initiate(tid: any, browserdata: any) {
+        let orderid = `${this.generateString(8)}-${this.generateString(4)}-${this.generateString(4)}-${this.generateString(4)}-${this.generateString(12)}`;
+        return this.paymentService.initiatAuthenticate(tid, orderid, browserdata).pipe(
+            catchError((err: any) => { console.log(err.response); throw new BadRequestException(err.response.data.error_description) }),
+            map(async (res: any) => {
+                await this.transactionModel.findOneAndUpdate({ transactionId: tid }, {
+                    $set: {
+                        orderId: orderid, $push: {
+                            data: res.data
+                        },
+                    }
+                }).exec()
+                return res.data;
+            })
+        )
+    }
+    async getAuthentication(tid: any) {
+        return this.paymentService.getAuthenticationData(tid).pipe(
+            catchError((err: any) => { console.log(err.response); throw new BadRequestException(err.response.data.error_description) }),
+            map(async (res: any) => {
+                await this.transactionModel.findOneAndUpdate({ transactionId: tid }, {
+                    $set: {
+                        $push: {
+                            data: res.data
+                        },
+                    }
+                }).exec()
+                return res.data;
+            })
+        )
+    }
+    private generateString(length: any) {
+        const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+    notification(data: any) {
+        return data;
+    }
+    challenge(data: any) {
+        return data;
     }
 }

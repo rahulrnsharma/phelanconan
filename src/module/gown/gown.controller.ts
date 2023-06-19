@@ -29,4 +29,27 @@ export class GownController {
     getOrdersById(@Param('id') id: string) {
         return this.gownService.getById(id);
     }
+    @Post('test-pay')
+    testpay() {
+        return this.gownService.testpay()
+    }
+    @Post('initiateauth')
+    initiateauth(@Body() data: any) {
+        return this.gownService.initiate(data.tid, data.browserdata)
+    }
+    @Get('initiateauth/:id')
+    @ApiParam({ name: 'id' })
+    getinitiateauth(@Param('id') id: string) {
+        return this.gownService.getAuthentication(id);
+    }
+    @Post('notification')
+    notification(@Body() data: any) {
+        console.log(data)
+        return this.gownService.notification(data)
+    }
+    @Post('challenge')
+    challenge(@Body() data: any) {
+        console.log(data)
+        return this.gownService.challenge(data)
+    }
 }
