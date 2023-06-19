@@ -12,6 +12,9 @@ export class CeremonyDto extends ImageOptionalDto {
     @IsNotEmpty({ message: 'Institute is required.' })
     institute: string
     @ApiProperty()
+    @IsNotEmpty({message:"Reference No. must be required"})
+    refno: string;
+    @ApiProperty()
     // @IsMongoId({ message: 'Faculty not valid.' })
     @IsNotEmpty({ message: 'Faculty is required.' })
     faculty: string;

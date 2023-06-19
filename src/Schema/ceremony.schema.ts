@@ -8,6 +8,8 @@ export type CeremonyDocument = HydratedDocument<Ceremony>
 export class Ceremony extends Base {
     @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
     institute: ObjectId;
+    @Prop({type:String,required:true,trim:true})
+    refno: string;
     @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
     faculty: ObjectId;
     @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })

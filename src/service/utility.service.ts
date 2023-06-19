@@ -80,7 +80,7 @@ export class UtilityService {
     }
     static validExcelHeader(shouldBeHeader: any[], excelHeader: any) {
         return shouldBeHeader.sort().join(",") == Object.keys(excelHeader).sort().join(",");
-    }
+    } 
     static groupBy(array: any[], key: any) {
         return array.reduce(function (rv, x) {
             (rv[x[key]] = rv[x[key]] || []).push(x);

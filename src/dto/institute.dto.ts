@@ -14,6 +14,10 @@ export class InstituteDto extends ImageOptionalDto {
     @IsNotEmpty({ message: 'Price is required.' })
     @Type(() => Number)
     price: number;
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty({message:"Reference must be required"})
+    refno: string
 }
 export class InstituteImageDto {
     @ApiProperty({ type: 'array', items: { type: 'file', format: 'binary' }, required: true })
