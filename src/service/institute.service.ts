@@ -17,7 +17,8 @@ export class InstituteService {
     async add(instituteDto: InstituteDto, user: IAdmin, image: Express.Multer.File) {
         let _data = {
             name: instituteDto.name,
-            price: instituteDto.price
+            price: instituteDto.price,
+            refno: instituteDto.refno
         }
         if (image) {
             _data['image'] = image.filename;
@@ -28,7 +29,8 @@ export class InstituteService {
     async update(instituteDto: InstituteDto, id: string, user: IAdmin, image: Express.Multer.File) {
         let _data = {
             name: instituteDto.name,
-            price: instituteDto.price
+            price: instituteDto.price,
+            refno: instituteDto.refno
         }
         if (image) {
             _data['image'] = image.filename;

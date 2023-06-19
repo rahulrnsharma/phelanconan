@@ -26,7 +26,8 @@ export class CeremonyService {
             if (!_lastInstitute) {
                 let _data = {
                     name: ceremonyDto.institute,
-                    price: ceremonyDto.price
+                    price: ceremonyDto.price,
+                    refno: ceremonyDto.refno
                 }
                 if (image) {
                     _data['image'] = image.filename;
@@ -53,6 +54,7 @@ export class CeremonyService {
             institute: new Types.ObjectId(ceremonyDto.institute),
             faculty: new Types.ObjectId(ceremonyDto.faculty),
             course: new Types.ObjectId(ceremonyDto.course),
+            refno: ceremonyDto.refno,
             price: ceremonyDto.price,
             date: ceremonyDto.date,
             time: ceremonyDto.time
@@ -77,7 +79,8 @@ export class CeremonyService {
             if (!_lastInstitute) {
                 let _data = {
                     name: ceremonyDto.institute,
-                    price: ceremonyDto.price
+                    price: ceremonyDto.price,
+                    refno: ceremonyDto.refno
                 }
                 if (image) {
                     _data['image'] = image.filename;
@@ -104,6 +107,7 @@ export class CeremonyService {
             institute: new Types.ObjectId(ceremonyDto.institute),
             faculty: new Types.ObjectId(ceremonyDto.faculty),
             course: new Types.ObjectId(ceremonyDto.course),
+            refno: ceremonyDto.refno,
             price: ceremonyDto.price,
             date: ceremonyDto.date,
             time: ceremonyDto.time
@@ -189,7 +193,7 @@ export class CeremonyService {
     }
     async verify(file: any) {
         let _data: any[] = UtilityService.readExcelFileData(file);
-        const _header = ["Institution", "Price", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image"];
+        const _header = ["Institution", "Price","Reference No.", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image"];
         if (!UtilityService.validExcelHeader(_header, _data[0])) {
             throw new BadRequestException(`Excel sheet header should be ${_header}`)
         }
@@ -260,7 +264,8 @@ export class CeremonyService {
                         course: _lastCourse._id,
                         date: _obj["Graduation Date"],
                         time: _obj["Ceremony Time"],
-                        price: _obj["Price"]
+                        price: _obj["Price"],
+                        refno: _obj["Reference No."]
                     })
                     if (_ceremony) {
                         already.push({ ..._obj, rows: i + 2 });
@@ -279,7 +284,7 @@ export class CeremonyService {
         return { unique, duplicate, already };
     }
     async upload(data: any[], user: IAdmin) {
-        const _header = ["Institution", "Price", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image", "_institute", "_course", "_faculty"];
+        const _header = ["Institution", "Price","Reference No.", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image", "_institute", "_course", "_faculty"];
         if (!UtilityService.validExcelHeader(_header, data[0])) {
             throw new BadRequestException(`Not a valid Data`);
         }
@@ -296,7 +301,7 @@ export class CeremonyService {
                     _lastInstitute = data[i]["_institute"];
                 }
                 else {
-                    _lastInstitute = new this.instituteModel({ name: data[i]["Institution"], price: data[i]["Price"], createdBy: user.userId });
+                    _lastInstitute = new this.instituteModel({ name: data[i]["Institution"], price: data[i]["Price"], refno:data[i]["Reference No."],createdBy: user.userId });
                     await _lastInstitute.save();
                 }
                 institute.add(data[i]["Institution"]);
@@ -334,6 +339,7 @@ export class CeremonyService {
                 institute: _lastInstitute._id,
                 faculty: _lastFaculty._id,
                 course: _lastCourse._id,
+                refno: data[i]["Reference No."],
                 date: data[i]["Graduation Date"],
                 time: data[i]["Ceremony Time"],
                 price: data[i]["Price"]
@@ -346,6 +352,7 @@ export class CeremonyService {
                     institute: _lastInstitute._id,
                     faculty: _lastFaculty._id,
                     course: _lastCourse._id,
+                    refno: data[i]["Reference No."],
                     date: data[i]["Graduation Date"],
                     time: data[i]["Ceremony Time"],
                     price: data[i]["Price"],

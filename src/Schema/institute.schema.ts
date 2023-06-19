@@ -19,6 +19,8 @@ export class Institute extends Base {
     image: string;
     @Prop({ type: [GallerySchema], required: false, default: [] })
     gallery: Gallery[];
+    @Prop({type:String,required:true,trim:true})
+    refno:string;
 }
 
 export const InstituteSchema = SchemaFactory.createForClass(Institute)
