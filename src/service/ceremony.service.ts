@@ -169,7 +169,7 @@ export class CeremonyService {
                     UtilityService.getSortPipeline('createdAt', 'desc'),
                     UtilityService.getSkipPipeline(searchDto.currentPage, searchDto.pageSize),
                     UtilityService.getLimitPipeline(searchDto.pageSize),
-                    UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1 })]),
+                    UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1, refno: 1 })]),
                     UtilityService.getLookupPipeline("faculties", "faculty", "_id", "faculty", [UtilityService.getProjectPipeline({ name: 1 })]),
                     UtilityService.getLookupPipeline("courses", "course", "_id", "course", [UtilityService.getProjectPipeline({ name: 1 })]),
                     UtilityService.getUnwindPipeline("institute"),
@@ -193,7 +193,7 @@ export class CeremonyService {
     }
     async verify(file: any) {
         let _data: any[] = UtilityService.readExcelFileData(file);
-        const _header = ["Institution", "Price","Reference No.", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image"];
+        const _header = ["Institution", "Price", "Reference No.", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image"];
         if (!UtilityService.validExcelHeader(_header, _data[0])) {
             throw new BadRequestException(`Excel sheet header should be ${_header}`)
         }
@@ -284,7 +284,7 @@ export class CeremonyService {
         return { unique, duplicate, already };
     }
     async upload(data: any[], user: IAdmin) {
-        const _header = ["Institution", "Price","Reference No.", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image", "_institute", "_course", "_faculty"];
+        const _header = ["Institution", "Price", "Reference No.", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image", "_institute", "_course", "_faculty"];
         if (!UtilityService.validExcelHeader(_header, data[0])) {
             throw new BadRequestException(`Not a valid Data`);
         }
@@ -301,7 +301,7 @@ export class CeremonyService {
                     _lastInstitute = data[i]["_institute"];
                 }
                 else {
-                    _lastInstitute = new this.instituteModel({ name: data[i]["Institution"], price: data[i]["Price"], refno:data[i]["Reference No."],createdBy: user.userId });
+                    _lastInstitute = new this.instituteModel({ name: data[i]["Institution"], price: data[i]["Price"], refno: data[i]["Reference No."], createdBy: user.userId });
                     await _lastInstitute.save();
                 }
                 institute.add(data[i]["Institution"]);

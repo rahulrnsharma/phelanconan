@@ -35,7 +35,6 @@ export class InstituteService {
         if (image) {
             _data['image'] = image.filename;
         }
-        console.log(_data)
         const _doc: Institute = await this.instituteModel.findByIdAndUpdate(id, { $set: { ..._data, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
         if (_doc) {
             return _doc;
@@ -83,7 +82,7 @@ export class InstituteService {
                     UtilityService.getSkipPipeline(searchDto.currentPage, searchDto.pageSize),
                     UtilityService.getLimitPipeline(searchDto.pageSize),
                     UtilityService.getAddImageFieldPipeline('image', 'phelanconan/institute', '$image'),
-                    UtilityService.getProjectPipeline({ name: 1, price: 1, image: 1, isActive: 1 })
+                    UtilityService.getProjectPipeline({ name: 1, price: 1, image: 1, isActive: 1, refno: 1 })
                 ],
             },
         });
