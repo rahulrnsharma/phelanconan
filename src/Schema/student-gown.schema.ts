@@ -32,6 +32,8 @@ export class StudentGown extends Base {
     @Prop({ type: String, required: true, lowercase: true, trim: true })
     email: string;
     @Prop({ type: String, required: true, trim: true })
+    countryCode: string;
+    @Prop({ type: String, required: true, trim: true })
     phone: string;
     @Prop({ type: String, required: true, trim: true })
     addressLine: string;

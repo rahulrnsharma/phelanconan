@@ -59,6 +59,10 @@ export class StudentGownDto {
     @IsNotEmpty({ message: 'Email is required.' })
     email: string;
     @ApiProperty()
+    @IsString({ message: "countryCode must be string" })
+    @IsNotEmpty({ message: 'countryCode is required.' })
+    countryCode: string;
+    @ApiProperty()
     @IsString({ message: "Phone must be string" })
     @IsNotEmpty({ message: 'Phone is required.' })
     phone: string;
