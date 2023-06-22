@@ -80,7 +80,7 @@ export class UtilityService {
     }
     static validExcelHeader(shouldBeHeader: any[], excelHeader: any) {
         return shouldBeHeader.sort().join(",") == Object.keys(excelHeader).sort().join(",");
-    } 
+    }
     static groupBy(array: any[], key: any) {
         return array.reduce(function (rv, x) {
             (rv[x[key]] = rv[x[key]] || []).push(x);
@@ -127,5 +127,17 @@ export class UtilityService {
         let _addField: any = {};
         _addField[field] = { $concat: [process.env.DOC_BASE_URL, `${folder}/`, key] };
         return { $addFields: _addField };
+    }
+    static randomString(length: any) {
+        const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        let result: string[] = [];
+        for (let i = 0; i < length; i++) {
+            result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));
+        }
+        return result.join();
+    }
+    static guid(): string {
+        return `${this.randomString(8)}-${this.randomString(4)}-${this.randomString(4)}-${this.randomString(4)}-${this.randomString(12)}`;
     }
 }

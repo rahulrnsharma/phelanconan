@@ -5,12 +5,18 @@ import { Base } from "./base.schema";
 export type TransactionDocument = HydratedDocument<Transaction>
 @Schema({ timestamps: true })
 export class Transaction extends Base {
-    @Prop({ type: String })
-    orderId: string
-    @Prop({ type: String })
-    transactionId: string
+    @Prop({ type: String, required: true, unique: true })
+    orderId: string;
+    @Prop({ type: String, required: true })
+    transactionId: string;
     @Prop({ type: Object })
-    data: [Object]
+    card: Object;
+    @Prop({ type: Object })
+    version: Object;
+    @Prop({ type: Object })
+    authenticate: Object;
+    @Prop({ type: Object })
+    authorization: Object;
 }
 
 export const TransactionSchema = SchemaFactory.createForClass(Transaction)

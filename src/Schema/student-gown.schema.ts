@@ -47,6 +47,8 @@ export class StudentGown extends Base {
     country: string;
     @Prop({ type: String, enum: PaymentStatusEnum, trim: true, default: PaymentStatusEnum.PENDING })
     paymentStatus: string;
+    @Prop({ type: String, required: true, trim: true })
+    orderId: string;
 }
 
 export const StudentGownSchema = SchemaFactory.createForClass(StudentGown);
