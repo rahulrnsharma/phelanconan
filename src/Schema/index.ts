@@ -6,6 +6,7 @@ import { FacultyModel } from "./faculty.schema"
 import { CeremonyModel } from "./ceremony.schema"
 import { StudentGownModel } from "./student-gown.schema"
 import { TransactionModel } from "./transaction.schema"
+import { StaffGownModel } from "./staff-gown.schema"
 
 export const ADMIN_SCHEMA = { schema: AdminModel.schema, name: AdminModel.name }
 export const LOGIN_SCHEMA = { name: LoginModel.name, schema: LoginModel.schema }
@@ -15,6 +16,7 @@ export const FACULTY_SCHEMA = { name: FacultyModel.name, schema: FacultyModel.sc
 export const CEREMONY_SCHEMA = { name: CeremonyModel.name, schema: CeremonyModel.schema }
 export const STUDENT_GOWN_SCHEMA = { name: StudentGownModel.name, schema: StudentGownModel.schema }
 export const TRANSACTION_SCHEMA = { name: TransactionModel.name, schema: TransactionModel.schema }
+export const STAFF_GOWN_SCHEMA = {name: StaffGownModel.name, schema:StaffGownModel.schema}
 export const ALL_SCHEMA = [
     ADMIN_SCHEMA,
     LOGIN_SCHEMA,
@@ -23,5 +25,6 @@ export const ALL_SCHEMA = [
     FACULTY_SCHEMA,
     CEREMONY_SCHEMA,
     STUDENT_GOWN_SCHEMA,
-    TRANSACTION_SCHEMA
+    TRANSACTION_SCHEMA,
+    STAFF_GOWN_SCHEMA
 ]

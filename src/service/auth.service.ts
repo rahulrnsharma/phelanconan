@@ -7,6 +7,7 @@ import { JwtService } from "@nestjs/jwt";
 import { AppConfigService } from "./config.service";
 import { AdminService } from "./admin.service";
 import { IAdmin } from "src/interface/admin.interface";
+import { MailerService } from "@nestjs-modules/mailer";
 
 
 @Injectable()
@@ -17,6 +18,7 @@ export class AuthService {
         private appConfigService: AppConfigService) { }
 
     async login(user: IAdmin) {
+       
         const login = await this.loginDetail(user.userId);
         user.loggedInId = login._id;
         return { token: this.jwtService.sign(user, { expiresIn: this.appConfigService.adminExpireIn }) };
