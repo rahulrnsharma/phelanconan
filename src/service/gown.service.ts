@@ -6,22 +6,14 @@ import { SearchGownDto, StudentGownDto } from "src/dto/student-gown.dto";
 import { ActiveStatusEnum } from "src/enum/common.enum";
 import { UtilityService } from "./utility.service";
 import { PaginationResponse } from "src/model/pagination.model";
-import { PaymentService } from "./payment.service";
-import { catchError, map } from "rxjs";
-import { TransactionDocument, TransactionModel } from "src/Schema/transaction.schema";
 import { SendMailService } from "./sendmail.service";
 import { StaffGownDto } from "src/dto/staff-gown.dto";
 import { StaffGownDocument, StaffGownModel } from "src/Schema/staff-gown.schema";
 
-
-
 @Injectable()
 export class GownService {
-    constructor(@InjectModel(StudentGownModel.name) private readonly studentGownModel: Model<StudentGownDocument>) { }
     constructor(@InjectModel(StudentGownModel.name) private readonly studentGownModel: Model<StudentGownDocument>,
-        @InjectModel(TransactionModel.name) private readonly transactionModel: Model<TransactionDocument>,
         @InjectModel(StaffGownModel.name) private readonly staffGownModel: Model<StaffGownDocument>,
-        private readonly paymentService: PaymentService,
         private sendmailService: SendMailService) { }
 
     async addStudentGown(studentGownDto: StudentGownDto) {

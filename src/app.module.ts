@@ -13,6 +13,7 @@ import { AppGownModule } from './module/gown/gown.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AppPaymentModule } from './module/payment/payment.module';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 const MODULE = [
   AdminModule,
@@ -32,6 +33,17 @@ const MODULE = [
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+          user: "rahulrnsharma@gmail.com",
+          pass: "pxklyipvcijtlash"
+        }
+      }
     }),
     AppDatabaseModule.forRootConnection(),
     ServeStaticModule.forRoot({
