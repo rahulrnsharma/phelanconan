@@ -12,4 +12,4 @@ import { InstituteService } from "src/service/institute.service";
     exports: []
 })
 
-export class AppInstituteModule { }
+export class AppInstituteModule { } 
