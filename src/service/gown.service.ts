@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadGatewayException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, PipelineStage, Types } from "mongoose";
 import { StudentGownDocument, StudentGownModel } from "src/Schema/student-gown.schema";
@@ -18,8 +18,22 @@ export class GownService {
 
     async addStudentGown(studentGownDto: StudentGownDto) {
         let _orderNumber = UtilityService.getOrderNumber();
-        // const mail = await this.sendmailService.sendMail(studentGownDto);
-        return new this.studentGownModel({ ...studentGownDto, orderNumber: _orderNumber }).save()
+        const studentGown = await new this.studentGownModel({ ...studentGownDto, orderNumber: _orderNumber }).save()
+        if (studentGown) {
+            let data: PipelineStage[];
+            data = [
+                UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1 })]),
+                UtilityService.getLookupPipeline("faculties", "faculty", "_id", "faculty", [UtilityService.getProjectPipeline({ name: 1 })]),
+                UtilityService.getLookupPipeline("courses", "course", "_id", "course", [UtilityService.getProjectPipeline({ name: 1 })]),
+                UtilityService.getUnwindPipeline("institute"),
+                UtilityService.getUnwindPipeline("faculty"),
+                UtilityService.getUnwindPipeline("course"),
+                UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 })
+            ]
+            let _data: any[] = await this.studentGownModel.aggregate(data).exec()
+            const mail = await this.sendmailService.sendMail(_data);
+        } else new BadGatewayException("Students Gown is not inserted.")
+        return studentGown;
     }
 
     async addStaffGown(staffGownDto: StaffGownDto) {

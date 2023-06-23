@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsInt, IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsInt, IsNotEmpty, IsString } from "class-validator";
 import { ImageOptionalDto } from "./pagination.dto";
 
 
@@ -21,5 +21,6 @@ export class InstituteDto extends ImageOptionalDto {
 }
 export class InstituteImageDto {
     @ApiProperty({ type: 'array', items: { type: 'file', format: 'binary' }, required: true })
+    @IsArray()
     gallery: Express.Multer.File[];
 }
