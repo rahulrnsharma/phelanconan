@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsDate, IsEmail, IsIn, IsInt, IsMongoId, IsNotEmpty, IsString, ValidateIf } from "class-validator";
+import { ArrayMaxSize, IsArray, IsDate, IsEmail, IsIn, IsInt, IsMongoId, IsNotEmpty, IsString, MaxLength, ValidateIf, maxLength } from "class-validator";
 import { Types } from "mongoose";
 import { IsTime } from "src/decorator/validation/time.decorator";
 import { HeightTypeEnum } from "src/enum/common.enum";
@@ -84,6 +84,10 @@ export class StudentGownDto {
     @IsString({ message: "Country must be string" })
     @IsNotEmpty({ message: 'Country is required.' })
     country: string;
+    @ApiPropertyOptional({type:'array', items:{type:'object'}})
+    @IsArray()
+    @ArrayMaxSize(2)
+    guest: [GuestDto];
 }
 
 
@@ -92,4 +96,20 @@ export class SearchGownDto extends PaginationDto {
     @IsString({ message: 'Name should be string.' })
     @ValidateIf(o => o.search)
     search?: string;
+}
+
+export class GuestDto{
+    @ApiProperty()
+    @IsString({message:'First Name Should be string'})
+    @IsNotEmpty({message:'Frist Name is required'})
+    firstName: string;
+    @ApiProperty()
+    @IsString({message:'last Name Should be string'})
+    @IsNotEmpty({message:'last Name is required'})
+    lastName: string;
+    @ApiProperty()
+    @IsEmail()
+    @IsNotEmpty({message:'email is required'})
+    email: string;
+
 }

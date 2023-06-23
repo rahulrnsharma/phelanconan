@@ -4,6 +4,16 @@ import { Base } from "./base.schema";
 import { HeightTypeEnum, PaymentStatusEnum } from "src/enum/common.enum";
 
 export type StudentGownDocument = HydratedDocument<StudentGown>
+@Schema()
+export class Guest{
+    @Prop({type: String,required:true})
+    firstName: string;
+    @Prop({type: String, required:true})
+    lastName: string;
+    @Prop({type:String,required:true,trim:true})
+    email:string
+}
+export const GuestSchema = SchemaFactory.createForClass(Guest);
 
 @Schema({ timestamps: true })
 export class StudentGown extends Base {
@@ -49,6 +59,8 @@ export class StudentGown extends Base {
     paymentStatus: string;
     @Prop({ type: String, required: true, trim: true })
     orderId: string;
+    @Prop({type:[GuestSchema],required:false,default:[]})
+    guest:Guest[];
 }
 
 export const StudentGownSchema = SchemaFactory.createForClass(StudentGown);
