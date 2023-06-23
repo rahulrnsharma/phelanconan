@@ -84,6 +84,10 @@ export class StudentGownDto {
     @IsString({ message: "Country must be string" })
     @IsNotEmpty({ message: 'Country is required.' })
     country: string;
+    @ApiProperty()
+    @IsString({ message: "orderId must be string" })
+    @IsNotEmpty({ message: 'orderId is required.' })
+    orderId: string;
 }
 
 

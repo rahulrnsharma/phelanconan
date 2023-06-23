@@ -8,6 +8,9 @@ import { InjectModel } from "@nestjs/mongoose";
 import { TransactionDocument, TransactionModel } from "src/Schema/transaction.schema";
 import { Model } from "mongoose";
 import { UtilityService } from "./utility.service";
+import { parseString } from "xml2js";
+import { StudentGownDocument, StudentGownModel } from "src/Schema/student-gown.schema";
+import { PaymentStatusEnum } from "src/enum/common.enum";
 
 @Injectable()
 export class PaymentService {
@@ -16,6 +19,7 @@ export class PaymentService {
     private _sharedSecret: string;
     private _merchantId: string;
     constructor(@InjectModel(TransactionModel.name) private readonly transactionModel: Model<TransactionDocument>,
+        @InjectModel(StudentGownModel.name) private readonly studentGownModel: Model<StudentGownDocument>,
         private readonly httpService: HttpService, private appConfigService: AppConfigService) {
         this._globalPaymentApiUrl = this.appConfigService.globalPaymentApiUrl;
         this._globalPaymentRealexApiUrl = this.appConfigService.globalPaymentRealexApiUrl;
@@ -32,7 +36,7 @@ export class PaymentService {
         const _ss = String(_date.getSeconds()).padStart(2, '0');
         const _sss = String(_date.getMilliseconds()).padStart(3, '0');
         if (formate)
-            return `${_y}-${_m}-${_d}T${_hh}:${_mm}:${_ss}.${_sss}`;
+            return `${_y}-${_m}-${_d}T${_hh}:${_mm}:${_ss}.${_sss}Z`;
         else
             return `${_y}${_m}${_d}${_hh}${_mm}${_ss}`;
     }
@@ -48,7 +52,7 @@ export class PaymentService {
             "account_id": "internet",
             "number": data.number,
             "scheme": data.scheme,
-            "method_notification_url": "http://api.parshavanathmart.com/phelanconan/v1/payment/notification"
+            "method_notification_url": "https://api.parshavanathmart.com/phelanconan/v1/payment/notification"
         }, {
             headers: {
                 "X-GP-VERSION": "2.2.0",
@@ -68,7 +72,7 @@ export class PaymentService {
             "message_version": "2.2.0",
             "merchant_id": this._merchantId,
             "account_id": "internet",
-            "challenge_notification_url": "http://api.parshavanathmart.com/phelanconan/v1/payment/challenge",
+            "challenge_notification_url": "https://api.parshavanathmart.com/phelanconan/v1/payment/challenge",
             "method_url_completion": "YES",
             ...data
         }, {
@@ -128,6 +132,9 @@ export class PaymentService {
         return this._protocolVersion(cardDetail).pipe(
             catchError((err: any) => { throw new BadRequestException(err.response.data.error_description) }),
             map(async (res: any) => {
+                if (!res.data.enrolled) {
+                    throw new BadRequestException("Your Card is not enrolled.");
+                }
                 const orderId = UtilityService.guid();
                 await new this.transactionModel({ transactionId: res.data.server_trans_id, orderId: orderId, card: cardDetail, version: res.data }).save()
                 return { ...res.data, orderId: orderId };
@@ -156,8 +163,14 @@ export class PaymentService {
         return this._authorization(data).pipe(
             catchError((err: any) => { throw new BadRequestException(err.response.data.error_description) }),
             map(async (res: any) => {
-                await this.transactionModel.findOneAndUpdate({ transactionId: data.server_trans_id }, { $set: { authorization: res.data } }).exec();
-                return res.data;
+                let _res: any = {};
+                parseString(res.data, (err, result) => {
+                    _res = result;
+                });
+                let success: boolean = _res.response.result[0] == "00"
+                await this.studentGownModel.findOneAndUpdate({ orderId: data.orderid }, { $set: { paymentStatus: success ? PaymentStatusEnum.COMPLETED : PaymentStatusEnum.FAILED } }).exec();
+                await this.transactionModel.findOneAndUpdate({ transactionId: data.server_trans_id }, { $set: { authorization: _res.response } }).exec();
+                return _res.response;
             })
         )
     }

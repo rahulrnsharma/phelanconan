@@ -17,13 +17,15 @@ export class GownService {
         private sendmailService: SendMailService) { }
 
     async addStudentGown(studentGownDto: StudentGownDto) {
-        const mail = await this.sendmailService.sendMail(studentGownDto);
-        return new this.studentGownModel({ ...studentGownDto }).save()
+        let _orderNumber = UtilityService.getOrderNumber();
+        // const mail = await this.sendmailService.sendMail(studentGownDto);
+        return new this.studentGownModel({ ...studentGownDto, orderNumber: _orderNumber }).save()
     }
 
     async addStaffGown(staffGownDto: StaffGownDto) {
         const mail = await this.sendmailService.sendMail(staffGownDto);
-        return new this.staffGownModel({ ...staffGownDto }).save();
+        let _orderNumber = UtilityService.getOrderNumber();
+        return new this.staffGownModel({ ...staffGownDto, orderNumber: _orderNumber }).save();
     }
     async getAllStudent(searchDto: SearchGownDto) {
         let _match: any = {};
@@ -96,7 +98,6 @@ export class GownService {
         let _res: any[] = await this.staffGownModel.aggregate(query).exec();
         return new PaginationResponse(_res[0].data, _res[0].count, searchDto.currentPage, searchDto.pageSize);
     }
-
 
     async getByIdStaff(id: any) {
         let query: PipelineStage[] = [UtilityService.getMatchPipeline({ _id: new Types.ObjectId(id) })];

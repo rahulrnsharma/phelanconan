@@ -49,6 +49,8 @@ export class StudentGown extends Base {
     paymentStatus: string;
     @Prop({ type: String, required: true, trim: true })
     orderId: string;
+    @Prop({ type: String, required: true, trim: true })
+    orderNumber: string;
 }
 
 export const StudentGownSchema = SchemaFactory.createForClass(StudentGown);

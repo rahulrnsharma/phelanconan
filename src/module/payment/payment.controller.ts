@@ -24,12 +24,10 @@ export class PaymentController {
 
     @Post('notification')
     notification(@Body() data: any) {
-        console.log(data)
         return { success: true };
     }
     @Post('challenge')
     challenge(@Body() data: any) {
-        console.log(data)
         return { success: true };
     }
 

@@ -5,7 +5,7 @@ import mongoose, { HydratedDocument, ObjectId } from "mongoose";
 
 
 export type StaffGownDocument = HydratedDocument<StaffGown>
-@Schema({timestamps:true})
+@Schema({ timestamps: true })
 export class StaffGown extends Base {
     @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
     institute: ObjectId;
@@ -45,7 +45,9 @@ export class StaffGown extends Base {
     city: string;
     @Prop({ type: String, required: true, trim: true })
     country: string;
+    @Prop({ type: String, required: true, trim: true })
+    orderNumber: string;
 }
 
 export const StaffGownSchema = SchemaFactory.createForClass(StaffGown)
-export const StaffGownModel = {name:'staff-gown',schema:StaffGownSchema}
+export const StaffGownModel = { name: 'staff-gown', schema: StaffGownSchema }

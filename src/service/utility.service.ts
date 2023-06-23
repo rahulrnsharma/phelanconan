@@ -16,6 +16,17 @@ export class UtilityService {
         }
         return date;
     }
+    static getOrderNumber() {
+        let _y = new Date().getFullYear();
+        let _m = String(new Date().getMonth()).padStart(2, "0");
+        let _d = String(new Date().getDate()).padStart(2, "0");
+        let _hh = String(new Date().getHours()).padStart(2, "0");
+        let _mm = String(new Date().getMinutes()).padStart(2, "0");
+        let _ss = String(new Date().getSeconds()).padStart(2, "0");
+        let _sss = String(new Date().getMilliseconds()).padStart(3, "0");
+        return `${_y}${_m}${_d}${_hh}${_mm}${_ss}${_sss}`;
+
+    }
     static setEndHour(date: Date, timezone: number) {
         const _timezoneDiff = (new Date().getTimezoneOffset()) - timezone;
         date.setHours(23, 59, 59, 999);
@@ -135,7 +146,7 @@ export class UtilityService {
         for (let i = 0; i < length; i++) {
             result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));
         }
-        return result.join();
+        return result.join('');
     }
     static guid(): string {
         return `${this.randomString(8)}-${this.randomString(4)}-${this.randomString(4)}-${this.randomString(4)}-${this.randomString(12)}`;
