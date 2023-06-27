@@ -57,7 +57,10 @@ export class CeremonyService {
             refno: ceremonyDto.refno,
             price: ceremonyDto.price,
             date: ceremonyDto.date,
-            time: ceremonyDto.time
+            time: ceremonyDto.time,
+            collection_location: ceremonyDto.collection_location,
+            collection_time : ceremonyDto.collection_time,
+            cap : ceremonyDto.cap
         }
         if (image) {
             _data['image'] = image.filename;
@@ -193,7 +196,7 @@ export class CeremonyService {
     }
     async verify(file: any) {
         let _data: any[] = UtilityService.readExcelFileData(file);
-        const _header = ["Institution", "Price", "Reference No.", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image"];
+        const _header = ["Institution", "Price", "Reference No.", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image","Collection Location","Collection Time","Cap"];
         if (!UtilityService.validExcelHeader(_header, _data[0])) {
             throw new BadRequestException(`Excel sheet header should be ${_header}`)
         }
@@ -218,6 +221,9 @@ export class CeremonyService {
             }
             if (!isNaN(_obj["Ceremony Time"])) {
                 _obj["Ceremony Time"] = UtilityService.excelTime(_obj["Ceremony Time"]);
+            }
+            if(!isNaN(_obj["Collection Time"])){
+                _obj["Collection Time"]= UtilityService.excelTime(_obj["Collection Time"]);
             }
             const _duplicate = check.find(
                 (uniqueObj) => JSON.stringify(uniqueObj) == JSON.stringify(_obj)
@@ -265,7 +271,10 @@ export class CeremonyService {
                         date: _obj["Graduation Date"],
                         time: _obj["Ceremony Time"],
                         price: _obj["Price"],
-                        refno: _obj["Reference No."]
+                        refno: _obj["Reference No."],
+                        collection_location: _obj["Collection Location"],
+                        collection_time: _obj["Collection Time"],
+                        cap: _obj["Cap"]
                     })
                     if (_ceremony) {
                         already.push({ ..._obj, rows: i + 2 });
@@ -284,7 +293,7 @@ export class CeremonyService {
         return { unique, duplicate, already };
     }
     async upload(data: any[], user: IAdmin) {
-        const _header = ["Institution", "Price", "Reference No.", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image", "_institute", "_course", "_faculty"];
+        const _header = ["Institution", "Price", "Reference No.", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image","Collection Location","Collection Time","Cap", "_institute", "_course", "_faculty"];
         if (!UtilityService.validExcelHeader(_header, data[0])) {
             throw new BadRequestException(`Not a valid Data`);
         }
@@ -342,7 +351,10 @@ export class CeremonyService {
                 refno: data[i]["Reference No."],
                 date: data[i]["Graduation Date"],
                 time: data[i]["Ceremony Time"],
-                price: data[i]["Price"]
+                price: data[i]["Price"] ,
+                collection_location: data[i]["Collection Location"],
+                collection_time: data[i]["Collection Time"],
+                cap: data[i]["Cap"]
             })
             if (_ceremony) {
                 already.push({ real: data[i], indb: _ceremony, index: i });
@@ -356,7 +368,10 @@ export class CeremonyService {
                     date: data[i]["Graduation Date"],
                     time: data[i]["Ceremony Time"],
                     price: data[i]["Price"],
-                    image: data[i]["Image"]
+                    image: data[i]["Image"],
+                    collection_location: data[i]["Collection Location"],
+                    collection_time: data[i]["Collection Time"],
+                    cap: data[i]["Cap"]
                 }).save();
             }
         }

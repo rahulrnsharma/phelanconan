@@ -1,12 +1,29 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
 
 
 export class AdminDto {
     @ApiProperty()
-    @MinLength(2)
-    @IsNotEmpty({ message: 'First Name is required.' })
-    name: string;
+    @IsString({ message: "First Name must be a string" })
+    @IsNotEmpty({ message: 'first name is required' })
+    firstName: string
+    @ApiProperty()
+    @IsString({ message: "last name must be a string" })
+    @IsNotEmpty({ message: 'last name is required' })
+    lastName: string
+    @ApiProperty()
+    @IsEmail()
+    @IsString({ message: "Email must be string" })
+    @IsNotEmpty({ message: 'Email is required.' })
+    email: string;
+    @ApiProperty()
+    @IsString({ message: "Phone must be string" })
+    @IsNotEmpty({ message: 'Phone is required.' })
+    phone: string;
+    @ApiProperty()
+    @IsString({message:"Designation must be a string"})
+    @IsNotEmpty({message:"Designation is required"})
+    designation:string
     @ApiProperty()
     @MinLength(2)
     @IsNotEmpty({ message: 'User name is required.' })

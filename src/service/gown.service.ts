@@ -14,25 +14,25 @@ import { StaffGownDocument, StaffGownModel } from "src/Schema/staff-gown.schema"
 export class GownService {
     constructor(@InjectModel(StudentGownModel.name) private readonly studentGownModel: Model<StudentGownDocument>,
         @InjectModel(StaffGownModel.name) private readonly staffGownModel: Model<StaffGownDocument>,
-        private sendmailService: SendMailService) { }
+        private sendmailService: SendMailService,
+    ) { }
 
     async addStudentGown(studentGownDto: StudentGownDto) {
         let _orderNumber = UtilityService.getOrderNumber();
         const studentGown = await new this.studentGownModel({ ...studentGownDto, orderNumber: _orderNumber }).save()
-        if (studentGown) {
-            let data: PipelineStage[];
-            data = [
-                UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1 })]),
-                UtilityService.getLookupPipeline("faculties", "faculty", "_id", "faculty", [UtilityService.getProjectPipeline({ name: 1 })]),
-                UtilityService.getLookupPipeline("courses", "course", "_id", "course", [UtilityService.getProjectPipeline({ name: 1 })]),
-                UtilityService.getUnwindPipeline("institute"),
-                UtilityService.getUnwindPipeline("faculty"),
-                UtilityService.getUnwindPipeline("course"),
-                UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 })
-            ]
-            let _data: any[] = await this.studentGownModel.aggregate(data).exec()
-            const mail = await this.sendmailService.sendMail(_data);
-        } else new BadGatewayException("Students Gown is not inserted.")
+        let data: PipelineStage[];
+        data = [
+            UtilityService.getMatchPipeline({_id:studentGown._id}),
+            UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1 })]),
+            UtilityService.getLookupPipeline("faculties", "faculty", "_id", "faculty", [UtilityService.getProjectPipeline({ name: 1 })]),
+            UtilityService.getLookupPipeline("courses", "course", "_id", "course", [UtilityService.getProjectPipeline({ name: 1 })]),
+            UtilityService.getUnwindPipeline("institute"),
+            UtilityService.getUnwindPipeline("faculty"),
+            UtilityService.getUnwindPipeline("course"),
+            UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 })
+        ]
+        let _data: any[] = await this.studentGownModel.aggregate(data).exec()
+        // const mail = await this.sendmailService.sendMail(_data);
         return studentGown;
     }
 
@@ -40,6 +40,22 @@ export class GownService {
         const mail = await this.sendmailService.sendMail(staffGownDto);
         let _orderNumber = UtilityService.getOrderNumber();
         return new this.staffGownModel({ ...staffGownDto, orderNumber: _orderNumber }).save();
+        //    const staffGown = await new this.staffGownModel({ ...staffGownDto }).save()
+        //    if(staffGown){
+        //     let data: PipelineStage[];
+        //     data = [
+        //    UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1 })]),
+        //        UtilityService.getLookupPipeline("faculties", "faculty", "_id", "faculty", [UtilityService.getProjectPipeline({ name: 1 })]),
+        //        UtilityService.getLookupPipeline("courses", "course", "_id", "course", [UtilityService.getProjectPipeline({ name: 1 })]),
+        //        UtilityService.getUnwindPipeline("institute"),
+        //        UtilityService.getUnwindPipeline("faculty"),
+        //        UtilityService.getUnwindPipeline("course"),
+        //        UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 })
+        //    ]
+        //    let _data: any[] = await this.staffGownModel.aggregate(data).exec()
+        //        const mail = await this.sendmailService.sendMail(_data);
+        //    }
+        //     return ;
     }
     async getAllStudent(searchDto: SearchGownDto) {
         let _match: any = {};

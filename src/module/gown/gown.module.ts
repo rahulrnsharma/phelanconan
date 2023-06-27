@@ -4,6 +4,7 @@ import { GownController } from "./gown.controller";
 import { STAFF_GOWN_SCHEMA, STUDENT_GOWN_SCHEMA } from "src/Schema";
 import { GownService } from "src/service/gown.service";
 import { SendMailService } from "src/service/sendmail.service";
+import { UtilityService } from "src/service/utility.service";
 
 
 @Module({

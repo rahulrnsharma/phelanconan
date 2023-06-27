@@ -6,7 +6,7 @@ var XLSX = require("xlsx");
 
 @Injectable()
 export class UtilityService {
-
+    static ticketNumber = 1;
     static setStartHour(date: Date, timezone: number) {
         const _timezoneDiff = (new Date().getTimezoneOffset()) - timezone;
         date.setHours(0, 0, 0, 0);
@@ -151,4 +151,6 @@ export class UtilityService {
     static guid(): string {
         return `${this.randomString(8)}-${this.randomString(4)}-${this.randomString(4)}-${this.randomString(4)}-${this.randomString(12)}`;
     }
+
+      
 }

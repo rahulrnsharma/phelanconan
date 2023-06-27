@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { ArrayMinSize, IsArray, IsDate, IsInt, IsMongoId, IsNotEmpty } from "class-validator";
+import { ArrayMinSize, IsArray, IsBooleanString, IsDate, IsInt, IsMongoId, IsNotEmpty, IsString } from "class-validator";
 import { Types } from "mongoose";
 import { IsTime } from "src/decorator/validation/time.decorator";
 import { ImageOptionalDto } from "./pagination.dto";
@@ -36,6 +36,18 @@ export class CeremonyDto extends ImageOptionalDto {
     @IsNotEmpty({ message: 'Date is required.' })
     @Type(() => Date)
     date: string;
+    @ApiProperty({type:'string'})
+    @IsString()
+    @IsNotEmpty()
+    collection_location:string;
+    @ApiProperty()
+    @IsTime({ message: "Time should be in (hh:mm:ss) formate" })
+    @IsNotEmpty({ message: "Time is required." })
+    collection_time: string;
+    @ApiProperty()
+    @IsBooleanString()
+    cap:boolean;
+
 }
 
 

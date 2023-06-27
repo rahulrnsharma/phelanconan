@@ -26,8 +26,8 @@ export class SendMailService {
             <li>Ceremony Time:${_data[0].time}</li>
             <li>Faculty:${_data[0].faculty["name"]}</li>
             <li>Course:${_data[0].course["name"]}</li>  
-            <li>Country:${_data[0].orderId}</li>
-            <li>Country:${_data[0].paymentStatus}</li>
+            <li>Order Id:${_data[0].orderId}</li>
+            <li>Payment Status:${_data[0].paymentStatus}</li>
             </ol>`
         })
         return { success: true }

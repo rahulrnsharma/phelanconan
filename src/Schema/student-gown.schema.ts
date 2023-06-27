@@ -12,6 +12,8 @@ export class Guest {
     lastName: string;
     @Prop({ type: String, required: true, trim: true })
     email: string
+    @Prop({type:String,required:false,trim:true})
+    ticket:string;
 }
 export const GuestSchema = SchemaFactory.createForClass(Guest);
 
@@ -57,12 +59,13 @@ export class StudentGown extends Base {
     country: string;
     @Prop({ type: String, enum: PaymentStatusEnum, trim: true, default: PaymentStatusEnum.PENDING })
     paymentStatus: string;
-    @Prop({ type: String, required: true, trim: true })
+    @Prop({ type: String, required: false, trim: true })
     orderId: string;
-    @Prop({ type: String, required: true, trim: true })
+    @Prop({ type: String, required: false, trim: true })
     orderNumber: string;
     @Prop({ type: [GuestSchema], required: false, default: [] })
     guest: Guest[];
+
 }
 
 export const StudentGownSchema = SchemaFactory.createForClass(StudentGown);
