@@ -17,6 +17,8 @@ export class Transaction extends Base {
     authenticate: Object;
     @Prop({ type: Object })
     authorization: Object;
+    @Prop({ type: Object })
+    failed: Object;
 }
 
 export const TransactionSchema = SchemaFactory.createForClass(Transaction)

@@ -174,4 +174,9 @@ export class PaymentService {
             })
         )
     }
+    async failed(orderId: any, transactionId: any, data: any) {
+        await this.studentGownModel.findOneAndUpdate({ orderId: orderId }, { $set: { paymentStatus: PaymentStatusEnum.FAILED } }).exec();
+        await this.transactionModel.findOneAndUpdate({ transactionId: transactionId }, { $set: { failed: data } }).exec();
+        return { success: true };
+    }
 }
