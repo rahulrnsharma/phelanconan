@@ -2,29 +2,28 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { LoginDocument, LoginModel } from "src/Schema/login.schema";
-import { AdminLoginDto } from "src/dto/auth.dto";
+import { LoginDto } from "src/dto/auth.dto";
 import { JwtService } from "@nestjs/jwt";
 import { AppConfigService } from "./config.service";
-import { AdminService } from "./admin.service";
-import { IAdmin } from "src/interface/admin.interface";
-import { MailerService } from "@nestjs-modules/mailer";
+import { IUser } from "src/interface/user.interface";
+import { UserDocument, UserModel } from "src/Schema/user.schema";
+import { PasswordService } from "./password.service";
+import { UserStatusEnum } from "src/enum/common.enum";
 
 
 @Injectable()
 export class AuthService {
     constructor(@InjectModel(LoginModel.name) private loginModel: Model<LoginDocument>,
-        private adminService: AdminService,
-        private jwtService: JwtService,
-        private appConfigService: AppConfigService) { }
+        @InjectModel(UserModel.name) private userModel: Model<UserDocument>,
+        private jwtService: JwtService, private appConfigService: AppConfigService) { }
 
-    async login(user: IAdmin) {
-       
-        const login = await this.loginDetail(user.userId);
+    async login(user: IUser) {
+        const login = await this.loginDetail(user);
         user.loggedInId = login._id;
         return { token: this.jwtService.sign(user, { expiresIn: this.appConfigService.adminExpireIn }) };
     }
 
-    async logout(user: IAdmin) {
+    async logout(user: IUser) {
         return await this.loginModel.findByIdAndUpdate(user.loggedInId, { isLoggedIn: false })
     }
 
@@ -32,19 +31,36 @@ export class AuthService {
         return this.loginModel.findOne({ user: new Types.ObjectId(id), isLoggedIn: true }, {}, { sort: { createdAt: -1 } }).exec();
     }
 
-    async loginDetail(userId: any) {
-        return new this.loginModel({ user: new Types.ObjectId(userId), isLoggedIn: true }).save();
+    async loginDetail(user: any) {
+        return new this.loginModel({ user: new Types.ObjectId(user.userId), role: user.role, isLoggedIn: true }).save();
     }
 
-    async validateAdminUser(loginDto: AdminLoginDto): Promise<any> {
-        const user: any = await this.adminService.findByUserNameAndPassword(loginDto);
+    async validateAdminUser(loginDto: LoginDto): Promise<any> {
+        const user: any = await this.findByUserNameAndPassword(loginDto);
         if (user) {
-            const result: IAdmin = {
+            const result: IUser = {
                 userId: user._id,
                 role: user.role
             };
             return result;
         }
         return null;
+    }
+    private async findByUserNameAndPassword(loginDto: LoginDto) {
+        const user = await this.userModel.findOne({ username: loginDto.username });
+        if (user) {
+            const isMatch = await PasswordService.compare(loginDto.password, user.password);
+            if (!isMatch) {
+                throw new BadRequestException("Invalid Credentials.");
+            }
+            else if (!user.isActive) {
+                throw new BadRequestException("Your account has not deactivate. Please contact to admin or support.");
+            }
+            else if (user.status != UserStatusEnum.APPROVED) {
+                throw new BadRequestException("Your account has not approved. Please contact to admin or support.");
+            }
+            return user;
+        }
+        throw new BadRequestException("Invalid Credentials.");
     }
 }

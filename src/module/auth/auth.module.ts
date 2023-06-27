@@ -2,13 +2,12 @@ import { Module } from "@nestjs/common";
 import { AuthService } from "src/service/auth.service";
 import { AuthController } from "./auth.controller";
 import { MongooseModule } from "@nestjs/mongoose";
-import { ADMIN_SCHEMA, LOGIN_SCHEMA } from "src/Schema";
+import { LOGIN_SCHEMA, USER_SCHEMA } from "src/Schema";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { AppConfigService } from "src/service/config.service";
 import { JwtStrategy } from "src/service/strategy/jwt.strategy";
 import { LocalStrategy } from "src/service/strategy/local.strategy";
-import { AdminService } from "src/service/admin.service";
 
 @Module({
     imports: [JwtModule.registerAsync({
@@ -17,9 +16,9 @@ import { AdminService } from "src/service/admin.service";
             secret: configService.get('JWT_SECRET')
         }),
         inject: [ConfigService]
-    }), MongooseModule.forFeature([LOGIN_SCHEMA, ADMIN_SCHEMA])],
+    }), MongooseModule.forFeature([LOGIN_SCHEMA, USER_SCHEMA])],
     controllers: [AuthController],
-    providers: [AuthService, AdminService, AppConfigService, JwtStrategy, LocalStrategy],
+    providers: [AuthService, AppConfigService, JwtStrategy, LocalStrategy],
     exports: []
 })
 

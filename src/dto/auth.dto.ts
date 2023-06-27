@@ -3,7 +3,7 @@ import { IsNotEmpty } from "class-validator";
 
 
 
-export class AdminLoginDto {
+export class LoginDto {
     @ApiProperty()
     @IsNotEmpty({ message: 'Username is required.' })
     username: string;

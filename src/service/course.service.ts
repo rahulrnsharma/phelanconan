@@ -5,7 +5,7 @@ import { Course, CourseDocument, CourseModel } from "src/Schema/course.schema";
 import { CourseDto } from "src/dto/course.dto";
 import { SearchDto } from "src/dto/search.dto";
 import { ActiveStatusEnum } from "src/enum/common.enum";
-import { IAdmin } from "src/interface/admin.interface";
+import { IUser } from "src/interface/user.interface";
 import { UtilityService } from "./utility.service";
 import { PaginationResponse } from "src/model/pagination.model";
 import { ActiveDto } from "src/dto/pagination.dto";
@@ -16,11 +16,11 @@ import { ActiveDto } from "src/dto/pagination.dto";
 export class CourseService {
     constructor(@InjectModel(CourseModel.name) private courseModel: Model<CourseDocument>) { }
 
-    async add(courseDto: CourseDto, user: IAdmin) {
+    async add(courseDto: CourseDto, user: IUser) {
         return new this.courseModel({ ...courseDto, createdBy: user.userId }).save()
     }
 
-    async update(courseDto: CourseDto, id: string, user: IAdmin) {
+    async update(courseDto: CourseDto, id: string, user: IUser) {
         const _doc: Course = await this.courseModel.findByIdAndUpdate(id, { $set: { ...courseDto, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
         if (_doc) {
             return _doc;
@@ -30,7 +30,7 @@ export class CourseService {
         }
     }
 
-    async delete(id: string, user: IAdmin) {
+    async delete(id: string, user: IUser) {
         const _doc: Course = await this.courseModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
         if (_doc) {
             return _doc;
@@ -39,7 +39,7 @@ export class CourseService {
             throw new BadRequestException("Resource you are delete does not exist.");
         }
     }
-    async status(id: string, activeDto: ActiveDto, user: IAdmin) {
+    async status(id: string, activeDto: ActiveDto, user: IUser) {
         const _doc: Course = await this.courseModel.findByIdAndUpdate(id, { $set: { isActive: activeDto.active, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
         if (_doc) {
             return _doc;

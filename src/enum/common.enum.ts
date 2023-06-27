@@ -15,8 +15,12 @@ export enum PaymentStatusEnum {
     COMPLETED = "Completed",
     FAILED = "Failed"
 }
-export enum ApproveEnum {
+export enum UserStatusEnum {
     REVIEW = "Review",
-    APPROVE ='Approve',
-    FAILED ='Failed'
+    APPROVED = 'Approved',
+    REJECT = 'Reject'
+}
+export enum RoleEnum {
+    ADMIN = "Admin",
+    STAFF = 'Staff'
 }

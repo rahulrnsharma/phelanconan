@@ -5,7 +5,7 @@ import { Institute, InstituteDocument, InstituteModel } from "src/Schema/institu
 import { InstituteDto } from "src/dto/institute.dto";
 import { SearchDto } from "src/dto/search.dto";
 import { ActiveStatusEnum } from "src/enum/common.enum";
-import { IAdmin } from "src/interface/admin.interface";
+import { IUser } from "src/interface/user.interface";
 import { UtilityService } from "./utility.service";
 import { PaginationResponse } from "src/model/pagination.model";
 import { ActiveDto } from "src/dto/pagination.dto";
@@ -14,7 +14,7 @@ import { ActiveDto } from "src/dto/pagination.dto";
 export class InstituteService {
     constructor(@InjectModel(InstituteModel.name) private instituteModel: Model<InstituteDocument>) { }
 
-    async add(instituteDto: InstituteDto, user: IAdmin, image: Express.Multer.File) {
+    async add(instituteDto: InstituteDto, user: IUser, image: Express.Multer.File) {
         let _data = {
             name: instituteDto.name,
             price: instituteDto.price,
@@ -26,7 +26,7 @@ export class InstituteService {
         return new this.instituteModel({ ..._data, createdBy: user.userId }).save()
     }
 
-    async update(instituteDto: InstituteDto, id: string, user: IAdmin, image: Express.Multer.File) {
+    async update(instituteDto: InstituteDto, id: string, user: IUser, image: Express.Multer.File) {
         let _data = {
             name: instituteDto.name,
             price: instituteDto.price,
@@ -44,7 +44,7 @@ export class InstituteService {
         }
     }
 
-    async delete(id: string, user: IAdmin) {
+    async delete(id: string, user: IUser) {
         const _doc: Institute = await this.instituteModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
         if (_doc) {
             return _doc;
@@ -53,7 +53,7 @@ export class InstituteService {
             throw new BadRequestException("Resource you are delete does not exist.");
         }
     }
-    async status(id: string, activeDto: ActiveDto, user: IAdmin) {
+    async status(id: string, activeDto: ActiveDto, user: IUser) {
         const _doc: Institute = await this.instituteModel.findByIdAndUpdate(id, { $set: { isActive: activeDto.active, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
         if (_doc) {
             return _doc;
@@ -100,7 +100,7 @@ export class InstituteService {
     async dropdown() {
         return this.instituteModel.find({}, { name: 1, price: 1, refno: 1 }).exec();
     }
-    async uploadImage(id: any, user: IAdmin, files: any[]) {
+    async uploadImage(id: any, user: IUser, files: any[]) {
         const _doc: Institute = await this.instituteModel.findByIdAndUpdate(id, {
             $push: {
                 gallery: {

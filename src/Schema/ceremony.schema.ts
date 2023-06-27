@@ -8,8 +8,6 @@ export type CeremonyDocument = HydratedDocument<Ceremony>
 export class Ceremony extends Base {
     @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
     institute: ObjectId;
-    @Prop({ type: String, required: true, trim: true })
-    refno: string;
     @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
     faculty: ObjectId;
     @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
@@ -22,12 +20,18 @@ export class Ceremony extends Base {
     price: number
     @Prop({ type: String, default: null, get: (image: string) => `${process.env.DOC_BASE_URL}phelanconan/institute/${image}` })
     image: string;
+    @Prop({ type: String, required: true, trim: true })
+    refno: string;
     @Prop({ type: String, required: true })
-    collection_location: string
+    collectionLocation: string
     @Prop({ type: String, required: true })
-    collection_time: string;
+    collectionTime: string;
     @Prop({ type: Boolean, required: true })
     cap: boolean;
+    @Prop({ type: String, required: true })
+    returnLocation: string
+    @Prop({ type: String, required: true })
+    deadline: string;
 }
 
 export const CeremonySchema = SchemaFactory.createForClass(Ceremony);

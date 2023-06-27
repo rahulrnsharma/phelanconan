@@ -14,7 +14,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AppPaymentModule } from './module/payment/payment.module';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { AppInstituteStaff } from './module/institute-staff/instituteStaff.module';
+import { AppStaffModule } from './module/staff/staff.module';
 
 const MODULE = [
   AdminModule,
@@ -26,7 +26,7 @@ const MODULE = [
   AppDropdownModule,
   AppGownModule,
   AppPaymentModule,
-  AppInstituteStaff
+  AppStaffModule
 ]
 
 

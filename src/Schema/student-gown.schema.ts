@@ -12,8 +12,8 @@ export class Guest {
     lastName: string;
     @Prop({ type: String, required: true, trim: true })
     email: string
-    @Prop({type:String,required:false,trim:true})
-    ticket:string;
+    @Prop({ type: String, required: true, trim: true })
+    ticket: string;
 }
 export const GuestSchema = SchemaFactory.createForClass(Guest);
 

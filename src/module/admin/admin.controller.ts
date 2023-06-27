@@ -2,8 +2,7 @@ import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiExcludeEndpoint, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "src/decorator/current-user.decorator";
 import { AdminDto } from "src/dto/admin.dto";
-import { IAdmin } from "src/interface/admin.interface";
-
+import { IUser } from "src/interface/user.interface";
 import { AdminService } from "src/service/admin.service";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
 
@@ -22,7 +21,7 @@ export class AdminController {
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
     @Get('profile')
-    profile(@CurrentUser() user: IAdmin) {
+    profile(@CurrentUser() user: IUser) {
         return this.adminService.profile(user)
     }
 

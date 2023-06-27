@@ -4,7 +4,7 @@ import { CurrentUser } from "src/decorator/current-user.decorator";
 import { FacultyDto } from "src/dto/faculty.dto";
 import { ActiveDto } from "src/dto/pagination.dto";
 import { SearchDto } from "src/dto/search.dto";
-import { IAdmin } from "src/interface/admin.interface";
+import { IUser } from "src/interface/user.interface";
 import { FacultyService } from "src/service/faculty.service";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
 
@@ -17,7 +17,7 @@ export class FacultyController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post('')
-  add(@Body() facultyDto: FacultyDto, @CurrentUser() user: IAdmin) {
+  add(@Body() facultyDto: FacultyDto, @CurrentUser() user: IUser) {
     return this.facultyService.add(facultyDto, user)
   }
 
@@ -46,7 +46,7 @@ export class FacultyController {
   @UseGuards(JwtAuthGuard)
   @Put('status/:id')
   @ApiParam({ name: 'id' })
-  status(@Body() activeDto: ActiveDto, @Param('id') id: string, @CurrentUser() user: IAdmin) {
+  status(@Body() activeDto: ActiveDto, @Param('id') id: string, @CurrentUser() user: IUser) {
     return this.facultyService.status(id, activeDto, user)
   }
 
@@ -54,7 +54,7 @@ export class FacultyController {
   @UseGuards(JwtAuthGuard)
   @Put(':id')
   @ApiParam({ name: 'id' })
-  update(@Body() facultyDto: FacultyDto, @Param('id') id: string, @CurrentUser() user: IAdmin) {
+  update(@Body() facultyDto: FacultyDto, @Param('id') id: string, @CurrentUser() user: IUser) {
     return this.facultyService.update(facultyDto, id, user)
   }
 
@@ -62,7 +62,7 @@ export class FacultyController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @ApiParam({ name: 'id' })
-  delete(@Param('id') id: string, @CurrentUser() user: IAdmin) {
+  delete(@Param('id') id: string, @CurrentUser() user: IUser) {
     return this.facultyService.delete(id, user)
   }
 }

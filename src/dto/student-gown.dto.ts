@@ -1,10 +1,27 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { ArrayMaxSize, IsArray, IsDate, IsEmail, IsIn, IsInt, IsMongoId, IsNotEmpty, IsString, MaxLength, ValidateIf, maxLength } from "class-validator";
+import { ArrayMaxSize, IsArray, IsDate, IsEmail, IsIn, IsInt, IsMongoId, IsNotEmpty, IsString, MaxLength, ValidateIf, ValidateNested, maxLength } from "class-validator";
 import { Types } from "mongoose";
 import { IsTime } from "src/decorator/validation/time.decorator";
 import { HeightTypeEnum } from "src/enum/common.enum";
 import { PaginationDto } from "./pagination.dto";
+
+
+export class GuestDto {
+    @ApiProperty()
+    @IsString({ message: 'First Name Should be string' })
+    @IsNotEmpty({ message: 'Frist Name is required' })
+    firstName: string;
+    @ApiProperty()
+    @IsString({ message: 'last Name Should be string' })
+    @IsNotEmpty({ message: 'last Name is required' })
+    lastName: string;
+    @ApiProperty()
+    @IsEmail()
+    @IsNotEmpty({ message: 'email is required' })
+    email: string;
+    ticket: string;
+}
 
 export class StudentGownDto {
     @ApiProperty({ type: 'string' })
@@ -84,14 +101,15 @@ export class StudentGownDto {
     @IsString({ message: "Country must be string" })
     @IsNotEmpty({ message: 'Country is required.' })
     country: string;
-    // @ApiProperty()
-    // @IsString({ message: "orderId must be string" })
-    // @IsNotEmpty({ message: 'orderId is required.' })
-    // orderId: string;
-    @ApiPropertyOptional({ type: 'array', items: { type: 'object' } })
+    @ApiProperty()
+    @IsString({ message: "orderId must be string" })
+    @IsNotEmpty({ message: 'orderId is required.' })
+    orderId: string;
+    @ApiPropertyOptional({ type: [GuestDto] })
     @IsArray()
     @ArrayMaxSize(2)
-    guest: [GuestDto];
+    @ValidateNested()
+    guest: GuestDto[];
 }
 
 
@@ -100,20 +118,4 @@ export class SearchGownDto extends PaginationDto {
     @IsString({ message: 'Name should be string.' })
     @ValidateIf(o => o.search)
     search?: string;
-}
-
-export class GuestDto {
-    @ApiProperty()
-    @IsString({ message: 'First Name Should be string' })
-    @IsNotEmpty({ message: 'Frist Name is required' })
-    firstName: string;
-    @ApiProperty()
-    @IsString({ message: 'last Name Should be string' })
-    @IsNotEmpty({ message: 'last Name is required' })
-    lastName: string;
-    @ApiProperty()
-    @IsEmail()
-    @IsNotEmpty({ message: 'email is required' })
-    email: string;
-
 }

@@ -25,14 +25,14 @@ export class GownController {
     @UseGuards(JwtAuthGuard)
     @Get('orders/student')
     getOrdersStudent(@Query() query: SearchGownDto) {
-        return this.gownService.getAllStudent(query);
+        return this.gownService.getAllStudentGown(query);
     }
 
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
     @Get('orders/staff')
     getOrdersStaff(@Query() query: SearchGownDto) {
-        return this.gownService.getAllStaff(query);
+        return this.gownService.getAllStaffGown(query);
     }
 
     @ApiBearerAuth()
@@ -40,7 +40,7 @@ export class GownController {
     @Get('orders/student/:id')
     @ApiParam({ name: 'id' })
     getOrdersStudentById(@Param('id') id: string) {
-        return this.gownService.getByIdStudent(id);
+        return this.gownService.getStudentGownById(id);
     }
 
     @ApiBearerAuth()
@@ -48,6 +48,6 @@ export class GownController {
     @Get('orders/staff/:id')
     @ApiParam({ name: 'id' })
     getOrdersStaffById(@Param('id') id: string) {
-        return this.gownService.getByIdStaff(id);
+        return this.gownService.getStaffGownById(id);
     }
 }

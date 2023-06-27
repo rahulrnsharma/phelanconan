@@ -1,19 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { ArrayMinSize, IsArray, IsBooleanString, IsDate, IsInt, IsMongoId, IsNotEmpty, IsString } from "class-validator";
-import { Types } from "mongoose";
 import { IsTime } from "src/decorator/validation/time.decorator";
 import { ImageOptionalDto } from "./pagination.dto";
-
 
 export class CeremonyDto extends ImageOptionalDto {
     @ApiProperty()
     // @IsMongoId({ message: 'Institute not valid.' })
     @IsNotEmpty({ message: 'Institute is required.' })
     institute: string
-    @ApiProperty()
-    @IsNotEmpty({message:"Reference No. must be required"})
-    refno: string;
     @ApiProperty()
     // @IsMongoId({ message: 'Faculty not valid.' })
     @IsNotEmpty({ message: 'Faculty is required.' })
@@ -36,18 +31,29 @@ export class CeremonyDto extends ImageOptionalDto {
     @IsNotEmpty({ message: 'Date is required.' })
     @Type(() => Date)
     date: string;
-    @ApiProperty({type:'string'})
-    @IsString()
-    @IsNotEmpty()
-    collection_location:string;
+    @ApiProperty()
+    @IsNotEmpty({ message: "Reference No. must be required" })
+    @IsString({ message: "Reference No. must be string" })
+    refno: string;
+    @ApiProperty()
+    @IsNotEmpty({ message: "Collection Location must be required" })
+    @IsString({ message: "Collection Location must be string" })
+    collectionLocation: string;
     @ApiProperty()
     @IsTime({ message: "Time should be in (hh:mm:ss) formate" })
     @IsNotEmpty({ message: "Time is required." })
-    collection_time: string;
+    collectionTime: string;
     @ApiProperty()
     @IsBooleanString()
-    cap:boolean;
-
+    cap: boolean;
+    @ApiProperty()
+    @IsNotEmpty({ message: "Return Location must be required" })
+    @IsString({ message: "Return Location must be string" })
+    returnLocation: string;
+    @ApiProperty()
+    @IsNotEmpty({ message: "Deadline must be required" })
+    @IsString({ message: "Deadline must be string" })
+    deadline: string;
 }
 
 
