@@ -54,9 +54,8 @@ export class StaffService {
     }
 
     async getAll(searchDto: SearchDto) {
-        let _match: any = {};
+        let _match: any = { role: RoleEnum.STAFF };
         if (searchDto.status) {
-            _match.role = RoleEnum.STAFF;
             _match.isActive = searchDto.status == ActiveStatusEnum.ACTIVE;
         }
         let query: PipelineStage[] = [UtilityService.getMatchPipeline(_match)];
