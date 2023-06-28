@@ -1,10 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { MailerService } from "@nestjs-modules/mailer";
-import { UtilityService } from "./utility.service";
-import { Model, PipelineStage } from "mongoose";
-import { InjectModel } from "@nestjs/mongoose";
-import { StudentGownDocument, StudentGownModel } from "src/Schema/student-gown.schema";
-
+const htmlToPdf =require('html-pdf-node')
 @Injectable()
 export class SendMailService {
     constructor(private mailerService: MailerService) { }
@@ -30,6 +26,7 @@ export class SendMailService {
             <li>Payment Status:${_data[0].paymentStatus}</li>
             </ol>`
         })
+       
         return { success: true }
     }
 }

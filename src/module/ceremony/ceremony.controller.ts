@@ -5,6 +5,7 @@ import { CurrentUser } from "src/decorator/current-user.decorator";
 import { CeremonyDto, ExcelFileDto, UploadExcelData } from "src/dto/ceremony.dto";
 import { ActiveDto } from "src/dto/pagination.dto";
 import { SearchDto } from "src/dto/search.dto";
+import { StaffCeremonyDto } from "src/dto/staff-ceremony.dto";
 import { IUser } from "src/interface/user.interface";
 import { CeremonyService } from "src/service/ceremony.service";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
@@ -38,6 +39,21 @@ export class CeremonyController {
     @Post('excel/upload')
     async upload(@Body() uploadExcelData: UploadExcelData, @CurrentUser() user: IUser) {
         return this.ceremonyService.upload(uploadExcelData.data, user);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Post('staff')
+    @ApiConsumes('multipart/form-data')
+    @UseInterceptors(FileInterceptor('image', UtilityService.imageFileFilter("institute")))
+    addStaffCeremony(@Body() staffCeremonyDto:StaffCeremonyDto ,@CurrentUser() user:IUser, @UploadedFile() file:Express.Multer.File){
+        return this.ceremonyService.addStaffCeremony(staffCeremonyDto,user,file);
+    }
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get('staff')
+    getAllStaffCeremony(@Query() searchDto: SearchDto) {
+        return this.ceremonyService.getAllStaffCeremony(searchDto)
     }
 
     @ApiBearerAuth()
@@ -78,5 +94,58 @@ export class CeremonyController {
     @ApiParam({ name: 'id' })
     delete(@Param('id') id: string, @CurrentUser() user: IUser) {
         return this.ceremonyService.delete(id, user)
+    }
+
+   
+     
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Post('staff/:id')
+    @ApiConsumes('multipart/form-data')
+    @ApiParam({ name: 'id' })
+    @UseInterceptors(FileInterceptor('image', UtilityService.imageFileFilter("institute")))
+    updateStaffCeremony(@Body() StaffCeremonyDto:StaffCeremonyDto ,@Param('id') id:string,@CurrentUser() user:IUser, @UploadedFile() file:Express.Multer.File){
+        return this.ceremonyService.updateStaffCeremony(StaffCeremonyDto,id,user,file);
+    }
+
+   
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Put('staff/status/:id')
+    @ApiParam({ name: 'id' })
+    statusStaffCeremony(@Body() activeDto: ActiveDto, @Param('id') id: string, @CurrentUser() user: IUser) {
+        return this.ceremonyService.statusStaffCeremony(id, activeDto, user)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get('staff/:id')
+    @ApiParam({ name: 'id' }) 
+    getByIdStaffCeremony(@Param('id') id: string) {
+        return this.ceremonyService.getByIdStaffCeremony(id);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Delete('staff/:id')
+    @ApiParam({ name: 'id' })
+    deleteStaffCeremony(@Param('id') id:string,@CurrentUser() user:IUser){
+        return this.ceremonyService.deleteStaffCeremony(id,user)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Post('staff/excel/verify')
+    @ApiConsumes('multipart/form-data')
+    @UseInterceptors(FileInterceptor('excel', UtilityService.excelFileFilter()))
+    async verifyStaffCeremony(@Body() excelFileDto: ExcelFileDto, @CurrentUser() user: IUser, @UploadedFile() file: Express.Multer.File) {
+        return this.ceremonyService.verifyStaffCeremony(file);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Post('staff/excel/upload')
+    async uploadStaffCeremony(@Body() uploadExcelData: UploadExcelData, @CurrentUser() user: IUser) {
+        return this.ceremonyService.uploadStaffCeremony(uploadExcelData.data, user);
     }
 }

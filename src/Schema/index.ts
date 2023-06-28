@@ -9,6 +9,7 @@ import { TransactionModel } from "./transaction.schema"
 import { StaffGownModel } from "./staff-gown.schema"
 import { StaffModel } from "./staff.schema"
 import { UserModel } from "./user.schema"
+import { StaffCeremonyModel } from "./staff-ceremony.schema"
 
 export const ADMIN_SCHEMA = { schema: AdminModel.schema, name: AdminModel.name }
 export const CEREMONY_SCHEMA = { name: CeremonyModel.name, schema: CeremonyModel.schema }
@@ -21,6 +22,7 @@ export const STAFF_SCHEMA = { name: StaffModel.name, schema: StaffModel.Schema }
 export const STUDENT_GOWN_SCHEMA = { name: StudentGownModel.name, schema: StudentGownModel.schema }
 export const TRANSACTION_SCHEMA = { name: TransactionModel.name, schema: TransactionModel.schema }
 export const USER_SCHEMA = { name: UserModel.name, schema: UserModel.schema }
+export const STAFF_CEREMONY_SCHEMA ={name: StaffCeremonyModel.name, schema: StaffCeremonyModel.schema}
 export const ALL_SCHEMA = [
     ADMIN_SCHEMA,
     LOGIN_SCHEMA,
@@ -31,5 +33,6 @@ export const ALL_SCHEMA = [
     STUDENT_GOWN_SCHEMA,
     TRANSACTION_SCHEMA,
     STAFF_GOWN_SCHEMA,
-    STAFF_SCHEMA
+    STAFF_SCHEMA,
+    STAFF_CEREMONY_SCHEMA
 ]
