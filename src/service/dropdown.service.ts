@@ -51,7 +51,7 @@ export class DropdownService {
         let query: PipelineStage[] = [UtilityService.getMatchPipeline({ isActive: true, date: queryDto.date, time: queryDto.time, institute: new Types.ObjectId(queryDto.institute), faculty: new Types.ObjectId(queryDto.faculty) })];
         query.push(UtilityService.getLookupPipeline("courses", "course", "_id", "courses", [UtilityService.getMatchPipeline({ isActive: true })]));
         query.push(UtilityService.getUnwindPipeline("courses"));
-        query.push(UtilityService.getProjectPipeline({ name: "$courses.name", id: "$courses._id", price: 1, "_id": 0 }))
+        query.push(UtilityService.getProjectPipeline({ name: "$courses.name", id: "$courses._id", price: 1, collectionLocation: 1, collectionTime: 1, cap: 1, returnLocation: 1, deadline: 1, "_id": 0 }))
         return this.ceremonyModel.aggregate(query);
     }
 
