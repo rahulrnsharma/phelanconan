@@ -4,7 +4,7 @@ import { Type } from "class-transformer";
 import { IsMongoId, IsNotEmpty, IsInt, IsDate, IsIn, IsString, IsEmail, ValidateIf } from "class-validator";
 import { Types } from "mongoose";
 import { IsTime } from "src/decorator/validation/time.decorator";
-import { HeightTypeEnum } from "src/enum/common.enum";
+import { HeightTypeEnum, LocationTypeEnum } from "src/enum/common.enum";
 import { PaginationDto } from "./pagination.dto";
 
 export class StaffGownDto{
@@ -12,22 +12,11 @@ export class StaffGownDto{
     @IsMongoId({ message: 'Institute not valid.' })
     @IsNotEmpty({ message: 'Institute is required.' })
     @Type(() => Types.ObjectId)
-    institute: Types.ObjectId
-    @ApiProperty({ type: 'string' })
-    @IsMongoId({ message: 'Faculty not valid.' })
-    @IsNotEmpty({ message: 'Faculty is required.' })
-    @Type(() => Types.ObjectId)
-    faculty: Types.ObjectId;
-    @ApiProperty({ type: 'string' })
-    @IsMongoId({ message: 'Course not valid.' })
-    @IsNotEmpty({ message: 'Course is required.' })
-    @Type(() => Types.ObjectId)
-    course: Types.ObjectId;
+    institute: Types.ObjectId                 
     @ApiProperty()
-    @IsInt({ message: 'Price should be number.' })
-    @IsNotEmpty({ message: 'Price is required.' })
-    @Type(() => Number)
-    price: number;
+    @IsNotEmpty({ message: "Reference No. must be required" })
+    @IsString({ message: "Reference No. must be string" })
+    refno: string;
     @ApiProperty()
     @IsTime({ message: "Time should be in (hh:mm:ss) formate" })
     @IsNotEmpty({ message: "Time is required." })
@@ -37,6 +26,37 @@ export class StaffGownDto{
     @IsNotEmpty({ message: 'Date is required.' })
     @Type(() => Date)
     date: string;
+    @ApiProperty({type:'string'})
+    @IsNotEmpty({message:"Hire Duration is required"})
+    @IsString({message:"Hire Duration must be a string"})
+    duration: string;
+    @ApiProperty({type:'string'})
+    @IsNotEmpty({message:"Graduated Institute is required"})
+    @IsString({message:"Graduated Institute must be a string"})
+    graduated : string;
+    @ApiProperty({ enum: LocationTypeEnum })
+    @IsIn(Object.values(LocationTypeEnum))
+    @IsString({ message: 'Location should be string.' })
+    @IsNotEmpty({ message: 'Location is required.' })
+    location: string;
+    @ApiProperty()
+    @IsNotEmpty({ message: "Graduation Year must be required" })
+    @IsString({ message: "Graduation Year must be string" })
+    year: string;
+    @ApiProperty()
+    @IsNotEmpty({ message: "Faculty must be required" })
+    @IsString({ message: "Faculty must be string" })
+    faculty: string;
+    @ApiPropertyOptional()
+    @IsString({ message: "Faculty must be string" })
+    faculty_opt?: string;    
+    @ApiProperty()
+    @IsNotEmpty({ message: "Qualification must be required" })
+    @IsString({ message: "Qualification must be string" })
+    qualification: string;
+    @ApiPropertyOptional()
+    @IsString({ message: "Faculty must be string" })
+    qaulification_opt?: string;
     @ApiProperty({ enum: HeightTypeEnum })
     @IsIn(Object.values(HeightTypeEnum))
     @IsString({ message: 'Height should be string.' })
@@ -67,23 +87,6 @@ export class StaffGownDto{
     @IsString({ message: "Phone must be string" })
     @IsNotEmpty({ message: 'Phone is required.' })
     phone: string;
-    @ApiProperty()
-    @IsString({ message: "addressLine must be string" })
-    @IsNotEmpty({ message: 'addressLine is required.' })
-    addressLine: string;
-    @ApiPropertyOptional()
-    addressLine1?: string;
-    @ApiProperty()
-    @IsString({ message: "Zipcode must be string" })
-    @IsNotEmpty({ message: 'Zipcode is required.' })
-    zipcode: string;
-    @ApiProperty()
-    @IsString({ message: "City must be string" })
-    @IsNotEmpty({ message: 'City is required.' })
-    city: string;
-    @ApiProperty()
-    @IsString({ message: "Country must be string" })
-    @IsNotEmpty({ message: 'Country is required.' })
-    country: string;
+   
 }
 

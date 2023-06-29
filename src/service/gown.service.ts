@@ -44,8 +44,9 @@ export class GownService {
 
     async addStaffGown(staffGownDto: StaffGownDto) {
         // const mail = await this.sendmailService.sendMail(staffGownDto);
-        // let _orderNumber = UtilityService.getOrderNumber();
-        return new this.staffGownModel({ ...staffGownDto }).save();
+        const _count = await this.studentGownModel.count({ institute: new Types.ObjectId(staffGownDto.institute) });
+        let _orderNumber = UtilityService.getOrderNumber(staffGownDto.refno,_count);
+        return new this.staffGownModel({ ...staffGownDto,orderNumber:_orderNumber }).save();
         //    const staffGown = await new this.staffGownModel({ ...staffGownDto }).save()
         //    if(staffGown){
         //     let data: PipelineStage[];
@@ -118,11 +119,7 @@ export class GownService {
                     UtilityService.getSkipPipeline(searchDto.currentPage, searchDto.pageSize),
                     UtilityService.getLimitPipeline(searchDto.pageSize),
                     UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1 })]),
-                    UtilityService.getLookupPipeline("faculties", "faculty", "_id", "faculty", [UtilityService.getProjectPipeline({ name: 1 })]),
-                    UtilityService.getLookupPipeline("courses", "course", "_id", "course", [UtilityService.getProjectPipeline({ name: 1 })]),
                     UtilityService.getUnwindPipeline("institute"),
-                    UtilityService.getUnwindPipeline("faculty"),
-                    UtilityService.getUnwindPipeline("course"),
                     UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 })
                 ],
             },
@@ -138,11 +135,7 @@ export class GownService {
     async getStaffGownById(id: any) {
         let query: PipelineStage[] = [UtilityService.getMatchPipeline({ _id: new Types.ObjectId(id) })];
         query.push(UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1 })]));
-        query.push(UtilityService.getLookupPipeline("faculties", "faculty", "_id", "faculty", [UtilityService.getProjectPipeline({ name: 1 })]));
-        query.push(UtilityService.getLookupPipeline("courses", "course", "_id", "course", [UtilityService.getProjectPipeline({ name: 1 })]));
         query.push(UtilityService.getUnwindPipeline("institute"));
-        query.push(UtilityService.getUnwindPipeline("faculty"));
-        query.push(UtilityService.getUnwindPipeline("course"));
         query.push(UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 }));
 
         let _res: any[] = await this.staffGownModel.aggregate(query).exec();

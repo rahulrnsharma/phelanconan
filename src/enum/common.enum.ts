@@ -2,6 +2,10 @@ export enum HeightTypeEnum {
     METRIC = "Metric",
     IMPERIAL = "Imperial"
 }
+export enum LocationTypeEnum{
+    IRELAND ="Ireland",
+    INTERNATIONAL ="International"
+}
 export enum ActiveStatusEnum {
     ACTIVE = 'Active',
     INACTIVE = 'In-active'
