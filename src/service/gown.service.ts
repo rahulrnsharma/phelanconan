@@ -9,20 +9,17 @@ import { PaginationResponse } from "src/model/pagination.model";
 import { SendMailService } from "./sendmail.service";
 import { StaffGownDto } from "src/dto/staff-gown.dto";
 import { StaffGownDocument, StaffGownModel } from "src/Schema/staff-gown.schema";
-import { InstituteDocument, InstituteModel } from "src/Schema/institute.schema";
 
 @Injectable()
 export class GownService {
     constructor(@InjectModel(StudentGownModel.name) private readonly studentGownModel: Model<StudentGownDocument>,
         @InjectModel(StaffGownModel.name) private readonly staffGownModel: Model<StaffGownDocument>,
-        @InjectModel(InstituteModel.name) private readonly instituteModel: Model<InstituteDocument>,
         private sendmailService: SendMailService,
     ) { }
 
     async addStudentGown(studentGownDto: StudentGownDto) {
-        const _institute = await this.instituteModel.findById(studentGownDto.institute);
         const _count = await this.studentGownModel.count({ institute: new Types.ObjectId(studentGownDto.institute) });
-        let _orderNumber = UtilityService.getOrderNumber(_institute.refno, _count);
+        let _orderNumber = UtilityService.getOrderNumber(studentGownDto.refno, _count);
         studentGownDto.guest.forEach((obj: any, index: number) => {
             obj.ticket = `G${index + 1}-${_orderNumber}`
         })
@@ -45,8 +42,8 @@ export class GownService {
     async addStaffGown(staffGownDto: StaffGownDto) {
         // const mail = await this.sendmailService.sendMail(staffGownDto);
         const _count = await this.studentGownModel.count({ institute: new Types.ObjectId(staffGownDto.institute) });
-        let _orderNumber = UtilityService.getOrderNumber(staffGownDto.refno,_count);
-        return new this.staffGownModel({ ...staffGownDto,orderNumber:_orderNumber }).save();
+        let _orderNumber = UtilityService.getOrderNumber(staffGownDto.refno, _count);
+        return new this.staffGownModel({ ...staffGownDto, orderNumber: _orderNumber }).save();
         //    const staffGown = await new this.staffGownModel({ ...staffGownDto }).save()
         //    if(staffGown){
         //     let data: PipelineStage[];
