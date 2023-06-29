@@ -112,8 +112,8 @@ export class UtilityService {
     static getLimitPipeline(limit: number): PipelineStage.Limit {
         return { $limit: limit };
     }
-    static getUnwindPipeline(path: string): PipelineStage.Unwind {
-        return { $unwind: { path: `$${path}`, preserveNullAndEmptyArrays: true } };
+    static getUnwindPipeline(path: string, preserveNullAndEmptyArrays: boolean = true): PipelineStage.Unwind {
+        return { $unwind: { path: `$${path}`, preserveNullAndEmptyArrays: preserveNullAndEmptyArrays } };
     }
     static getLookupPipeline(from: string, localField: string, foreignField: string, as: string, pipeline: Exclude<PipelineStage, PipelineStage.Merge | PipelineStage.Out>[]): PipelineStage.Lookup {
         return {
