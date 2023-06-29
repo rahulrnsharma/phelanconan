@@ -386,8 +386,8 @@ export class CeremonyService {
         return { already };
     }
 
-    async addStaffCeremony(staffCeremonyDto:StaffCeremonyDto, user: IUser, image: Express.Multer.File){
-       if (!mongoose.isValidObjectId(staffCeremonyDto.institute)) {
+    async addStaffCeremony(staffCeremonyDto: StaffCeremonyDto, user: IUser, image: Express.Multer.File) {
+        if (!mongoose.isValidObjectId(staffCeremonyDto.institute)) {
             let _lastInstitute = await this.instituteModel.findOne({ name: staffCeremonyDto.institute.trim() });
             if (!_lastInstitute) {
                 let _data = {
@@ -409,7 +409,7 @@ export class CeremonyService {
             duration: staffCeremonyDto.duration,
             refno: staffCeremonyDto.refno,
             price: 0
-            
+
         }
         if (image) {
             _data['image'] = image.filename;
@@ -426,7 +426,7 @@ export class CeremonyService {
     }
 
 
-    async updateStaffCeremony(staffCeremonyDto:StaffCeremonyDto, id: string, user: IUser, image: Express.Multer.File){
+    async updateStaffCeremony(staffCeremonyDto: StaffCeremonyDto, id: string, user: IUser, image: Express.Multer.File) {
         if (!mongoose.isValidObjectId(staffCeremonyDto.institute)) {
             let _lastInstitute = await this.instituteModel.findOne({ name: staffCeremonyDto.institute.trim() });
             if (!_lastInstitute) {
@@ -460,7 +460,7 @@ export class CeremonyService {
                 },
                 updatedBy: user.userId
             }, { runValidators: true }).exec();
-        }  
+        }
         const _doc: StaffCeremony = await this.staffGradutionModel.findByIdAndUpdate(id, { $set: { ..._data, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
         if (_doc) {
             return _doc;
@@ -469,7 +469,7 @@ export class CeremonyService {
             throw new BadRequestException("Resource you are update does not exist.");
         }
     }
-    
+
     async deleteStaffCeremony(id: string, user: IUser) {
         const _doc: StaffCeremony = await this.staffGradutionModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
         if (_doc) {
@@ -527,7 +527,7 @@ export class CeremonyService {
     }
     async verifyStaffCeremony(file: any) {
         let _data: any[] = UtilityService.readExcelFileData(file);
-        const _header = ["Institution",  "Graduation Date", "Ceremony Time", "Image", "Hire duration","Reference No","Price"];
+        const _header = ["Institution", "Graduation Date", "Ceremony Time", "Image", "Hire duration", "Reference No"];
         if (!UtilityService.validExcelHeader(_header, _data[0])) {
             throw new BadRequestException(`Excel sheet header should be ${_header}`)
         }
@@ -569,8 +569,7 @@ export class CeremonyService {
                         date: _obj["Graduation Date"],
                         time: _obj["Ceremony Time"],
                         duration: _obj["Hire duration"],
-                        refno: _obj["Reference No"],
-                        price: _obj["Price"]
+                        refno: _obj["Reference No"]
                     })
                     if (_StaffCeremony) {
                         already.push({ ..._obj, rows: i + 2 });
@@ -590,7 +589,7 @@ export class CeremonyService {
     }
 
     async uploadStaffCeremony(data: any[], user: IUser) {
-        const _header = ["Institution", "Graduation Date", "Ceremony Time","Image", "Hire duration","Reference No","Price", "_institute"];
+        const _header = ["Institution", "Graduation Date", "Ceremony Time", "Image", "Hire duration", "Reference No", "_institute"];
         if (!UtilityService.validExcelHeader(_header, data[0])) {
             throw new BadRequestException(`Not a valid Data`);
         }
@@ -603,7 +602,7 @@ export class CeremonyService {
                     _lastInstitute = data[i]["_institute"];
                 }
                 else {
-                    _lastInstitute = new this.instituteModel({ name: data[i]["Institution"], refno:data[i]["Reference No"],price:data[i]["Price"],createdBy: user.userId });
+                    _lastInstitute = new this.instituteModel({ name: data[i]["Institution"], refno: data[i]["Reference No"], price: 0, createdBy: user.userId });
                     await _lastInstitute.save();
                 }
                 institute.add(data[i]["Institution"]);
@@ -616,8 +615,7 @@ export class CeremonyService {
                 date: data[i]["Graduation Date"],
                 time: data[i]["Ceremony Time"],
                 duration: data[i]["Hire duration"],
-                refno: data[i]["Reference No"],
-                price: data[i]["Price"]
+                refno: data[i]["Reference No"]
 
             })
             if (_StaffCeremony) {
@@ -631,9 +629,9 @@ export class CeremonyService {
                     duration: data[i]["Hire duartion"],
                     image: data[i]["Image"],
                     refno: data[i]["Reference No"],
-                    price: data[i]["Price"]
+                    price: 0
                 }).save();
-                
+
             }
         }
         return { already };

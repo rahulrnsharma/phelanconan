@@ -46,92 +46,10 @@ export class CeremonyController {
     @Post('staff')
     @ApiConsumes('multipart/form-data')
     @UseInterceptors(FileInterceptor('image', UtilityService.imageFileFilter("institute")))
-    addStaffCeremony(@Body() staffCeremonyDto:StaffCeremonyDto ,@CurrentUser() user:IUser, @UploadedFile() file:Express.Multer.File){
-        return this.ceremonyService.addStaffCeremony(staffCeremonyDto,user,file);
-    }
-    @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
-    @Get('staff')
-    getAllStaffCeremony(@Query() searchDto: SearchDto) {
-        return this.ceremonyService.getAllStaffCeremony(searchDto)
+    addStaffCeremony(@Body() staffCeremonyDto: StaffCeremonyDto, @CurrentUser() user: IUser, @UploadedFile() file: Express.Multer.File) {
+        return this.ceremonyService.addStaffCeremony(staffCeremonyDto, user, file);
     }
 
-    @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
-    @Post(':id')
-    @ApiConsumes('multipart/form-data')
-    @UseInterceptors(FileInterceptor('image', UtilityService.imageFileFilter("institute")))
-    @ApiParam({ name: 'id' })
-    update(@Body() ceremonyDto: CeremonyDto, @Param('id') id: string, @CurrentUser() user: IUser, @UploadedFile() file: Express.Multer.File) {
-        return this.ceremonyService.update(ceremonyDto, id, user, file)
-    }
-
-
-    @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
-    @Get('')
-    getAll(@Query() searchDto: SearchDto) {
-        return this.ceremonyService.getAll(searchDto)
-    }
-
-    @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
-    @Get(':id')
-    @ApiParam({ name: 'id' })
-    getById(@Param('id') id: string) {
-        return this.ceremonyService.getById(id);
-    }
-    @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
-    @Put('status/:id')
-    @ApiParam({ name: 'id' })
-    status(@Body() activeDto: ActiveDto, @Param('id') id: string, @CurrentUser() user: IUser) {
-        return this.ceremonyService.status(id, activeDto, user)
-    }
-    @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
-    @Delete(':id')
-    @ApiParam({ name: 'id' })
-    delete(@Param('id') id: string, @CurrentUser() user: IUser) {
-        return this.ceremonyService.delete(id, user)
-    }
-
-   
-     
-    @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
-    @Post('staff/:id')
-    @ApiConsumes('multipart/form-data')
-    @ApiParam({ name: 'id' })
-    @UseInterceptors(FileInterceptor('image', UtilityService.imageFileFilter("institute")))
-    updateStaffCeremony(@Body() StaffCeremonyDto:StaffCeremonyDto ,@Param('id') id:string,@CurrentUser() user:IUser, @UploadedFile() file:Express.Multer.File){
-        return this.ceremonyService.updateStaffCeremony(StaffCeremonyDto,id,user,file);
-    }
-
-   
-    @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
-    @Put('staff/status/:id')
-    @ApiParam({ name: 'id' })
-    statusStaffCeremony(@Body() activeDto: ActiveDto, @Param('id') id: string, @CurrentUser() user: IUser) {
-        return this.ceremonyService.statusStaffCeremony(id, activeDto, user)
-    }
-
-    @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
-    @Get('staff/:id')
-    @ApiParam({ name: 'id' }) 
-    getByIdStaffCeremony(@Param('id') id: string) {
-        return this.ceremonyService.getByIdStaffCeremony(id);
-    }
-
-    @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
-    @Delete('staff/:id')
-    @ApiParam({ name: 'id' })
-    deleteStaffCeremony(@Param('id') id:string,@CurrentUser() user:IUser){
-        return this.ceremonyService.deleteStaffCeremony(id,user)
-    }
 
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
@@ -147,5 +65,89 @@ export class CeremonyController {
     @Post('staff/excel/upload')
     async uploadStaffCeremony(@Body() uploadExcelData: UploadExcelData, @CurrentUser() user: IUser) {
         return this.ceremonyService.uploadStaffCeremony(uploadExcelData.data, user);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Post('staff/:id')
+    @ApiConsumes('multipart/form-data')
+    @ApiParam({ name: 'id' })
+    @UseInterceptors(FileInterceptor('image', UtilityService.imageFileFilter("institute")))
+    updateStaffCeremony(@Body() StaffCeremonyDto: StaffCeremonyDto, @Param('id') id: string, @CurrentUser() user: IUser, @UploadedFile() file: Express.Multer.File) {
+        return this.ceremonyService.updateStaffCeremony(StaffCeremonyDto, id, user, file);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Post(':id')
+    @ApiConsumes('multipart/form-data')
+    @UseInterceptors(FileInterceptor('image', UtilityService.imageFileFilter("institute")))
+    @ApiParam({ name: 'id' })
+    update(@Body() ceremonyDto: CeremonyDto, @Param('id') id: string, @CurrentUser() user: IUser, @UploadedFile() file: Express.Multer.File) {
+        return this.ceremonyService.update(ceremonyDto, id, user, file)
+    }
+
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get('staff')
+    getAllStaffCeremony(@Query() searchDto: SearchDto) {
+        return this.ceremonyService.getAllStaffCeremony(searchDto)
+    }
+
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get('staff/:id')
+    @ApiParam({ name: 'id' })
+    getByIdStaffCeremony(@Param('id') id: string) {
+        return this.ceremonyService.getByIdStaffCeremony(id);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get('')
+    getAll(@Query() searchDto: SearchDto) {
+        return this.ceremonyService.getAll(searchDto)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get(':id')
+    @ApiParam({ name: 'id' })
+    getById(@Param('id') id: string) {
+        return this.ceremonyService.getById(id);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Put('staff/status/:id')
+    @ApiParam({ name: 'id' })
+    statusStaffCeremony(@Body() activeDto: ActiveDto, @Param('id') id: string, @CurrentUser() user: IUser) {
+        return this.ceremonyService.statusStaffCeremony(id, activeDto, user)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Put('status/:id')
+    @ApiParam({ name: 'id' })
+    status(@Body() activeDto: ActiveDto, @Param('id') id: string, @CurrentUser() user: IUser) {
+        return this.ceremonyService.status(id, activeDto, user)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Delete('staff/:id')
+    @ApiParam({ name: 'id' })
+    deleteStaffCeremony(@Param('id') id: string, @CurrentUser() user: IUser) {
+        return this.ceremonyService.deleteStaffCeremony(id, user)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    @ApiParam({ name: 'id' })
+    delete(@Param('id') id: string, @CurrentUser() user: IUser) {
+        return this.ceremonyService.delete(id, user)
     }
 }
