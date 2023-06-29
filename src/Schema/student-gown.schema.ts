@@ -65,6 +65,16 @@ export class StudentGown extends Base {
     orderNumber: string;
     @Prop({ type: [GuestSchema], required: false, default: [] })
     guest: Guest[];
+    @Prop({ type: String, required: true })
+    collectionLocation: string
+    @Prop({ type: String, required: true })
+    collectionTime: string;
+    @Prop({ type: Boolean, required: true })
+    cap: boolean;
+    @Prop({ type: String, required: true })
+    returnLocation: string
+    @Prop({ type: String, required: true })
+    deadline: string;
 
 }
 

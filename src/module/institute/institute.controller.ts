@@ -57,6 +57,11 @@ export class InstituteController {
     return this.instituteService.dropdown()
   }
 
+  @Get('register/dropdown')
+  registerDropdown() {
+    return this.instituteService.dropdown(true)
+  }
+
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get(':id')

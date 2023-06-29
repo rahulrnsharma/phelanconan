@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { ArrayMaxSize, IsArray, IsDate, IsEmail, IsIn, IsInt, IsMongoId, IsNotEmpty, IsString, MaxLength, ValidateIf, ValidateNested, maxLength } from "class-validator";
+import { ArrayMaxSize, IsArray, IsBooleanString, IsDate, IsEmail, IsIn, IsInt, IsMongoId, IsNotEmpty, IsString, MaxLength, ValidateIf, ValidateNested, maxLength } from "class-validator";
 import { Types } from "mongoose";
 import { IsTime } from "src/decorator/validation/time.decorator";
 import { HeightTypeEnum } from "src/enum/common.enum";
@@ -110,6 +110,26 @@ export class StudentGownDto {
     @ArrayMaxSize(2)
     @ValidateNested()
     guest: GuestDto[];
+    @ApiProperty()
+    @IsNotEmpty({ message: "Collection Location must be required" })
+    @IsString({ message: "Collection Location must be string" })
+    collectionLocation: string;
+    @ApiProperty()
+    @IsTime({ message: "Time should be in (hh:mm:ss) formate" })
+    @IsNotEmpty({ message: "Time is required." })
+    collectionTime: string;
+    @ApiProperty()
+    @IsBooleanString()
+    @Type(() => Boolean)
+    cap: boolean;
+    @ApiProperty()
+    @IsNotEmpty({ message: "Return Location must be required" })
+    @IsString({ message: "Return Location must be string" })
+    returnLocation: string;
+    @ApiProperty()
+    @IsNotEmpty({ message: "Deadline must be required" })
+    @IsString({ message: "Deadline must be string" })
+    deadline: string;
 }
 
 
