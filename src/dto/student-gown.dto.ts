@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { ArrayMaxSize, IsArray, IsBooleanString, IsDate, IsEmail, IsIn, IsInt, IsMongoId, IsNotEmpty, IsString, MaxLength, ValidateIf, ValidateNested, maxLength } from "class-validator";
+import { ArrayMaxSize, IsArray, IsBoolean, IsBooleanString, IsDate, IsEmail, IsIn, IsInt, IsMongoId, IsNotEmpty, IsString, MaxLength, ValidateIf, ValidateNested, maxLength } from "class-validator";
 import { Types } from "mongoose";
 import { IsTime } from "src/decorator/validation/time.decorator";
 import { HeightTypeEnum } from "src/enum/common.enum";
@@ -119,7 +119,7 @@ export class StudentGownDto {
     @IsNotEmpty({ message: "Time is required." })
     collectionTime: string;
     @ApiProperty()
-    @IsBooleanString()
+    @IsBoolean()
     @Type(() => Boolean)
     cap: boolean;
     @ApiProperty()
