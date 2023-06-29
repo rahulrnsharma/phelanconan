@@ -45,6 +45,7 @@ export class CeremonyDto extends ImageOptionalDto {
     collectionTime: string;
     @ApiProperty()
     @IsBooleanString()
+    @Type(() => Boolean)
     cap: boolean;
     @ApiProperty()
     @IsNotEmpty({ message: "Return Location must be required" })
