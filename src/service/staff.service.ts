@@ -29,7 +29,7 @@ export class StaffService {
             return { success: true };
         }
         else {
-            throw new BadRequestException("Resource you are delete does not exist.");
+            throw new BadRequestException("Resource you are reject does not exist.");
         }
     }
 
@@ -39,7 +39,17 @@ export class StaffService {
             return { success: true };
         }
         else {
-            throw new BadRequestException("Resource you are delete does not exist.");
+            throw new BadRequestException("Resource you are approve does not exist.");
+        }
+    }
+
+    async activate(id: any, user: IUser) {
+        const _doc: User = await this.userModel.findByIdAndUpdate(id, { $set: { isActive: true, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        if (_doc) {
+            return { success: true };
+        }
+        else {
+            throw new BadRequestException("Resource you are activate does not exist.");
         }
     }
 

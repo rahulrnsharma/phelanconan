@@ -42,6 +42,15 @@ export class StaffController {
     @HasRoles(RoleEnum.ADMIN)
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard, RolesGuard)
+    @Put(':id/activate')
+    @ApiParam({ name: 'id' })
+    activate(@Param('id') id: string, @CurrentUser() user: IUser) {
+        return this.staffService.activate(id, user)
+    }
+
+    @HasRoles(RoleEnum.ADMIN)
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Delete(':id')
     @ApiParam({ name: 'id' })
     delete(@Param('id') id: string, @CurrentUser() user: IUser) {

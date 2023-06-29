@@ -202,7 +202,17 @@ export class CeremonyService {
     }
 
     async getById(id: any) {
-        return this.ceremonyModel.findById(id);
+        let query: PipelineStage[] = [UtilityService.getMatchPipeline({ _id: new Types.ObjectId(id) })];
+        query.push(UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1, refno: 1 })]));
+        query.push(UtilityService.getLookupPipeline("faculties", "faculty", "_id", "faculty", [UtilityService.getProjectPipeline({ name: 1 })]));
+        query.push(UtilityService.getLookupPipeline("courses", "course", "_id", "course", [UtilityService.getProjectPipeline({ name: 1 })]));
+        query.push(UtilityService.getUnwindPipeline("institute"));
+        query.push(UtilityService.getUnwindPipeline("faculty"));
+        query.push(UtilityService.getUnwindPipeline("course"));
+        query.push(UtilityService.getAddImageFieldPipeline('image', 'phelanconan/institute', '$image'));
+        query.push(UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 }));
+        let _res: any[] = await this.ceremonyModel.aggregate(query).exec();
+        return _res[0];
     }
     async verify(file: any) {
         let _data: any[] = UtilityService.readExcelFileData(file);
@@ -514,7 +524,13 @@ export class CeremonyService {
     }
 
     async getByIdStaffCeremony(id: any) {
-        return this.staffGradutionModel.findById(id);
+        let query: PipelineStage[] = [UtilityService.getMatchPipeline({ _id: new Types.ObjectId(id) })];
+        query.push(UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1, refno: 1 })]));
+        query.push(UtilityService.getUnwindPipeline("institute"));
+        query.push(UtilityService.getAddImageFieldPipeline('image', 'phelanconan/institute', '$image'));
+        query.push(UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 }));
+        let _res: any[] = await this.staffGradutionModel.aggregate(query).exec();
+        return _res[0];
     }
     async statusStaffCeremony(id: string, activeDto: ActiveDto, user: IUser) {
         const _doc: StaffCeremony = await this.staffGradutionModel.findByIdAndUpdate(id, { $set: { isActive: activeDto.active, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();

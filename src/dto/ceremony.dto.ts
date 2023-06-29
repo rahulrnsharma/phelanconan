@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { ArrayMinSize, IsArray, IsBooleanString, IsDate, IsInt, IsMongoId, IsNotEmpty, IsString } from "class-validator";
+import { ArrayMinSize, IsArray, IsBoolean, IsBooleanString, IsDate, IsInt, IsMongoId, IsNotEmpty, IsString } from "class-validator";
 import { IsTime } from "src/decorator/validation/time.decorator";
 import { ImageOptionalDto } from "./pagination.dto";
 
@@ -44,7 +44,7 @@ export class CeremonyDto extends ImageOptionalDto {
     @IsNotEmpty({ message: "Time is required." })
     collectionTime: string;
     @ApiProperty()
-    @IsBooleanString()
+    @IsBoolean()
     @Type(() => Boolean)
     cap: boolean;
     @ApiProperty()
