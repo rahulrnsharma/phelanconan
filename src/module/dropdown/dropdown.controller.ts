@@ -35,7 +35,22 @@ export class DropdownController {
     getCourse(@Query() query: SearchCourseDto) {
         return this.dropdownService.getCourse(query);
     }
-
+    @Get('staff/institute')
+    getStaffInstitute(@Query() query: TimezoneDto) {
+        return this.dropdownService.getStaffInstitute(query);
+    }
+    @Get('staff/date')
+    getStaffDate(@Query() query: SearchDateDto) {
+        return this.dropdownService.getStaffDate(query);
+    }
+    @Get('staff/time')
+    getStaffTime(@Query() query: SearchTimeDto) {
+        return this.dropdownService.getStaffTime(query);
+    }
+    @Get('staff/duration')
+    getStaffDuration(@Query() query: SearchFacultyDto) {
+        return this.dropdownService.getStaffDuration(query);
+    }
 
 
 }
