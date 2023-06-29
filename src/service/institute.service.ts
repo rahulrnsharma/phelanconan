@@ -97,8 +97,12 @@ export class InstituteService {
     async getById(id: string) {
         return this.instituteModel.findById(id);
     }
-    async dropdown() {
-        return this.instituteModel.find({}, { name: 1, price: 1, refno: 1 }).exec();
+    async dropdown(active: boolean = false) {
+        let _match: any = {};
+        if (active) {
+            _match["isActive"] = true;
+        }
+        return this.instituteModel.find(_match, { name: 1, price: 1, refno: 1 }).exec();
     }
     async uploadImage(id: any, user: IUser, files: any[]) {
         const _doc: Institute = await this.instituteModel.findByIdAndUpdate(id, {
