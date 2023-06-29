@@ -37,3 +37,33 @@ export class StaffDto {
     @IsNotEmpty({ message: 'Designation is required.' })
     designation: string;
 }
+
+export class UpdateStaffDto {
+    @ApiProperty()
+    @IsString({ message: "First Name must be a string" })
+    @IsNotEmpty({ message: 'first name is required' })
+    firstName: string
+    @ApiPropertyOptional()
+    @IsString({ message: "last name must be a string" })
+    @IsNotEmpty({ message: 'last name is required' })
+    @ValidateIf(o => o.lastName)
+    lastName: string
+    @ApiProperty()
+    @IsString({ message: "countryCode must be string" })
+    @IsNotEmpty({ message: 'countryCode is required.' })
+    countryCode: string;
+    @ApiProperty()
+    @IsString({ message: "Phone must be string" })
+    @IsNotEmpty({ message: 'Phone is required.' })
+    phone: string;
+    @ApiProperty()
+    @IsString({ message: "Designation be string" })
+    @IsNotEmpty({ message: 'Designation is required.' })
+    designation: string;
+}
+export class PasswordDto {
+    @ApiProperty()
+    @MinLength(6, { message: 'Password should be minimum 6 character.' })
+    @IsNotEmpty({ message: 'Password is required.' })
+    password: string;
+}

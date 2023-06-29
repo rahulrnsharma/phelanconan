@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "src/decorator/current-user.decorator";
 import { HasRoles } from "src/decorator/role.decorator";
 import { SearchDto } from "src/dto/search.dto";
-import { StaffDto } from "src/dto/staff.dto";
+import { PasswordDto, StaffDto, UpdateStaffDto } from "src/dto/staff.dto";
 import { RoleEnum } from "src/enum/common.enum";
 import { IUser } from "src/interface/user.interface";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
@@ -45,7 +45,24 @@ export class StaffController {
     @Put(':id/activate')
     @ApiParam({ name: 'id' })
     activate(@Param('id') id: string, @CurrentUser() user: IUser) {
-        return this.staffService.activate(id, user)
+        return this.staffService.activate(id, user);
+    }
+    @HasRoles(RoleEnum.ADMIN)
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Put(':id/password')
+    @ApiParam({ name: 'id' })
+    changePassword(@Param('id') id: string, @Body() passwordDto: PasswordDto, @CurrentUser() user: IUser) {
+        return this.staffService.changePassword(id, passwordDto, user);
+    }
+
+    @HasRoles(RoleEnum.ADMIN)
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Put(':id')
+    @ApiParam({ name: 'id' })
+    update(@Param('id') id: string, @Body() staffDto: UpdateStaffDto, @CurrentUser() user: IUser) {
+        return this.staffService.update(id, staffDto, user);
     }
 
     @HasRoles(RoleEnum.ADMIN)

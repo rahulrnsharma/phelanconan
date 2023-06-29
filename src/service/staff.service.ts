@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, PipelineStage, Types } from "mongoose";
-import { StaffDocument, StaffModel } from "src/Schema/staff.schema";
+import { Staff, StaffDocument, StaffModel } from "src/Schema/staff.schema";
 import { User, UserDocument, UserModel } from "src/Schema/user.schema";
-import { StaffDto } from "src/dto/staff.dto";
+import { PasswordDto, StaffDto, UpdateStaffDto } from "src/dto/staff.dto";
 import { PasswordService } from "./password.service";
 import { IUser } from "src/interface/user.interface";
 import { ActiveStatusEnum, RoleEnum, UserStatusEnum } from "src/enum/common.enum";
@@ -21,6 +21,15 @@ export class StaffService {
         const _user = await new this.userModel({ username: staffDto.email.toLowerCase(), password: staffDto.password }).save();
         await new this.staffModel({ user: _user._id, firstName: staffDto.firstName, lastName: staffDto.lastName, email: staffDto.email, institute: new Types.ObjectId(staffDto.institute), countryCode: staffDto.countryCode, phone: staffDto.phone, designation: staffDto.designation }).save();
         return { success: true };
+    }
+    async update(id: any, updateDto: UpdateStaffDto, user: IUser) {
+        const _doc: Staff = await this.staffModel.findByIdAndUpdate(id, { $set: { ...updateDto, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        if (_doc) {
+            return { success: true };
+        }
+        else {
+            throw new BadRequestException("Resource you are update does not exist.");
+        }
     }
 
     async delete(id: any, user: IUser) {
@@ -92,5 +101,16 @@ export class StaffService {
         }))
         let _res: any[] = await this.userModel.aggregate(query).exec();
         return new PaginationResponse(_res[0].data, _res[0].count, searchDto.currentPage, searchDto.pageSize);
+    }
+
+    async changePassword(id: any, passwordDto: PasswordDto, user: IUser) {
+        passwordDto.password = await PasswordService.hash(passwordDto.password);
+        const _doc: User = await this.userModel.findByIdAndUpdate(id, { $set: { password: passwordDto.password, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        if (_doc) {
+            return { success: true };
+        }
+        else {
+            throw new BadRequestException("Resource you are update does not exist.");
+        }
     }
 }
