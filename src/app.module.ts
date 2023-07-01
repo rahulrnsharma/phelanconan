@@ -15,6 +15,7 @@ import { join } from 'path';
 import { AppPaymentModule } from './module/payment/payment.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { AppStaffModule } from './module/staff/staff.module';
+import { AppReportModule } from './module/report/report.module';
 
 const MODULE = [
   AdminModule,
@@ -26,7 +27,8 @@ const MODULE = [
   AppDropdownModule,
   AppGownModule,
   AppPaymentModule,
-  AppStaffModule
+  AppStaffModule,
+  AppReportModule
 ]
 
 

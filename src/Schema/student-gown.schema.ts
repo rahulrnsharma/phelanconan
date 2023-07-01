@@ -75,6 +75,10 @@ export class StudentGown extends Base {
     returnLocation: string
     @Prop({ type: String, required: true })
     deadline: string;
+    @Prop({ type: Number, required: true })
+    refno: number;
+    @Prop({ type: String, required: true })
+    hood: string;
 
 }
 

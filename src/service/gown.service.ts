@@ -19,11 +19,12 @@ export class GownService {
 
     async addStudentGown(studentGownDto: StudentGownDto) {
         const _count = await this.studentGownModel.count({ institute: new Types.ObjectId(studentGownDto.institute) });
+        const _refNo = await this.studentGownModel.count();
         let _orderNumber = UtilityService.getOrderNumber(studentGownDto.refno, _count);
         studentGownDto.guest.forEach((obj: any, index: number) => {
             obj.ticket = `G${index + 1}-${_orderNumber}`
         })
-        const studentGown = await new this.studentGownModel({ ...studentGownDto, orderNumber: _orderNumber }).save()
+        const studentGown = await new this.studentGownModel({ ...studentGownDto, refno: _refNo, orderNumber: _orderNumber }).save()
         // let query: PipelineStage[] = [
         //     UtilityService.getMatchPipeline({ _id: studentGown._id }),
         //     UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1, refno: 1 })]),
@@ -41,9 +42,10 @@ export class GownService {
 
     async addStaffGown(staffGownDto: StaffGownDto) {
         // const mail = await this.sendmailService.sendMail(staffGownDto);
-        const _count = await this.studentGownModel.count({ institute: new Types.ObjectId(staffGownDto.institute) });
+        const _count = await this.staffGownModel.count({ institute: new Types.ObjectId(staffGownDto.institute) });
+        const _refNo = await this.staffGownModel.count();
         let _orderNumber = UtilityService.getOrderNumber(staffGownDto.refno, _count);
-        return new this.staffGownModel({ ...staffGownDto, orderNumber: _orderNumber }).save();
+        return new this.staffGownModel({ ...staffGownDto, refno: _refNo, orderNumber: _orderNumber }).save();
         //    const staffGown = await new this.staffGownModel({ ...staffGownDto }).save()
         //    if(staffGown){
         //     let data: PipelineStage[];

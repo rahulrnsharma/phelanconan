@@ -5,14 +5,13 @@ import { IsMongoId, IsNotEmpty, IsInt, IsDate, IsIn, IsString, IsEmail, Validate
 import { Types } from "mongoose";
 import { IsTime } from "src/decorator/validation/time.decorator";
 import { HeightTypeEnum, LocationTypeEnum } from "src/enum/common.enum";
-import { PaginationDto } from "./pagination.dto";
 
-export class StaffGownDto{
+export class StaffGownDto {
     @ApiProperty({ type: 'string' })
     @IsMongoId({ message: 'Institute not valid.' })
     @IsNotEmpty({ message: 'Institute is required.' })
     @Type(() => Types.ObjectId)
-    institute: Types.ObjectId                 
+    institute: Types.ObjectId
     @ApiProperty()
     @IsNotEmpty({ message: "Reference No. must be required" })
     @IsString({ message: "Reference No. must be string" })
@@ -26,14 +25,14 @@ export class StaffGownDto{
     @IsNotEmpty({ message: 'Date is required.' })
     @Type(() => Date)
     date: string;
-    @ApiProperty({type:'string'})
-    @IsNotEmpty({message:"Hire Duration is required"})
-    @IsString({message:"Hire Duration must be a string"})
+    @ApiProperty({ type: 'string' })
+    @IsNotEmpty({ message: "Hire Duration is required" })
+    @IsString({ message: "Hire Duration must be a string" })
     duration: string;
-    @ApiProperty({type:'string'})
-    @IsNotEmpty({message:"Graduated Institute is required"})
-    @IsString({message:"Graduated Institute must be a string"})
-    graduated : string;
+    @ApiProperty({ type: 'string' })
+    @IsNotEmpty({ message: "Graduated Institute is required" })
+    @IsString({ message: "Graduated Institute must be a string" })
+    graduated: string;
     @ApiProperty({ enum: LocationTypeEnum })
     @IsIn(Object.values(LocationTypeEnum))
     @IsString({ message: 'Location should be string.' })
@@ -49,7 +48,7 @@ export class StaffGownDto{
     faculty: string;
     @ApiPropertyOptional()
     @IsString({ message: "Faculty must be string" })
-    faculty_opt?: string;    
+    faculty_opt?: string;
     @ApiProperty()
     @IsNotEmpty({ message: "Qualification must be required" })
     @IsString({ message: "Qualification must be string" })
@@ -87,6 +86,6 @@ export class StaffGownDto{
     @IsString({ message: "Phone must be string" })
     @IsNotEmpty({ message: 'Phone is required.' })
     phone: string;
-   
+
 }
 

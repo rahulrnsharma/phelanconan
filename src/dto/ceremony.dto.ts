@@ -55,6 +55,10 @@ export class CeremonyDto extends ImageOptionalDto {
     @IsNotEmpty({ message: "Deadline must be required" })
     @IsString({ message: "Deadline must be string" })
     deadline: string;
+    @ApiProperty()
+    @IsNotEmpty({ message: "Hood must be required" })
+    @IsString({ message: "Hood must be string" })
+    hood: string;
 }
 
 

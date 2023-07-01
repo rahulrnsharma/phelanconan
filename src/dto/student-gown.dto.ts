@@ -134,6 +134,10 @@ export class StudentGownDto {
     @IsNotEmpty({ message: "Reference No. must be required" })
     @IsString({ message: "Reference No. must be string" })
     refno: string;
+    @ApiProperty()
+    @IsNotEmpty({ message: "Hood must be required" })
+    @IsString({ message: "Hood must be string" })
+    hood: string;
 }
 
 
