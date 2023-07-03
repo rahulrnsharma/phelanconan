@@ -216,7 +216,7 @@ export class CeremonyService {
     }
     async verify(file: any) {
         let _data: any[] = UtilityService.readExcelFileData(file);
-        const _header = ["Institution", "Price", "Reference No", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image", "Collection Location", "Collection Time", "Cap", "Return Location", "Deadline"];
+        const _header = ["Institution", "Price", "Reference No", "Graduation Date", "Ceremony Time", "Hood", "Faculty", "Course", "Image", "Collection Location", "Collection Time", "Cap", "Return Location", "Deadline"];
         if (!UtilityService.validExcelHeader(_header, _data[0])) {
             throw new BadRequestException(`Excel sheet header should be ${_header}`)
         }
@@ -244,6 +244,9 @@ export class CeremonyService {
             }
             if (!isNaN(_obj["Collection Time"])) {
                 _obj["Collection Time"] = UtilityService.excelTime(_obj["Collection Time"]);
+            }
+            if (!isNaN(_obj["Deadline"])) {
+                _obj["Deadline"] = UtilityService.excelDate(_obj["Deadline"], offset);
             }
             const _duplicate = check.find(
                 (uniqueObj) => JSON.stringify(uniqueObj) == JSON.stringify(_obj)
@@ -289,9 +292,9 @@ export class CeremonyService {
                         faculty: _lastFaculty._id,
                         course: _lastCourse._id,
                         date: _obj["Graduation Date"],
-                        time: _obj["Ceremony Time"],
-                        price: _obj["Price"],
-                        refno: _obj["Reference No"]
+                        time: _obj["Ceremony Time"]
+                        // price: _obj["Price"],
+                        // refno: _obj["Reference No"]
                     })
                     if (_ceremony) {
                         already.push({ ..._obj, rows: i + 2 });
@@ -310,7 +313,7 @@ export class CeremonyService {
         return { unique, duplicate, already };
     }
     async upload(data: any[], user: IUser) {
-        const _header = ["Institution", "Price", "Reference No", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image", "Collection Location", "Collection Time", "Cap", "Return Location", "Deadline", "_institute", "_course", "_faculty"];
+        const _header = ["Institution", "Price", "Reference No", "Graduation Date", "Ceremony Time", "Hood", "Faculty", "Course", "Image", "Collection Location", "Collection Time", "Cap", "Return Location", "Deadline", "_institute", "_course", "_faculty"];
         if (!UtilityService.validExcelHeader(_header, data[0])) {
             throw new BadRequestException(`Not a valid Data`);
         }
@@ -367,8 +370,8 @@ export class CeremonyService {
                 course: _lastCourse._id,
                 refno: data[i]["Reference No"],
                 date: data[i]["Graduation Date"],
-                time: data[i]["Ceremony Time"],
-                price: data[i]["Price"]
+                // time: data[i]["Ceremony Time"],
+                // price: data[i]["Price"]
 
             })
             if (_ceremony) {
@@ -389,7 +392,8 @@ export class CeremonyService {
                     collectionTime: data[i]["Collection Time"],
                     cap: _cap == 'yes' || _cap == 'true',
                     returnLocation: data[i]["Return Location"],
-                    deadline: data[i]["Deadline"]
+                    deadline: data[i]["Deadline"],
+                    hood: data[i]["Hood"]
                 }).save();
             }
         }
@@ -543,7 +547,7 @@ export class CeremonyService {
     }
     async verifyStaffCeremony(file: any) {
         let _data: any[] = UtilityService.readExcelFileData(file);
-        const _header = ["Institution", "Graduation Date", "Ceremony Time", "Image", "Hire duration", "Reference No"];
+        const _header = ["Institution", "Graduation Date", "Ceremony Time", "Image", "Hire duration", "Reference No", "Deadline"];
         if (!UtilityService.validExcelHeader(_header, _data[0])) {
             throw new BadRequestException(`Excel sheet header should be ${_header}`)
         }
@@ -562,6 +566,9 @@ export class CeremonyService {
             }
             if (!isNaN(_obj["Ceremony Time"])) {
                 _obj["Ceremony Time"] = UtilityService.excelTime(_obj["Ceremony Time"]);
+            }
+            if (!isNaN(_obj["Deadline"])) {
+                _obj["Deadline"] = UtilityService.excelDate(_obj["Deadline"], offset);
             }
             const _duplicate = check.find(
                 (uniqueObj) => JSON.stringify(uniqueObj) == JSON.stringify(_obj)
@@ -585,7 +592,7 @@ export class CeremonyService {
                         date: _obj["Graduation Date"],
                         time: _obj["Ceremony Time"],
                         duration: _obj["Hire duration"],
-                        refno: _obj["Reference No"]
+                        // refno: _obj["Reference No"]
                     })
                     if (_StaffCeremony) {
                         already.push({ ..._obj, rows: i + 2 });
@@ -603,7 +610,6 @@ export class CeremonyService {
         }
         return { unique, duplicate, already };
     }
-
     async uploadStaffCeremony(data: any[], user: IUser) {
         const _header = ["Institution", "Graduation Date", "Ceremony Time", "Image", "Hire duration", "Reference No", "_institute"];
         if (!UtilityService.validExcelHeader(_header, data[0])) {
@@ -631,7 +637,7 @@ export class CeremonyService {
                 date: data[i]["Graduation Date"],
                 time: data[i]["Ceremony Time"],
                 duration: data[i]["Hire duration"],
-                refno: data[i]["Reference No"]
+                // refno: data[i]["Reference No"]
 
             })
             if (_StaffCeremony) {
@@ -645,6 +651,7 @@ export class CeremonyService {
                     duration: data[i]["Hire duartion"],
                     image: data[i]["Image"],
                     refno: data[i]["Reference No"],
+                    deadline: data[i]["Deadline"],
                     price: 0
                 }).save();
 

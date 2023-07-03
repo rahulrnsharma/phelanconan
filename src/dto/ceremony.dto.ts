@@ -51,10 +51,15 @@ export class CeremonyDto extends ImageOptionalDto {
     @IsNotEmpty({ message: "Return Location must be required" })
     @IsString({ message: "Return Location must be string" })
     returnLocation: string;
-    @ApiProperty()
-    @IsNotEmpty({ message: "Deadline must be required" })
-    @IsString({ message: "Deadline must be string" })
+    @ApiProperty({ type: 'string' })
+    @IsDate({ message: 'Date is not valid.' })
+    @IsNotEmpty({ message: 'Date is required.' })
+    @Type(() => Date)
     deadline: string;
+    @ApiProperty()
+    @IsNotEmpty({ message: "Hood must be required" })
+    @IsString({ message: "Hood must be string" })
+    hood: string;
 }
 
 

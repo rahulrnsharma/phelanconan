@@ -19,6 +19,7 @@ export class GownService {
 
     async addStudentGown(studentGownDto: StudentGownDto) {
         const _count = await this.studentGownModel.count({ institute: new Types.ObjectId(studentGownDto.institute) });
+        const _refNo = await this.studentGownModel.count();
         let _orderNumber = UtilityService.getOrderNumber(studentGownDto.refno, _count);
         studentGownDto.guest.forEach((obj: any, index: number) => {
             obj.ticket = `G${index + 1}-${_orderNumber}`

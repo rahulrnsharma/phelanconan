@@ -9,9 +9,7 @@ export type StaffGownDocument = HydratedDocument<StaffGown>
 export class StaffGown extends Base {
     @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
     institute: ObjectId;
-    @Prop({ type: String, required: true })
-    refno: string;
-    @Prop({ type: Number, required: true , default:0})
+    @Prop({ type: Number, required: true, default: 0 })
     price: number
     @Prop({ type: Date, required: true })
     date: Date;
@@ -21,7 +19,7 @@ export class StaffGown extends Base {
     duration: string;
     @Prop({ type: String, required: true })
     graduated: string;
-    @Prop({ type: String,enum:LocationTypeEnum,trim:true, required: true })
+    @Prop({ type: String, enum: LocationTypeEnum, trim: true, required: true })
     location: string;
     @Prop({ type: String, required: true })
     year: string;
@@ -51,7 +49,10 @@ export class StaffGown extends Base {
     orderNumber: string;
     @Prop({ type: String, required: true, trim: true })
     countryCode: string;
-
+    @Prop({ type: Number, required: true })
+    refno: number;
+    @Prop({ type: Date, required: true })
+    deadline: Date;
 }
 
 export const StaffGownSchema = SchemaFactory.createForClass(StaffGown)

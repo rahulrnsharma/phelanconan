@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsIn, IsInt, IsString, Min, ValidateIf } from "class-validator";
+import { IsDate, IsIn, IsInt, IsString, Min, ValidateIf } from "class-validator";
+import { GreaterThanEqualTo } from "src/decorator/validation/comparison.decorator";
 import { ActiveStatusEnum } from "src/enum/common.enum";
 
 export class PaginationDto {
@@ -37,4 +38,17 @@ export class ImageDto {
 export class ImageOptionalDto {
     @ApiProperty({ type: 'file', format: 'binary', required: false })
     image: Express.Multer.File
+}
+export class DateRangeDto {
+    @ApiPropertyOptional({ type: 'string' })
+    @IsDate({ message: 'startDate is not valid.' })
+    @Type(() => Date)
+    @ValidateIf(o => o.startDate)
+    startDate?: Date;
+    @ApiPropertyOptional({ type: 'string' })
+    @GreaterThanEqualTo('startDate', { message: 'End date should be greater than start date.' })
+    @IsDate({ message: 'endDate is not valid.' })
+    @Type(() => Date)
+    @ValidateIf(o => o.endDate)
+    endDate?: Date;
 }

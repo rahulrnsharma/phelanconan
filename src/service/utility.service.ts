@@ -151,6 +151,146 @@ export class UtilityService {
     static guid(): string {
         return `${this.randomString(8)}-${this.randomString(4)}-${this.randomString(4)}-${this.randomString(4)}-${this.randomString(12)}`;
     }
-
-
+    static getStudentReportExcel(data: any[]) {
+        let _header = {
+            "Order": "",
+            "Ref": "",
+            "Last Name": "",
+            "First Name": "",
+            "Collected": "",
+            "Returned": "",
+            "Size": "",
+            "Hood": "",
+            "Course": "",
+            "Guest": "Last Name",
+            "Guest Name": "First Name",
+            "Guest Email": "Email",
+            "Guest Ticket": "Ticket",
+        }
+        let _excelData: any[] = [];
+        _excelData.push(_header);
+        let _merge = [];
+        for (let i = 0; i < 9; i++) {
+            _merge.push({ s: { r: 0, c: i }, e: { r: 1, c: i } });
+        }
+        _merge.push({ s: { r: 0, c: 9 }, e: { r: 0, c: 12 } });
+        let _rn = 2;
+        let _dateGroup = UtilityService.groupBy(data, 'date');
+        for (let _key in Object.keys(_dateGroup)) {
+            let _dateData = _dateGroup[_key];
+            let _timeGroup = UtilityService.groupBy(_dateData, 'time');
+            for (let _timeKey in Object.keys(_timeGroup)) {
+                let _timeData: any[] = _timeGroup[_timeKey];
+                let _dtRow = {
+                    "Order": `${_key} ${_timeKey}`,
+                    "Ref": "",
+                    "Last Name": "",
+                    "First Name": "",
+                    "Collected": "",
+                    "Returned": "",
+                    "Size": "",
+                    "Hood": "",
+                    "Course": "",
+                    "Guest": "",
+                    "Guest Name": "",
+                    "Guest Email": "",
+                    "Guest Ticket": "",
+                }
+                _excelData.push(_dtRow)
+                _merge.push({ s: { r: _rn, c: 0 }, e: { r: _rn, c: 12 } });
+                _rn++;
+                for (let i = 0; i < _timeData.length; i++) {
+                    let _rowData: any = _timeData[i];
+                    let _row = {
+                        "Order": _rowData.orderNumber,
+                        "Ref": _rowData.refno,
+                        "Last Name": _rowData.lastName,
+                        "First Name": _rowData.firstName,
+                        "Collected": _rowData.collectionLocation,
+                        "Returned": _rowData.returnLocation,
+                        "Size": _rowData.size,
+                        "Hood": _rowData.hood,
+                        "Course": _rowData.course.name,
+                        "Guest": "",
+                        "Guest Name": "",
+                        "Guest Email": "",
+                        "Guest Ticket": "",
+                    }
+                    if (_rowData.guest.length > 0) {
+                        for (let g = 0; g < _rowData.guest.length; g++) {
+                            let _grow = {
+                                ..._row,
+                                "Guest": _rowData.guest[g].lastName,
+                                "Guest Name": _rowData.guest[g].firstName,
+                                "Guest Email": _rowData.guest[g].email,
+                                "Guest Ticket": _rowData.guest[g].ticket,
+                            }
+                            _excelData.push(_grow)
+                        }
+                        if (_rowData.guest.length > 1) {
+                            let _hc = _rowData.guest.length;
+                            for (let ri = 0; ri < 9; ri++) {
+                                _merge.push({ s: { r: _rn, c: ri }, e: { r: _rn + _hc - 1, c: ri } });
+                            }
+                            _rn = _rn + _hc;
+                        }
+                        else {
+                            _rn++;
+                        }
+                    }
+                    else {
+                        _excelData.push(_row)
+                        _rn++;
+                    }
+                }
+            }
+        }
+        const ws = XLSX.utils.json_to_sheet(_excelData);
+        ws["!merges"] = _merge;
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Student On-Site");
+        return XLSX.write(wb, { type: "buffer" });
+    }
+    static getStaffReportExcel(data: any[]) {
+        let _header = {
+            "Order": "",
+            "Ref": "",
+            "Ceremony": "",
+            "Ceremony Date": "",
+            "Ceremony Time": "",
+            "Last Name": "",
+            "First Name": "",
+            "Qualification": "",
+            "Faculty": "",
+            "From Institute": "",
+            "Size": "",
+            "In Year": "",
+            "Requirements": "",
+        }
+        let _excelData: any[] = [];
+        _excelData.push(_header);
+        for (let i = 0; i < data.length; i++) {
+            let _rowData = data[i];
+            let _row = {
+                "Order": _rowData.orderNumber,
+                "Ref": _rowData.refno,
+                "Ceremony": _rowData.institute.name,
+                "Ceremony Date": _rowData.date,
+                "Ceremony Time": _rowData.time,
+                "Last Name": _rowData.lastName,
+                "First Name": _rowData.firstName,
+                "Qualification": _rowData.qualification,
+                "Faculty": _rowData.faculty,
+                "From Institute": _rowData.graduated,
+                "Size": _rowData.size,
+                "In Year": _rowData.year,
+                "Requirements": _rowData.requirement,
+            }
+            _excelData.push(_row);
+        }
+        const ws = XLSX.utils.json_to_sheet(_excelData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Staff On-Site");
+        return XLSX.write(wb, { type: "buffer" });;
+    }
 }
