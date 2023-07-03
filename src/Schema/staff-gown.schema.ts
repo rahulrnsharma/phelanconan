@@ -51,6 +51,8 @@ export class StaffGown extends Base {
     countryCode: string;
     @Prop({ type: Number, required: true })
     refno: number;
+    @Prop({ type: Date, required: true })
+    deadline: Date;
 }
 
 export const StaffGownSchema = SchemaFactory.createForClass(StaffGown)

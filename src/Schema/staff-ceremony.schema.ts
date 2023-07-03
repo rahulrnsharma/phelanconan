@@ -3,8 +3,8 @@ import mongoose, { HydratedArraySubdocument, ObjectId } from "mongoose";
 import { Base } from "./base.schema";
 
 export type StaffCeremonyDocument = HydratedArraySubdocument<StaffCeremony>
-@Schema({timestamps:true})
-export class StaffCeremony extends Base{
+@Schema({ timestamps: true })
+export class StaffCeremony extends Base {
     @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
     institute: ObjectId;
     @Prop({ type: Date, required: true })
@@ -17,9 +17,11 @@ export class StaffCeremony extends Base{
     duration: string;
     @Prop({ type: String, required: true })
     refno: string;
-    @Prop({type: Number,required: true,default:0})
+    @Prop({ type: Number, required: true, default: 0 })
     price: number
-    
+    @Prop({ type: Date, required: true })
+    deadline: Date;
+
 }
 export const StaffCeremonySchema = SchemaFactory.createForClass(StaffCeremony);
-export const StaffCeremonyModel = {name:'staff-ceremony',schema:StaffCeremonySchema}
+export const StaffCeremonyModel = { name: 'staff-ceremony', schema: StaffCeremonySchema }

@@ -30,8 +30,8 @@ export class Ceremony extends Base {
     cap: boolean;
     @Prop({ type: String, required: true })
     returnLocation: string
-    @Prop({ type: String, required: true })
-    deadline: string;
+    @Prop({ type: Date, required: true })
+    deadline: Date;
     @Prop({ type: String, required: true })
     hood: string;
 }

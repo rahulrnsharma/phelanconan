@@ -86,6 +86,11 @@ export class StaffGownDto {
     @IsString({ message: "Phone must be string" })
     @IsNotEmpty({ message: 'Phone is required.' })
     phone: string;
+    @ApiProperty({ type: 'string' })
+    @IsDate({ message: 'Deadline is not valid.' })
+    @IsNotEmpty({ message: 'Deadline is required.' })
+    @Type(() => Date)
+    deadline: string;
 
 }
 

@@ -126,9 +126,10 @@ export class StudentGownDto {
     @IsNotEmpty({ message: "Return Location must be required" })
     @IsString({ message: "Return Location must be string" })
     returnLocation: string;
-    @ApiProperty()
-    @IsNotEmpty({ message: "Deadline must be required" })
-    @IsString({ message: "Deadline must be string" })
+    @ApiProperty({ type: 'string' })
+    @IsDate({ message: 'Deadline is not valid.' })
+    @IsNotEmpty({ message: 'Deadline is required.' })
+    @Type(() => Date)
     deadline: string;
     @ApiProperty()
     @IsNotEmpty({ message: "Reference No. must be required" })

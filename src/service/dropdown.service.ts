@@ -83,7 +83,7 @@ export class DropdownService {
 
     async getStaffDuration(queryDto: SearchFacultyDto) {
         let query: PipelineStage[] = [UtilityService.getMatchPipeline({ isActive: true, date: queryDto.date, time: queryDto.time, institute: new Types.ObjectId(queryDto.institute) })];
-        query.push(UtilityService.getProjectPipeline({ duration: "$duration", refno: 1, "_id": 0 }))
+        query.push(UtilityService.getProjectPipeline({ duration: "$duration", refno: 1, deadline: 1, "_id": 0 }))
         return this.staffCeremonyModel.aggregate(query);
     }
 

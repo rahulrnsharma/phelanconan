@@ -245,6 +245,9 @@ export class CeremonyService {
             if (!isNaN(_obj["Collection Time"])) {
                 _obj["Collection Time"] = UtilityService.excelTime(_obj["Collection Time"]);
             }
+            if (!isNaN(_obj["Deadline"])) {
+                _obj["Deadline"] = UtilityService.excelDate(_obj["Deadline"], offset);
+            }
             const _duplicate = check.find(
                 (uniqueObj) => JSON.stringify(uniqueObj) == JSON.stringify(_obj)
             );
@@ -544,7 +547,7 @@ export class CeremonyService {
     }
     async verifyStaffCeremony(file: any) {
         let _data: any[] = UtilityService.readExcelFileData(file);
-        const _header = ["Institution", "Graduation Date", "Ceremony Time", "Image", "Hire duration", "Reference No"];
+        const _header = ["Institution", "Graduation Date", "Ceremony Time", "Image", "Hire duration", "Reference No", "Deadline"];
         if (!UtilityService.validExcelHeader(_header, _data[0])) {
             throw new BadRequestException(`Excel sheet header should be ${_header}`)
         }
@@ -563,6 +566,9 @@ export class CeremonyService {
             }
             if (!isNaN(_obj["Ceremony Time"])) {
                 _obj["Ceremony Time"] = UtilityService.excelTime(_obj["Ceremony Time"]);
+            }
+            if (!isNaN(_obj["Deadline"])) {
+                _obj["Deadline"] = UtilityService.excelDate(_obj["Deadline"], offset);
             }
             const _duplicate = check.find(
                 (uniqueObj) => JSON.stringify(uniqueObj) == JSON.stringify(_obj)
@@ -586,7 +592,7 @@ export class CeremonyService {
                         date: _obj["Graduation Date"],
                         time: _obj["Ceremony Time"],
                         duration: _obj["Hire duration"],
-                        refno: _obj["Reference No"]
+                        // refno: _obj["Reference No"]
                     })
                     if (_StaffCeremony) {
                         already.push({ ..._obj, rows: i + 2 });
@@ -631,7 +637,7 @@ export class CeremonyService {
                 date: data[i]["Graduation Date"],
                 time: data[i]["Ceremony Time"],
                 duration: data[i]["Hire duration"],
-                refno: data[i]["Reference No"]
+                // refno: data[i]["Reference No"]
 
             })
             if (_StaffCeremony) {
@@ -645,6 +651,7 @@ export class CeremonyService {
                     duration: data[i]["Hire duartion"],
                     image: data[i]["Image"],
                     refno: data[i]["Reference No"],
+                    deadline: data[i]["Deadline"],
                     price: 0
                 }).save();
 

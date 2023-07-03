@@ -12,21 +12,26 @@ export class StaffCeremonyDto extends ImageOptionalDto {
     @ApiProperty()
     @IsTime({ message: "Time should be in (hh:mm:ss) formate" })
     @IsNotEmpty({ message: "Time is required." })
-    time: string; 
+    time: string;
     @ApiProperty({ type: 'string' })
     @IsDate({ message: 'Date is not valid.' })
     @IsNotEmpty({ message: 'Date is required.' })
     @Type(() => Date)
     date: string;
-    @ApiProperty({type:'string'})
-    @IsNotEmpty({message:"Hire Duration is required"})
-    @IsString({message:"Hire Duration must be a string"})
+    @ApiProperty({ type: 'string' })
+    @IsNotEmpty({ message: "Hire Duration is required" })
+    @IsString({ message: "Hire Duration must be a string" })
     duration: string;
     @ApiProperty()
     @IsNotEmpty({ message: "Reference No. must be required" })
     @IsString({ message: "Reference No. must be string" })
     refno: string;
-    
+    @ApiProperty({ type: 'string' })
+    @IsDate({ message: 'Date is not valid.' })
+    @IsNotEmpty({ message: 'Date is required.' })
+    @Type(() => Date)
+    deadline: string;
+
 }
 
 export class ExcelFileDto {
