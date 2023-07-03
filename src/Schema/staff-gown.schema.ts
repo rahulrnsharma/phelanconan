@@ -47,7 +47,7 @@ export class StaffGown extends Base {
     email: string;
     @Prop({ type: String, required: true, trim: true })
     phone: string;
-    @Prop({ type: String, required: true, trim: true })
+    @Prop({ type: String, required: false, trim: true })
     orderNumber: string;
     @Prop({ type: String, required: true, trim: true })
     countryCode: string;

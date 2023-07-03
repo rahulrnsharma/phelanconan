@@ -24,44 +24,41 @@ export class GownService {
             obj.ticket = `G${index + 1}-${_orderNumber}`
         })
         const studentGown = await new this.studentGownModel({ ...studentGownDto, orderNumber: _orderNumber }).save()
-        // let query: PipelineStage[] = [
-        //     UtilityService.getMatchPipeline({ _id: studentGown._id }),
-        //     UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1, refno: 1 })]),
-        //     UtilityService.getLookupPipeline("faculties", "faculty", "_id", "faculty", [UtilityService.getProjectPipeline({ name: 1 })]),
-        //     UtilityService.getLookupPipeline("courses", "course", "_id", "course", [UtilityService.getProjectPipeline({ name: 1 })]),
-        //     UtilityService.getUnwindPipeline("institute"),
-        //     UtilityService.getUnwindPipeline("faculty"),
-        //     UtilityService.getUnwindPipeline("course"),
-        //     UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 })
-        // ]
-        // let _data: any[] = await this.studentGownModel.aggregate(query).exec()
-        // const mail = await this.sendmailService.sendMail(_data);
+        let query: PipelineStage[] = [
+            UtilityService.getMatchPipeline({ _id: studentGown._id }),
+            UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1, refno: 1 })]),
+            UtilityService.getLookupPipeline("faculties", "faculty", "_id", "faculty", [UtilityService.getProjectPipeline({ name: 1 })]),
+            UtilityService.getLookupPipeline("courses", "course", "_id", "course", [UtilityService.getProjectPipeline({ name: 1 })]),
+            UtilityService.getUnwindPipeline("institute"),
+            UtilityService.getUnwindPipeline("faculty"),
+            UtilityService.getUnwindPipeline("course"),
+            UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 })
+        ]
+        let _data: any[] = await this.studentGownModel.aggregate(query).exec()
+        const mail = await this.sendmailService.sendMail(_data);
         return studentGown;
     }
 
     async addStaffGown(staffGownDto: StaffGownDto) {
         // const mail = await this.sendmailService.sendMail(staffGownDto);
-        const _count = await this.studentGownModel.count({ institute: new Types.ObjectId(staffGownDto.institute) });
-        let _orderNumber = UtilityService.getOrderNumber(staffGownDto.refno, _count);
-        return new this.staffGownModel({ ...staffGownDto, orderNumber: _orderNumber }).save();
-        //    const staffGown = await new this.staffGownModel({ ...staffGownDto }).save()
-        //    if(staffGown){
-        //     let data: PipelineStage[];
-        //     data = [
-        //    UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1 })]),
-        //        UtilityService.getLookupPipeline("faculties", "faculty", "_id", "faculty", [UtilityService.getProjectPipeline({ name: 1 })]),
-        //        UtilityService.getLookupPipeline("courses", "course", "_id", "course", [UtilityService.getProjectPipeline({ name: 1 })]),
-        //        UtilityService.getUnwindPipeline("institute"),
-        //        UtilityService.getUnwindPipeline("faculty"),
-        //        UtilityService.getUnwindPipeline("course"),
-        //        UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 })
-        //    ]
-        //    let _data: any[] = await this.staffGownModel.aggregate(data).exec()
-        //        const mail = await this.sendmailService.sendMail(_data);
-        //    }
-        //     return ;
+        const _count = await this.staffGownModel.count({ institute: new Types.ObjectId(staffGownDto.institute) });
+        let _orderNumber = UtilityService.getOrderNumber(staffGownDto.refno,_count);
+           const staffGown = await new this.staffGownModel({ ...staffGownDto,orderNumber:_orderNumber }).save()
+           if(staffGown){
+            let data: PipelineStage[];
+            data = [
+           UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1 })]),
+               UtilityService.getUnwindPipeline("institute"),
+               UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 })
+           ]
+           let _data: any[] = await this.staffGownModel.aggregate(data).exec()
+           const mail = await this.sendmailService.sendMail(_data);
+           
+            return {sucess:true};
     }
+}
     async getAllStudentGown(searchDto: SearchGownDto) {
+        
         let _match: any = {};
         if (searchDto.status) {
             _match.isActive = searchDto.status == ActiveStatusEnum.ACTIVE;
@@ -93,7 +90,7 @@ export class GownService {
             data: 1,
             count: { $ifNull: [{ $arrayElemAt: ["$count.total", 0] }, 0] }
         }))
-        let _res: any[] = await this.studentGownModel.aggregate(query).exec();
+        let _res: any[] = await this.studentGownModel.aggregate(query).exec();  
         return new PaginationResponse(_res[0].data, _res[0].count, searchDto.currentPage, searchDto.pageSize);
     }
 

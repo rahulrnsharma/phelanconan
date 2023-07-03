@@ -9,8 +9,6 @@ import { IUser } from "src/interface/user.interface";
 import { UserDocument, UserModel } from "src/Schema/user.schema";
 import { PasswordService } from "./password.service";
 import { UserStatusEnum } from "src/enum/common.enum";
-
-
 @Injectable()
 export class AuthService {
     constructor(@InjectModel(LoginModel.name) private loginModel: Model<LoginDocument>,
