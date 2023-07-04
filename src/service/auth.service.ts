@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
+import { Model, PipelineStage, Types } from "mongoose";
 import { LoginDocument, LoginModel } from "src/Schema/login.schema";
 import { LoginDto } from "src/dto/auth.dto";
 import { JwtService } from "@nestjs/jwt";
@@ -8,7 +8,8 @@ import { AppConfigService } from "./config.service";
 import { IUser } from "src/interface/user.interface";
 import { UserDocument, UserModel } from "src/Schema/user.schema";
 import { PasswordService } from "./password.service";
-import { UserStatusEnum } from "src/enum/common.enum";
+import { RoleEnum, UserStatusEnum } from "src/enum/common.enum";
+import { UtilityService } from "./utility.service";
 @Injectable()
 export class AuthService {
     constructor(@InjectModel(LoginModel.name) private loginModel: Model<LoginDocument>,
@@ -60,5 +61,19 @@ export class AuthService {
             return user;
         }
         throw new BadRequestException("Invalid Credentials.");
+    }
+
+    async userDetail(user: IUser) {
+        let query: PipelineStage[] = [UtilityService.getMatchPipeline({ _id: new Types.ObjectId(user.userId) })];
+        if (user.role == RoleEnum.ADMIN) {
+            query.push(UtilityService.getLookupPipeline("admins", "_id", "user", "profile", [UtilityService.getProjectPipeline({ firstName: 1, lastName: 1, email: 1 })]));
+        }
+        else {
+            query.push(UtilityService.getLookupPipeline("staffs", "_id", "user", "profile", [UtilityService.getProjectPipeline({ firstName: 1, lastName: 1, email: 1, countryCode: 1, phone: 1, designation: 1, institute: 1 })]));
+        }
+        query.push(UtilityService.getUnwindPipeline("profile"));
+        query.push(UtilityService.getProjectPipeline({ role: 1, profile: 1 }));
+        let _res: any[] = await this.userModel.aggregate(query).exec();
+        return _res[0];
     }
 }
