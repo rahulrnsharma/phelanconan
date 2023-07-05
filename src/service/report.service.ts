@@ -5,8 +5,9 @@ import { StudentGownDocument, StudentGownModel } from "src/Schema/student-gown.s
 import { PaginationResponse } from "src/model/pagination.model";
 import { StaffGownDocument, StaffGownModel } from "src/Schema/staff-gown.schema";
 import { StaffReportDto, StudentReportDto } from "src/dto/report.dto";
-import { ActiveStatusEnum } from "src/enum/common.enum";
+import { ActiveStatusEnum, RoleEnum } from "src/enum/common.enum";
 import { UtilityService } from "./utility.service";
+import { IUser } from "src/interface/user.interface";
 
 @Injectable()
 export class ReportService {
@@ -14,7 +15,7 @@ export class ReportService {
         @InjectModel(StaffGownModel.name) private readonly staffGownModel: Model<StaffGownDocument>
     ) { }
 
-    async getStudentReport(searchDto: StudentReportDto) {
+    async getStudentReport(searchDto: StudentReportDto, user: IUser) {
         let _match: any = {};
         if (searchDto.status) {
             _match.isActive = searchDto.status == ActiveStatusEnum.ACTIVE;
@@ -33,6 +34,9 @@ export class ReportService {
                 { date: { $gte: UtilityService.setStartHour(searchDto.startDate, searchDto.timezone) } },
                 { date: { $lt: UtilityService.setEndHour(searchDto.endDate, searchDto.timezone) } },
             ];
+        }
+        if (user.role = RoleEnum.STAFF) {
+            _match.institute = new Types.ObjectId(user.institute);
         }
         let query: PipelineStage[] = [UtilityService.getMatchPipeline(_match)];
         query.push({
@@ -60,7 +64,7 @@ export class ReportService {
         return new PaginationResponse(_res[0].data, _res[0].count, searchDto.currentPage, searchDto.pageSize);
     }
 
-    async getStaffReport(searchDto: StaffReportDto) {
+    async getStaffReport(searchDto: StaffReportDto, user: IUser) {
         let _match: any = {};
         if (searchDto.status) {
             _match.isActive = searchDto.status == ActiveStatusEnum.ACTIVE;
@@ -73,6 +77,9 @@ export class ReportService {
                 { date: { $gte: UtilityService.setStartHour(searchDto.startDate, searchDto.timezone) } },
                 { date: { $lt: UtilityService.setEndHour(searchDto.endDate, searchDto.timezone) } },
             ];
+        }
+        if (user.role = RoleEnum.STAFF) {
+            _match.institute = new Types.ObjectId(user.institute);
         }
         let query: PipelineStage[] = [UtilityService.getMatchPipeline(_match)];
         query.push({
@@ -96,7 +103,7 @@ export class ReportService {
         return new PaginationResponse(_res[0].data, _res[0].count, searchDto.currentPage, searchDto.pageSize);
     }
 
-    async downloadStudentReport(searchDto: StudentReportDto) {
+    async downloadStudentReport(searchDto: StudentReportDto, user: IUser) {
         let _match: any = {};
         if (searchDto.status) {
             _match.isActive = searchDto.status == ActiveStatusEnum.ACTIVE;
@@ -116,6 +123,9 @@ export class ReportService {
                 { date: { $lt: UtilityService.setEndHour(searchDto.endDate, searchDto.timezone) } },
             ];
         }
+        if (user.role = RoleEnum.STAFF) {
+            _match.institute = new Types.ObjectId(user.institute);
+        }
         let query: PipelineStage[] = [UtilityService.getMatchPipeline(_match)];
         query.push(UtilityService.getSortPipeline('date', 'asc'));
         // query.push(UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1 })]));
@@ -129,7 +139,7 @@ export class ReportService {
         return UtilityService.getStudentReportExcel(_res);
     }
 
-    async downloadStaffReport(searchDto: StaffReportDto) {
+    async downloadStaffReport(searchDto: StaffReportDto, user: IUser) {
         let _match: any = {};
         if (searchDto.status) {
             _match.isActive = searchDto.status == ActiveStatusEnum.ACTIVE;
@@ -142,6 +152,9 @@ export class ReportService {
                 { date: { $gte: UtilityService.setStartHour(searchDto.startDate, searchDto.timezone) } },
                 { date: { $lt: UtilityService.setEndHour(searchDto.endDate, searchDto.timezone) } },
             ];
+        }
+        if (user.role = RoleEnum.STAFF) {
+            _match.institute = new Types.ObjectId(user.institute);
         }
         let query: PipelineStage[] = [UtilityService.getMatchPipeline(_match)];
         query.push(UtilityService.getSortPipeline('date', 'asc'));

@@ -1,6 +1,8 @@
 import { Body, Controller, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
+import { CurrentUser } from "src/decorator/current-user.decorator";
 import { StaffReportDto, StudentReportDto } from "src/dto/report.dto";
+import { IUser } from "src/interface/user.interface";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
 import { ReportService } from "src/service/report.service";
 
@@ -13,28 +15,28 @@ export class ReportController {
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
     @Get('student')
-    getOrdersStudent(@Query() query: StudentReportDto) {
-        return this.reportService.getStudentReport(query);
+    getOrdersStudent(@Query() query: StudentReportDto, @CurrentUser() user: IUser) {
+        return this.reportService.getStudentReport(query, user);
     }
 
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
     @Get('staff')
-    getOrdersStaff(@Query() query: StaffReportDto) {
-        return this.reportService.getStaffReport(query);
+    getOrdersStaff(@Query() query: StaffReportDto, @CurrentUser() user: IUser) {
+        return this.reportService.getStaffReport(query, user);
     }
 
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
     @Get('student/download')
-    downloadOrdersStudent(@Query() query: StudentReportDto) {
-        return this.reportService.downloadStudentReport(query);
+    downloadOrdersStudent(@Query() query: StudentReportDto, @CurrentUser() user: IUser) {
+        return this.reportService.downloadStudentReport(query, user);
     }
 
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
     @Get('staff/download')
-    downloadOrdersStaff(@Query() query: StaffReportDto) {
-        return this.reportService.downloadStaffReport(query);
+    downloadOrdersStaff(@Query() query: StaffReportDto, @CurrentUser() user: IUser) {
+        return this.reportService.downloadStaffReport(query, user);
     }
 }

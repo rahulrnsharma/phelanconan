@@ -216,7 +216,7 @@ export class CeremonyService {
     }
     async verify(file: any) {
         let _data: any[] = UtilityService.readExcelFileData(file);
-        const _header = ["Institution", "Price", "Reference No", "Graduation Date", "Ceremony Time", "Hood", "Faculty", "Course", "Image", "Collection Location", "Collection Time", "Cap", "Return Location", "Deadline"];
+        const _header = ["Institution", "Price", "Reference No", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image", "Collection Location", "Collection Time", "Cap", "Return Location", "Deadline"];
         if (!UtilityService.validExcelHeader(_header, _data[0])) {
             throw new BadRequestException(`Excel sheet header should be ${_header}`)
         }
@@ -313,7 +313,7 @@ export class CeremonyService {
         return { unique, duplicate, already };
     }
     async upload(data: any[], user: IUser) {
-        const _header = ["Institution", "Price", "Reference No", "Graduation Date", "Ceremony Time", "Hood", "Faculty", "Course", "Image", "Collection Location", "Collection Time", "Cap", "Return Location", "Deadline", "_institute", "_course", "_faculty"];
+        const _header = ["Institution", "Price", "Reference No", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image", "Collection Location", "Collection Time", "Cap", "Return Location", "Deadline", "_institute", "_course", "_faculty"];
         if (!UtilityService.validExcelHeader(_header, data[0])) {
             throw new BadRequestException(`Not a valid Data`);
         }
@@ -392,8 +392,7 @@ export class CeremonyService {
                     collectionTime: data[i]["Collection Time"],
                     cap: _cap == 'yes' || _cap == 'true',
                     returnLocation: data[i]["Return Location"],
-                    deadline: data[i]["Deadline"],
-                    hood: data[i]["Hood"]
+                    deadline: data[i]["Deadline"]
                 }).save();
             }
         }
