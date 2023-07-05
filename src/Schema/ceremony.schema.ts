@@ -32,8 +32,6 @@ export class Ceremony extends Base {
     returnLocation: string
     @Prop({ type: Date, required: true })
     deadline: Date;
-    @Prop({ type: String, required: true })
-    hood: string;
 }
 
 export const CeremonySchema = SchemaFactory.createForClass(Ceremony);

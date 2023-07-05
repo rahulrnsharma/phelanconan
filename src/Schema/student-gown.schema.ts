@@ -77,7 +77,7 @@ export class StudentGown extends Base {
     deadline: Date;
     @Prop({ type: Number, required: true })
     refno: number;
-    @Prop({ type: String, required: true })
+    @Prop({ type: String, default: '' })
     hood: string;
 
 }

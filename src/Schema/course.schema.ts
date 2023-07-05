@@ -8,6 +8,8 @@ export type CourseDocument = HydratedDocument<Course>
 export class Course extends Base {
     @Prop({ type: String, require: true, unique: true, trim: true })
     name: string;
+    @Prop({ type: String, default: '' })
+    hood: string;
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course)
