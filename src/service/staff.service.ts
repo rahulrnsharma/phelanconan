@@ -17,13 +17,13 @@ export class StaffService {
     constructor(@InjectModel(StaffModel.name) private readonly staffModel: Model<StaffDocument>,
         @InjectModel(UserModel.name) private userModel: Model<UserDocument>,
         private sendMailService: SendMailService) { }
- 
+
     async create(staffDto: StaffDto) {
         staffDto.password = await PasswordService.hash(staffDto.password);
         const _user = await new this.userModel({ username: staffDto.email.toLowerCase(), password: staffDto.password }).save();
-       const _staff= await new this.staffModel({ user: _user._id, firstName: staffDto.firstName, lastName: staffDto.lastName, email: staffDto.email, institute: new Types.ObjectId(staffDto.institute), countryCode: staffDto.countryCode, phone: staffDto.phone, designation: staffDto.designation }).save();
-       const message = "You are Registred Successfully and you account is under review"
-       await this.sendMailService.mailsend([_staff.email],"Response From Phelanconan",message);
+        const _staff = await new this.staffModel({ user: _user._id, firstName: staffDto.firstName, lastName: staffDto.lastName, email: staffDto.email, institute: new Types.ObjectId(staffDto.institute), countryCode: staffDto.countryCode, phone: staffDto.phone, designation: staffDto.designation }).save();
+        const message = "You are Registred Successfully and you account is under review"
+        await this.sendMailService.staffRegister({ email: _staff.email });
         return { success: true };
     }
     async update(id: any, updateDto: UpdateStaffDto, user: IUser) {

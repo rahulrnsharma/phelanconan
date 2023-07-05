@@ -1,4 +1,4 @@
-import {Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, PipelineStage, Types } from "mongoose";
 import { StudentGownDocument, StudentGownModel } from "src/Schema/student-gown.schema";
@@ -35,40 +35,30 @@ export class GownService {
             UtilityService.getUnwindPipeline("course"),
             UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 })
         ]
-        let _data: any[] = await this.studentGownModel.aggregate(query).exec()
-        const BufferFromPDF = await this.sendmailService.getBufferPDF(_data,"student");
-           const subject ="Response From Phelanconan";
-           const message = "Congratulation, You are successfully registred with Phelanconan"
-           const attachment = [{filename: `${studentGown.firstName}_${studentGown.lastName}_Gown.pdf`, content:BufferFromPDF }]
-           await this.sendmailService.mailsend([studentGown.email],subject,message,attachment)
+        let _data: any[] = await this.studentGownModel.aggregate(query).exec();
+        this.sendmailService.studentGownBooking(_data[0]);
         return studentGown;
     }
 
     async addStaffGown(staffGownDto: StaffGownDto) {
-        // const mail = await this.sendmailService.sendMail(staffGownDto);
         const _count = await this.staffGownModel.count({ institute: new Types.ObjectId(staffGownDto.institute) });
-        let _orderNumber = UtilityService.getOrderNumber(staffGownDto.refno,_count);
-           const staffGown = await new this.staffGownModel({ ...staffGownDto,orderNumber:_orderNumber }).save()
-           if(staffGown){
+        let _orderNumber = UtilityService.getOrderNumber(staffGownDto.refno, _count);
+        const staffGown = await new this.staffGownModel({ ...staffGownDto, orderNumber: _orderNumber }).save()
+        if (staffGown) {
             let data: PipelineStage[];
             data = [
-               UtilityService.getMatchPipeline({_id: staffGown._id}),
-               UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1 })]),
-               UtilityService.getUnwindPipeline("institute"),
-               UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 })
-           ]
-           let _data: any[] = await this.staffGownModel.aggregate(data).exec();
-           const BufferFromPDF = await this.sendmailService.getBufferPDF(_data,"staff");
-           const subject ="Response From Phelanconan";
-           const message = "Congratulation, You are successfully registred with Phelanconan"
-           const attachment = [{filename: `${staffGown.firstName}_${staffGown.lastName}_Gown.pdf`, content:BufferFromPDF  }]
-           await this.sendmailService.mailsend([staffGown.email],subject,message,attachment)
-        //    const mail = await this.sendmailService.sendMail(_data,"staff");
-            return {sucess:true};
+                UtilityService.getMatchPipeline({ _id: staffGown._id }),
+                UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1 })]),
+                UtilityService.getUnwindPipeline("institute"),
+                UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 })
+            ]
+            let _data: any[] = await this.staffGownModel.aggregate(data).exec();
+            this.sendmailService.staffGownBooking(_data[0])
+            return { sucess: true };
+        }
     }
-}
     async getAllStudentGown(searchDto: SearchGownDto) {
-        
+
         let _match: any = {};
         if (searchDto.status) {
             _match.isActive = searchDto.status == ActiveStatusEnum.ACTIVE;
@@ -100,7 +90,7 @@ export class GownService {
             data: 1,
             count: { $ifNull: [{ $arrayElemAt: ["$count.total", 0] }, 0] }
         }))
-        let _res: any[] = await this.studentGownModel.aggregate(query).exec();  
+        let _res: any[] = await this.studentGownModel.aggregate(query).exec();
         return new PaginationResponse(_res[0].data, _res[0].count, searchDto.currentPage, searchDto.pageSize);
     }
 
