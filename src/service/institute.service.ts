@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, PipelineStage } from "mongoose";
+import { Model, PipelineStage, Types } from "mongoose";
 import { Institute, InstituteDocument, InstituteModel } from "src/Schema/institute.schema";
 import { InstituteDto } from "src/dto/institute.dto";
 import { SearchDto } from "src/dto/search.dto";
@@ -9,10 +9,14 @@ import { IUser } from "src/interface/user.interface";
 import { UtilityService } from "./utility.service";
 import { PaginationResponse } from "src/model/pagination.model";
 import { ActiveDto } from "src/dto/pagination.dto";
+import { CeremonyDocument, CeremonyModel } from "src/Schema/ceremony.schema";
+import { StaffCeremonyDocument, StaffCeremonyModel } from "src/Schema/staff-ceremony.schema";
 
 @Injectable()
 export class InstituteService {
-    constructor(@InjectModel(InstituteModel.name) private instituteModel: Model<InstituteDocument>) { }
+    constructor(@InjectModel(InstituteModel.name) private instituteModel: Model<InstituteDocument>,
+        @InjectModel(CeremonyModel.name) private readonly ceremonyModel: Model<CeremonyDocument>,
+        @InjectModel(StaffCeremonyModel.name) private readonly staffGradutionModel: Model<StaffCeremonyDocument>) { }
 
     async add(instituteDto: InstituteDto, user: IUser, image: Express.Multer.File) {
         let _data = {
@@ -45,21 +49,35 @@ export class InstituteService {
     }
 
     async delete(id: string, user: IUser) {
-        const _doc: Institute = await this.instituteModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
-        if (_doc) {
-            return _doc;
+        const _inCeremony = await this.ceremonyModel.findOne({ institute: new Types.ObjectId(id) }).exec();
+        const _inStaff = await this.staffGradutionModel.findOne({ institute: new Types.ObjectId(id) }).exec();
+        if (!_inCeremony && !_inStaff) {
+            const _doc: Institute = await this.instituteModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+            if (_doc) {
+                return _doc;
+            }
+            else {
+                throw new BadRequestException("Resource you are delete does not exist.");
+            }
         }
         else {
-            throw new BadRequestException("Resource you are delete does not exist.");
+            throw new BadRequestException("Resource you are delete used in staff or student ceremony.");
         }
     }
     async status(id: string, activeDto: ActiveDto, user: IUser) {
-        const _doc: Institute = await this.instituteModel.findByIdAndUpdate(id, { $set: { isActive: activeDto.active, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
-        if (_doc) {
-            return _doc;
+        const _inCeremony = await this.ceremonyModel.findOne({ institute: new Types.ObjectId(id) }).exec();
+        const _inStaff = await this.staffGradutionModel.findOne({ institute: new Types.ObjectId(id) }).exec();
+        if (!_inCeremony && !_inStaff) {
+            const _doc: Institute = await this.instituteModel.findByIdAndUpdate(id, { $set: { isActive: activeDto.active, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+            if (_doc) {
+                return _doc;
+            }
+            else {
+                throw new BadRequestException("Resource you are update does not exist.");
+            }
         }
         else {
-            throw new BadRequestException("Resource you are update does not exist.");
+            throw new BadRequestException("Resource you are delete used in staff or student ceremony.");
         }
     }
 

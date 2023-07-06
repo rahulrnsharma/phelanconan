@@ -146,7 +146,7 @@ export class CeremonyService {
     }
 
     async delete(id: string, user: IUser) {
-        const _doc: Ceremony = await this.ceremonyModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        const _doc: Ceremony = await this.ceremonyModel.findByIdAndDelete(id).exec();
         if (_doc) {
             return _doc;
         }
@@ -483,7 +483,7 @@ export class CeremonyService {
         }
     }
     async deleteStaffCeremony(id: string, user: IUser) {
-        const _doc: StaffCeremony = await this.staffGradutionModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        const _doc: StaffCeremony = await this.staffGradutionModel.findByIdAndDelete(id).exec();
         if (_doc) {
             return _doc;
         }

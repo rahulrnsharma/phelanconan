@@ -9,12 +9,14 @@ import { IUser } from "src/interface/user.interface";
 import { UtilityService } from "./utility.service";
 import { PaginationResponse } from "src/model/pagination.model";
 import { ActiveDto } from "src/dto/pagination.dto";
+import { CeremonyDocument, CeremonyModel } from "src/Schema/ceremony.schema";
 
 
 
 @Injectable()
 export class FacultyService {
-    constructor(@InjectModel(FacultyModel.name) private readonly facultyModel: Model<FacultyDocument>) { }
+    constructor(@InjectModel(FacultyModel.name) private readonly facultyModel: Model<FacultyDocument>,
+        @InjectModel(CeremonyModel.name) private readonly ceremonyModel: Model<CeremonyDocument>) { }
 
     async add(facultyDto: FacultyDto, user: IUser) {
         return new this.facultyModel({ ...facultyDto, createdBy: user.userId }).save()
@@ -31,21 +33,33 @@ export class FacultyService {
     }
 
     async delete(id: string, user: IUser) {
-        const _doc: Faculty = await this.facultyModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
-        if (_doc) {
-            return _doc;
+        const _inCeremony = await this.ceremonyModel.findOne({ institute: new Types.ObjectId(id) }).exec();
+        if (!_inCeremony) {
+            const _doc: Faculty = await this.facultyModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+            if (_doc) {
+                return _doc;
+            }
+            else {
+                throw new BadRequestException("Resource you are delete does not exist.");
+            }
         }
         else {
-            throw new BadRequestException("Resource you are delete does not exist.");
+            throw new BadRequestException("Faculty is used in a ceremony please delete that then you can delete.");
         }
     }
     async status(id: string, activeDto: ActiveDto, user: IUser) {
-        const _doc: Faculty = await this.facultyModel.findByIdAndUpdate(id, { $set: { isActive: activeDto.active, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
-        if (_doc) {
-            return _doc;
+        const _inCeremony = await this.ceremonyModel.findOne({ institute: new Types.ObjectId(id) }).exec();
+        if (!_inCeremony) {
+            const _doc: Faculty = await this.facultyModel.findByIdAndUpdate(id, { $set: { isActive: activeDto.active, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+            if (_doc) {
+                return _doc;
+            }
+            else {
+                throw new BadRequestException("Resource you are update does not exist.");
+            }
         }
         else {
-            throw new BadRequestException("Resource you are update does not exist.");
+            throw new BadRequestException("Faculty is used in a ceremony please delete that then you can deactive.");
         }
     }
 
