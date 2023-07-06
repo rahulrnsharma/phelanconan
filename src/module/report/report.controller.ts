@@ -39,4 +39,32 @@ export class ReportController {
     downloadOrdersStaff(@Query() query: StaffReportDto, @CurrentUser() user: IUser) {
         return this.reportService.downloadStaffReport(query, user);
     }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get('student/institute')
+    async getStudentReportInstitute(@CurrentUser() user: IUser) {
+        return this.reportService.getStudentReportInstitute(user);
+    }
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get('staff/institute')
+    async getStaffReportInstitute(@CurrentUser() user: IUser) {
+        return this.reportService.getStaffReportInstitute(user);
+    }
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get('student/faculty/:institute')
+    @ApiParam({ name: 'institute' })
+    async getStudentReportFaculty(@Param('institute') institute: string) {
+        return this.reportService.getStudentReportFaculty(institute);
+    }
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get('student/course/:institute/:faculty')
+    @ApiParam({ name: 'institute' })
+    @ApiParam({ name: 'faculty' })
+    async getStudentReportCourse(@Param('institute') institute: string, @Param('faculty') faculty: string) {
+        return this.reportService.getStudentReportCourse(institute, faculty);
+    }
 }

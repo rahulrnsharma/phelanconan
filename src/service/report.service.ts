@@ -164,4 +164,44 @@ export class ReportService {
         let _res: any[] = await this.staffGownModel.aggregate(query).exec();
         return UtilityService.getStaffReportExcel(_res);
     }
+
+    async getStudentReportInstitute(user: IUser) {
+        let query: PipelineStage[] = [];
+        if (user.role = RoleEnum.STAFF) {
+            query.push(UtilityService.getMatchPipeline({ institute: new Types.ObjectId(user.institute) }))
+        }
+        query.push(UtilityService.getGroupPipeline({ _id: "$institute" }));
+        query.push(UtilityService.getLookupPipeline("institutes", "_id", "_id", "institutes", []));
+        query.push(UtilityService.getUnwindPipeline("institutes"));
+        query.push(UtilityService.getProjectPipeline({ name: "$institutes.name", id: "$institutes._id", "_id": 0 }))
+        return this.studentGownModel.aggregate(query);
+    }
+
+    async getStudentReportFaculty(institute: any) {
+        let query: PipelineStage[] = [UtilityService.getMatchPipeline({ institute: new Types.ObjectId(institute) })];
+        query.push(UtilityService.getGroupPipeline({ _id: "$faculty" }));
+        query.push(UtilityService.getLookupPipeline("faculties", "_id", "_id", "faculties", []));
+        query.push(UtilityService.getUnwindPipeline("faculties"));
+        query.push(UtilityService.getProjectPipeline({ name: "$faculties.name", id: "$faculties._id", "_id": 0 }))
+        return this.studentGownModel.aggregate(query);
+    }
+
+    async getStudentReportCourse(institute: any, faculty: any) {
+        let query: PipelineStage[] = [UtilityService.getMatchPipeline({ institute: new Types.ObjectId(institute), faculty: new Types.ObjectId(faculty) })];
+        query.push(UtilityService.getLookupPipeline("courses", "course", "_id", "courses", []));
+        query.push(UtilityService.getUnwindPipeline("courses", false));
+        query.push(UtilityService.getProjectPipeline({ name: "$courses.name", id: "$courses._id", "_id": 0 }))
+        return this.studentGownModel.aggregate(query);
+    }
+    async getStaffReportInstitute(user: IUser) {
+        let query: PipelineStage[] = [];
+        if (user.role = RoleEnum.STAFF) {
+            query.push(UtilityService.getMatchPipeline({ institute: new Types.ObjectId(user.institute) }))
+        }
+        query.push(UtilityService.getGroupPipeline({ _id: "$institute" }));
+        query.push(UtilityService.getLookupPipeline("institutes", "_id", "_id", "institutes", []));
+        query.push(UtilityService.getUnwindPipeline("institutes"));
+        query.push(UtilityService.getProjectPipeline({ name: "$institutes.name", id: "$institutes._id", "_id": 0 }))
+        return this.staffGownModel.aggregate(query);
+    }
 }

@@ -37,7 +37,7 @@ export class StaffService {
     }
 
     async delete(id: any, user: IUser) {
-        const _doc: User = await this.userModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
+        const _doc: User = await this.userModel.findByIdAndDelete(id).exec();
         if (_doc) {
             return { success: true };
         }

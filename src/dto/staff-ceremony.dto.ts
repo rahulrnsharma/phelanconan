@@ -27,8 +27,8 @@ export class StaffCeremonyDto extends ImageOptionalDto {
     @IsString({ message: "Reference No. must be string" })
     refno: string;
     @ApiProperty({ type: 'string' })
-    @IsDate({ message: 'Date is not valid.' })
-    @IsNotEmpty({ message: 'Date is required.' })
+    @IsDate({ message: 'Deadline is not valid.' })
+    @IsNotEmpty({ message: 'Deadline is required.' })
     @Type(() => Date)
     deadline: string;
 
