@@ -438,8 +438,6 @@ export class CeremonyService {
         }
         return new this.staffGradutionModel({ ..._data, createdBy: user.userId }).save();
     }
-
-
     async updateStaffCeremony(staffCeremonyDto: StaffCeremonyDto, id: string, user: IUser, image: Express.Multer.File) {
         if (!mongoose.isValidObjectId(staffCeremonyDto.institute)) {
             let _lastInstitute = await this.instituteModel.findOne({ name: staffCeremonyDto.institute.trim() });
@@ -484,7 +482,6 @@ export class CeremonyService {
             throw new BadRequestException("Resource you are update does not exist.");
         }
     }
-
     async deleteStaffCeremony(id: string, user: IUser) {
         const _doc: StaffCeremony = await this.staffGradutionModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
         if (_doc) {
@@ -494,7 +491,6 @@ export class CeremonyService {
             throw new BadRequestException("Resource you are delete does not exist.");
         }
     }
-
     async getAllStaffCeremony(searchDto: SearchDto) {
         let _match: any = {};
         if (searchDto.status) {
@@ -513,9 +509,9 @@ export class CeremonyService {
                     UtilityService.getSortPipeline('createdAt', 'desc'),
                     UtilityService.getSkipPipeline(searchDto.currentPage, searchDto.pageSize),
                     UtilityService.getLimitPipeline(searchDto.pageSize),
-                    UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1, refno: 1 })]),
+                    UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1, refno: 1, image: 1 })]),
                     UtilityService.getUnwindPipeline("institute"),
-                    UtilityService.getAddImageFieldPipeline('image', 'phelanconan/institute', '$image'),
+                    UtilityService.getAddImageFieldPipeline('image', 'phelanconan/institute', { $ifNull: ['$image', '$institute.image'] }),
                     UtilityService.getProjectPipeline({ createdAt: 0, updatedAt: 0, createdBy: 0, updatedBy: 0 })
                 ],
             },
@@ -527,7 +523,6 @@ export class CeremonyService {
         let _res: any[] = await this.staffGradutionModel.aggregate(query).exec();
         return new PaginationResponse(_res[0].data, _res[0].count, searchDto.currentPage, searchDto.pageSize);
     }
-
     async getByIdStaffCeremony(id: any) {
         let query: PipelineStage[] = [UtilityService.getMatchPipeline({ _id: new Types.ObjectId(id) })];
         query.push(UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1, refno: 1 })]));

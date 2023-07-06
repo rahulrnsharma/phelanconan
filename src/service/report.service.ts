@@ -35,7 +35,7 @@ export class ReportService {
                 { date: { $lt: UtilityService.setEndHour(searchDto.endDate, searchDto.timezone) } },
             ];
         }
-        if (user.role = RoleEnum.STAFF) {
+        if (user.role == RoleEnum.STAFF) {
             _match.institute = new Types.ObjectId(user.institute);
         }
         let query: PipelineStage[] = [UtilityService.getMatchPipeline(_match)];
@@ -78,10 +78,11 @@ export class ReportService {
                 { date: { $lt: UtilityService.setEndHour(searchDto.endDate, searchDto.timezone) } },
             ];
         }
-        if (user.role = RoleEnum.STAFF) {
+        if (user.role == RoleEnum.STAFF) {
             _match.institute = new Types.ObjectId(user.institute);
         }
         let query: PipelineStage[] = [UtilityService.getMatchPipeline(_match)];
+        console.log(query)
         query.push({
             $facet: {
                 count: [{ $count: "total" }],
@@ -123,7 +124,7 @@ export class ReportService {
                 { date: { $lt: UtilityService.setEndHour(searchDto.endDate, searchDto.timezone) } },
             ];
         }
-        if (user.role = RoleEnum.STAFF) {
+        if (user.role == RoleEnum.STAFF) {
             _match.institute = new Types.ObjectId(user.institute);
         }
         let query: PipelineStage[] = [UtilityService.getMatchPipeline(_match)];
@@ -153,7 +154,7 @@ export class ReportService {
                 { date: { $lt: UtilityService.setEndHour(searchDto.endDate, searchDto.timezone) } },
             ];
         }
-        if (user.role = RoleEnum.STAFF) {
+        if (user.role == RoleEnum.STAFF) {
             _match.institute = new Types.ObjectId(user.institute);
         }
         let query: PipelineStage[] = [UtilityService.getMatchPipeline(_match)];
@@ -167,7 +168,7 @@ export class ReportService {
 
     async getStudentReportInstitute(user: IUser) {
         let query: PipelineStage[] = [];
-        if (user.role = RoleEnum.STAFF) {
+        if (user.role == RoleEnum.STAFF) {
             query.push(UtilityService.getMatchPipeline({ institute: new Types.ObjectId(user.institute) }))
         }
         query.push(UtilityService.getGroupPipeline({ _id: "$institute" }));
@@ -188,14 +189,15 @@ export class ReportService {
 
     async getStudentReportCourse(institute: any, faculty: any) {
         let query: PipelineStage[] = [UtilityService.getMatchPipeline({ institute: new Types.ObjectId(institute), faculty: new Types.ObjectId(faculty) })];
-        query.push(UtilityService.getLookupPipeline("courses", "course", "_id", "courses", []));
-        query.push(UtilityService.getUnwindPipeline("courses", false));
+        query.push(UtilityService.getGroupPipeline({ _id: "$course" }));
+        query.push(UtilityService.getLookupPipeline("courses", "_id", "_id", "courses", []));
+        query.push(UtilityService.getUnwindPipeline("courses"));
         query.push(UtilityService.getProjectPipeline({ name: "$courses.name", id: "$courses._id", "_id": 0 }))
         return this.studentGownModel.aggregate(query);
     }
     async getStaffReportInstitute(user: IUser) {
         let query: PipelineStage[] = [];
-        if (user.role = RoleEnum.STAFF) {
+        if (user.role == RoleEnum.STAFF) {
             query.push(UtilityService.getMatchPipeline({ institute: new Types.ObjectId(user.institute) }))
         }
         query.push(UtilityService.getGroupPipeline({ _id: "$institute" }));
