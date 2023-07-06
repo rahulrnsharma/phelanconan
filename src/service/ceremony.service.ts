@@ -421,7 +421,8 @@ export class CeremonyService {
             time: staffCeremonyDto.time,
             duration: staffCeremonyDto.duration,
             refno: staffCeremonyDto.refno,
-            price: 0
+            price: 0,
+            deadline: staffCeremonyDto.deadline
 
         }
         if (image) {
@@ -461,7 +462,8 @@ export class CeremonyService {
             time: staffCeremonyDto.time,
             duration: staffCeremonyDto.duration,
             refno: staffCeremonyDto.refno,
-            price: 0
+            price: 0,
+            deadline: staffCeremonyDto.deadline
         }
         if (image) {
             _data['image'] = image.filename;
@@ -610,7 +612,7 @@ export class CeremonyService {
         return { unique, duplicate, already };
     }
     async uploadStaffCeremony(data: any[], user: IUser) {
-        const _header = ["Institution", "Graduation Date", "Ceremony Time", "Image", "Hire duration", "Reference No", "_institute"];
+        const _header = ["Institution", "Graduation Date", "Ceremony Time", "Image", "Hire duration", "Reference No", "Deadline", "_institute"];
         if (!UtilityService.validExcelHeader(_header, data[0])) {
             throw new BadRequestException(`Not a valid Data`);
         }
