@@ -17,7 +17,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  app.use(helmet({ crossOriginResourcePolicy: false, frameguard: false, originAgentCluster: false }));
+  // app.use(helmet({ crossOriginResourcePolicy: false, frameguard: false, originAgentCluster: false }));
   const httpAdapter = app.get(HttpAdapterHost, { strict: true });
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
   app.useGlobalPipes(new ValidationPipe({
