@@ -29,3 +29,29 @@ export class StaffReportDto extends IntersectionType(PaginationDto, TimezoneDto,
     @ValidateIf(o => o.institute)
     institute?: Types.ObjectId;
 }
+
+export class DownloadStudentReportDto extends IntersectionType(DateRangeDto, TimezoneDto) {
+    @ApiPropertyOptional({ type: 'string' })
+    @IsMongoId({ message: 'Institute not valid.' })
+    @Type(() => Types.ObjectId)
+    @ValidateIf(o => o.institute)
+    institute?: Types.ObjectId;
+    @ApiPropertyOptional({ type: 'string' })
+    @IsMongoId({ message: 'Faculty not valid.' })
+    @Type(() => Types.ObjectId)
+    @ValidateIf(o => o.faculty)
+    faculty?: Types.ObjectId;
+    @ApiPropertyOptional({ type: 'string' })
+    @IsMongoId({ message: 'Course not valid.' })
+    @Type(() => Types.ObjectId)
+    @ValidateIf(o => o.course)
+    course?: Types.ObjectId;
+}
+
+export class DownloadStaffReportDto extends IntersectionType(DateRangeDto, TimezoneDto) {
+    @ApiPropertyOptional({ type: 'string' })
+    @IsMongoId({ message: 'Institute not valid.' })
+    @Type(() => Types.ObjectId)
+    @ValidateIf(o => o.institute)
+    institute?: Types.ObjectId;
+}

@@ -176,10 +176,10 @@ export class UtilityService {
         _merge.push({ s: { r: 0, c: 9 }, e: { r: 0, c: 12 } });
         let _rn = 2;
         let _dateGroup = UtilityService.groupBy(data, 'date');
-        for (let _key in Object.keys(_dateGroup)) {
+        for (let _key in _dateGroup) {
             let _dateData = _dateGroup[_key];
             let _timeGroup = UtilityService.groupBy(_dateData, 'time');
-            for (let _timeKey in Object.keys(_timeGroup)) {
+            for (let _timeKey in _timeGroup) {
                 let _timeData: any[] = _timeGroup[_timeKey];
                 let _dtRow = {
                     "Order": `${_key} ${_timeKey}`,

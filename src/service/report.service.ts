@@ -4,7 +4,7 @@ import { Model, PipelineStage, Types } from "mongoose";
 import { StudentGownDocument, StudentGownModel } from "src/Schema/student-gown.schema";
 import { PaginationResponse } from "src/model/pagination.model";
 import { StaffGownDocument, StaffGownModel } from "src/Schema/staff-gown.schema";
-import { StaffReportDto, StudentReportDto } from "src/dto/report.dto";
+import { DownloadStaffReportDto, DownloadStudentReportDto, StaffReportDto, StudentReportDto } from "src/dto/report.dto";
 import { ActiveStatusEnum, RoleEnum } from "src/enum/common.enum";
 import { UtilityService } from "./utility.service";
 import { IUser } from "src/interface/user.interface";
@@ -104,11 +104,8 @@ export class ReportService {
         return new PaginationResponse(_res[0].data, _res[0].count, searchDto.currentPage, searchDto.pageSize);
     }
 
-    async downloadStudentReport(searchDto: StudentReportDto, user: IUser) {
+    async downloadStudentReport(searchDto: DownloadStudentReportDto, user: IUser) {
         let _match: any = {};
-        if (searchDto.status) {
-            _match.isActive = searchDto.status == ActiveStatusEnum.ACTIVE;
-        }
         if (searchDto.institute) {
             _match.institute = new Types.ObjectId(searchDto.institute);
         }
@@ -140,11 +137,8 @@ export class ReportService {
         return UtilityService.getStudentReportExcel(_res);
     }
 
-    async downloadStaffReport(searchDto: StaffReportDto, user: IUser) {
+    async downloadStaffReport(searchDto: DownloadStaffReportDto, user: IUser) {
         let _match: any = {};
-        if (searchDto.status) {
-            _match.isActive = searchDto.status == ActiveStatusEnum.ACTIVE;
-        }
         if (searchDto.institute) {
             _match.institute = new Types.ObjectId(searchDto.institute);
         }
