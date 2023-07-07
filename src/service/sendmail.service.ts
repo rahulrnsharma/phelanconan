@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { MailerService } from "@nestjs-modules/mailer";
-var htmlToPdf = require('html-pdf-node-generator');
+import { generatePdf } from "html-pdf-node";
 @Injectable()
 export class SendMailService {
     constructor(private mailerService: MailerService) { }
@@ -114,7 +114,7 @@ export class SendMailService {
   </table>
 </body>
 </html>`
-        let _pdf = await htmlToPdf.generatePdf({ content: _html }, { format: 'A4' })
+        let _pdf = await generatePdf({ content: _html }, { format: 'A4' })
         this.send([data.email], "Gown Booking Detail", "Your gown has been booked. Find the attachment for mor detail.", [{ filename: `booking.pdf`, content: _pdf }], false);
     }
     async staffGownBooking(data: any) {
@@ -208,7 +208,7 @@ export class SendMailService {
           </table>
         </body>
     </html>`
-        let _pdf = await htmlToPdf.generatePdf({ content: _html }, { format: 'A4' })
+        let _pdf = await generatePdf({ content: _html }, { format: 'A4' })
         this.send([data.email], "Gown Booking Detail", "Your gown has been booked. Find the attachment for mor detail.", [{ filename: `booking.pdf`, content: _pdf }], false);
     }
     async staffRegister(data: any) {
