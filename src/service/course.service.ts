@@ -33,7 +33,7 @@ export class CourseService {
     }
 
     async delete(id: string, user: IUser) {
-        const _inCeremony = await this.ceremonyModel.findOne({ institute: new Types.ObjectId(id) }).exec();
+        const _inCeremony = await this.ceremonyModel.findOne({ course: new Types.ObjectId(id) }).exec();
         if (!_inCeremony) {
             const _doc: Course = await this.courseModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
             if (_doc) {
@@ -48,7 +48,7 @@ export class CourseService {
         }
     }
     async status(id: string, activeDto: ActiveDto, user: IUser) {
-        const _inCeremony = await this.ceremonyModel.findOne({ institute: new Types.ObjectId(id) }).exec();
+        const _inCeremony = await this.ceremonyModel.findOne({ course: new Types.ObjectId(id) }).exec();
         if (!_inCeremony) {
             const _doc: Course = await this.courseModel.findByIdAndUpdate(id, { $set: { isActive: activeDto.active, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
             if (_doc) {
@@ -81,7 +81,7 @@ export class CourseService {
                     UtilityService.getSortPipeline('createdAt', 'desc'),
                     UtilityService.getSkipPipeline(searchDto.currentPage, searchDto.pageSize),
                     UtilityService.getLimitPipeline(searchDto.pageSize),
-                    UtilityService.getProjectPipeline({ name: 1, isActive: 1 })
+                    UtilityService.getProjectPipeline({ name: 1, isActive: 1, hood: 1 })
                 ],
             },
         });

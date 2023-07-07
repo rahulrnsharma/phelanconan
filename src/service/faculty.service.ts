@@ -33,7 +33,7 @@ export class FacultyService {
     }
 
     async delete(id: string, user: IUser) {
-        const _inCeremony = await this.ceremonyModel.findOne({ institute: new Types.ObjectId(id) }).exec();
+        const _inCeremony = await this.ceremonyModel.findOne({ faculty: new Types.ObjectId(id) }).exec();
         if (!_inCeremony) {
             const _doc: Faculty = await this.facultyModel.findByIdAndUpdate(id, { $set: { isActive: false, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
             if (_doc) {
@@ -48,7 +48,7 @@ export class FacultyService {
         }
     }
     async status(id: string, activeDto: ActiveDto, user: IUser) {
-        const _inCeremony = await this.ceremonyModel.findOne({ institute: new Types.ObjectId(id) }).exec();
+        const _inCeremony = await this.ceremonyModel.findOne({ faculty: new Types.ObjectId(id) }).exec();
         if (!_inCeremony) {
             const _doc: Faculty = await this.facultyModel.findByIdAndUpdate(id, { $set: { isActive: activeDto.active, updatedBy: user.userId } }, { new: true, runValidators: true }).exec();
             if (_doc) {
