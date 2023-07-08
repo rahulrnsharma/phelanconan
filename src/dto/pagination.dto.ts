@@ -4,16 +4,8 @@ import { IsDate, IsIn, IsInt, IsString, Min, ValidateIf } from "class-validator"
 import { GreaterThanEqualTo } from "src/decorator/validation/comparison.decorator";
 import { ActiveStatusEnum } from "src/enum/common.enum";
 
-export class PaginationDto {
-    @ApiProperty()
-    @Min(1, { message: 'Current page should be greater than 0.' })
-    @IsInt({ message: 'Current page should be a number.' })
-    @Type(() => Number)
-    currentPage: number;
-    @ApiProperty({ enum: [10, 20, 30, 50, 100] })
-    @IsInt({ message: 'Page size should be a number.' })
-    @Type(() => Number)
-    pageSize: number;
+
+export class StatusDto {
     @ApiPropertyOptional({ enum: Object.values(ActiveStatusEnum) })
     @IsIn(Object.values(ActiveStatusEnum))
     @IsString({ message: 'Active should be string.' })
@@ -51,4 +43,16 @@ export class DateRangeDto {
     @Type(() => Date)
     @ValidateIf(o => o.endDate)
     endDate?: Date;
+}
+
+export class PaginationDto extends StatusDto {
+    @ApiProperty()
+    @Min(1, { message: 'Current page should be greater than 0.' })
+    @IsInt({ message: 'Current page should be a number.' })
+    @Type(() => Number)
+    currentPage: number;
+    @ApiProperty({ enum: [10, 20, 30, 50, 100] })
+    @IsInt({ message: 'Page size should be a number.' })
+    @Type(() => Number)
+    pageSize: number;
 }

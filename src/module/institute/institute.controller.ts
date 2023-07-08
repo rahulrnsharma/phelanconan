@@ -4,9 +4,9 @@ import { ApiBearerAuth, ApiConsumes, ApiParam, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "src/decorator/current-user.decorator";
 import { HasRoles } from "src/decorator/role.decorator";
 import { InstituteDto, InstituteImageDto } from "src/dto/institute.dto";
-import { ActiveDto } from "src/dto/pagination.dto";
+import { ActiveDto, StatusDto } from "src/dto/pagination.dto";
 import { SearchDto } from "src/dto/search.dto";
-import { RoleEnum } from "src/enum/common.enum";
+import { ActiveStatusEnum, RoleEnum } from "src/enum/common.enum";
 import { IUser } from "src/interface/user.interface";
 import { JwtAuthGuard } from "src/service/guard/jwt-auth.guard";
 import { RolesGuard } from "src/service/guard/role.guard";
@@ -61,13 +61,13 @@ export class InstituteController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('dropdown')
-  dropdown() {
-    return this.instituteService.dropdown()
+  dropdown(@Query() statusDto: StatusDto) {
+    return this.instituteService.dropdown(statusDto)
   }
 
   @Get('register/dropdown')
   registerDropdown() {
-    return this.instituteService.dropdown(true)
+    return this.instituteService.dropdown({ status: ActiveStatusEnum.ACTIVE })
   }
 
   @HasRoles(RoleEnum.ADMIN)

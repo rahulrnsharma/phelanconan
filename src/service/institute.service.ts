@@ -8,7 +8,7 @@ import { ActiveStatusEnum } from "src/enum/common.enum";
 import { IUser } from "src/interface/user.interface";
 import { UtilityService } from "./utility.service";
 import { PaginationResponse } from "src/model/pagination.model";
-import { ActiveDto } from "src/dto/pagination.dto";
+import { ActiveDto, StatusDto } from "src/dto/pagination.dto";
 import { CeremonyDocument, CeremonyModel } from "src/Schema/ceremony.schema";
 import { StaffCeremonyDocument, StaffCeremonyModel } from "src/Schema/staff-ceremony.schema";
 
@@ -115,10 +115,10 @@ export class InstituteService {
     async getById(id: string) {
         return this.instituteModel.findById(id);
     }
-    async dropdown(active: boolean = false) {
+    async dropdown(statusDto: StatusDto) {
         let _match: any = {};
-        if (active) {
-            _match["isActive"] = true;
+        if (statusDto.status) {
+            _match["isActive"] = statusDto.status == ActiveStatusEnum.ACTIVE;
         }
         return this.instituteModel.find(_match, { name: 1, price: 1, refno: 1 }).exec();
     }

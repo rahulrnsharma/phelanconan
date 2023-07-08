@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "src/decorator/current-user.decorator";
 import { HasRoles } from "src/decorator/role.decorator";
 import { CourseDto } from "src/dto/course.dto";
-import { ActiveDto } from "src/dto/pagination.dto";
+import { ActiveDto, StatusDto } from "src/dto/pagination.dto";
 import { SearchDto } from "src/dto/search.dto";
 import { RoleEnum } from "src/enum/common.enum";
 import { IUser } from "src/interface/user.interface";
@@ -36,8 +36,8 @@ export class CourseController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('dropdown')
-  dropdown() {
-    return this.CourseService.dropdown()
+  dropdown(@Query() statusDto: StatusDto) {
+    return this.CourseService.dropdown(statusDto)
   }
 
   @HasRoles(RoleEnum.ADMIN)

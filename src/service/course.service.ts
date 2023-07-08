@@ -8,7 +8,7 @@ import { ActiveStatusEnum } from "src/enum/common.enum";
 import { IUser } from "src/interface/user.interface";
 import { UtilityService } from "./utility.service";
 import { PaginationResponse } from "src/model/pagination.model";
-import { ActiveDto } from "src/dto/pagination.dto";
+import { ActiveDto, StatusDto } from "src/dto/pagination.dto";
 import { CeremonyDocument, CeremonyModel } from "src/Schema/ceremony.schema";
 
 
@@ -96,7 +96,11 @@ export class CourseService {
     async getById(id: string) {
         return this.courseModel.findById(id);
     }
-    async dropdown() {
-        return this.courseModel.find().exec();
+    async dropdown(statusDto: StatusDto) {
+        let _match: any = {};
+        if (statusDto.status) {
+            _match["isActive"] = statusDto.status == ActiveStatusEnum.ACTIVE;
+        }
+        return this.courseModel.find({ _match }).exec();
     }
 }

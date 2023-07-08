@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "src/decorator/current-user.decorator";
 import { HasRoles } from "src/decorator/role.decorator";
 import { FacultyDto } from "src/dto/faculty.dto";
-import { ActiveDto } from "src/dto/pagination.dto";
+import { ActiveDto, StatusDto } from "src/dto/pagination.dto";
 import { SearchDto } from "src/dto/search.dto";
 import { RoleEnum } from "src/enum/common.enum";
 import { IUser } from "src/interface/user.interface";
@@ -37,8 +37,8 @@ export class FacultyController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('dropdown')
-  dropdown() {
-    return this.facultyService.dropdown()
+  dropdown(@Query() statusDto: StatusDto) {
+    return this.facultyService.dropdown(statusDto)
   }
 
   @HasRoles(RoleEnum.ADMIN)

@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { ArrayMaxSize, IsArray, IsBoolean, IsBooleanString, IsDate, IsEmail, IsIn, IsInt, IsMongoId, IsNotEmpty, IsString, MaxLength, ValidateIf, ValidateNested, maxLength } from "class-validator";
+import { ArrayMaxSize, IsArray, IsBoolean, IsDate, IsEmail, IsIn, IsMongoId, IsNotEmpty, IsNumber, IsPositive, IsString, MaxLength, ValidateIf, ValidateNested, maxLength } from "class-validator";
 import { Types } from "mongoose";
 import { IsTime } from "src/decorator/validation/time.decorator";
 import { HeightTypeEnum } from "src/enum/common.enum";
@@ -40,7 +40,8 @@ export class StudentGownDto {
     @Type(() => Types.ObjectId)
     course: Types.ObjectId;
     @ApiProperty()
-    @IsInt({ message: 'Price should be number.' })
+    @IsPositive({ message: 'Price shuld be positive' })
+    @IsNumber({ maxDecimalPlaces: 2 }, { message: 'Price should be number.' })
     @IsNotEmpty({ message: 'Price is required.' })
     @Type(() => Number)
     price: number;

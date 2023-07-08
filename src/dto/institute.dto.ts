@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsArray, IsInt, IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsNumber, IsPositive, IsString } from "class-validator";
 import { ImageOptionalDto } from "./pagination.dto";
 
 
@@ -10,13 +10,14 @@ export class InstituteDto extends ImageOptionalDto {
     @IsNotEmpty({ message: "Institute must be required" })
     name: string;
     @ApiProperty()
-    @IsInt({ message: 'Price should be number.' })
+    @IsPositive({ message: 'Price shuld be positive' })
+    @IsNumber({ maxDecimalPlaces: 2 }, { message: 'Price should be number.' })
     @IsNotEmpty({ message: 'Price is required.' })
     @Type(() => Number)
     price: number;
     @ApiProperty()
     @IsString()
-    @IsNotEmpty({message:"Reference must be required"})
+    @IsNotEmpty({ message: "Reference must be required" })
     refno: string
 }
 export class InstituteImageDto {

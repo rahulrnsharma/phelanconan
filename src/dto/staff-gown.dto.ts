@@ -1,7 +1,7 @@
 
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsMongoId, IsNotEmpty, IsInt, IsDate, IsIn, IsString, IsEmail, ValidateIf } from "class-validator";
+import { IsMongoId, IsNotEmpty, IsDate, IsIn, IsString, IsEmail } from "class-validator";
 import { Types } from "mongoose";
 import { IsTime } from "src/decorator/validation/time.decorator";
 import { HeightTypeEnum, LocationTypeEnum } from "src/enum/common.enum";

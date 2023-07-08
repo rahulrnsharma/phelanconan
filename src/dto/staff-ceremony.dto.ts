@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsDate, IsString, IsArray, ArrayMinSize, IsInt } from "class-validator";
+import { IsNotEmpty, IsDate, IsString, IsArray, ArrayMinSize } from "class-validator";
 import { IsTime } from "src/decorator/validation/time.decorator";
 import { ImageOptionalDto } from "./pagination.dto";
 

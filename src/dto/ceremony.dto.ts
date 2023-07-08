@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { ArrayMinSize, IsArray, IsBoolean, IsBooleanString, IsDate, IsInt, IsMongoId, IsNotEmpty, IsString } from "class-validator";
+import { ArrayMinSize, IsArray, IsBoolean, IsDate, IsNotEmpty, IsNumber, IsPositive, IsString } from "class-validator";
 import { IsTime } from "src/decorator/validation/time.decorator";
 import { ImageOptionalDto } from "./pagination.dto";
 
@@ -18,7 +18,8 @@ export class CeremonyDto extends ImageOptionalDto {
     @IsNotEmpty({ message: 'Course is required.' })
     course: string;
     @ApiProperty()
-    @IsInt({ message: 'Price should be number.' })
+    // @IsPositive({message:'Price shuld be positive'})
+    @IsNumber({ maxDecimalPlaces: 2 }, { message: 'Price should be number.' })
     @IsNotEmpty({ message: 'Price is required.' })
     @Type(() => Number)
     price: number;
