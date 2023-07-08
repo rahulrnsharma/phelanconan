@@ -139,6 +139,9 @@ export class UtilityService {
         _addField[field] = { $concat: [process.env.DOC_BASE_URL, `${folder}/`, key] };
         return { $addFields: _addField };
     }
+    static projectImageFeild(folder: string, key: any) {
+        return { $concat: [process.env.DOC_BASE_URL, `${folder}/`, key] };
+    }
     static randomString(length: any) {
         const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
         const charactersLength = characters.length;
