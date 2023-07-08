@@ -101,6 +101,6 @@ export class FacultyService {
         if (statusDto.status) {
             _match["isActive"] = statusDto.status == ActiveStatusEnum.ACTIVE;
         }
-        return this.facultyModel.find({ _match }).exec();
+        return this.facultyModel.find(_match).exec();
     }
 }

@@ -120,7 +120,7 @@ export class InstituteService {
         if (statusDto.status) {
             _match["isActive"] = statusDto.status == ActiveStatusEnum.ACTIVE;
         }
-        return this.instituteModel.find(_match, { name: 1, price: 1, refno: 1, image: UtilityService.projectImageFeild("institute", "$image") }).exec();
+        return this.instituteModel.find(_match, { name: 1, price: 1, refno: 1, image: UtilityService.projectImageFeild("phelanconan/institute", "$image") }).exec();
     }
     async uploadImage(id: any, user: IUser, files: any[]) {
         const _doc: Institute = await this.instituteModel.findByIdAndUpdate(id, {

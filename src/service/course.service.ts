@@ -101,6 +101,6 @@ export class CourseService {
         if (statusDto.status) {
             _match["isActive"] = statusDto.status == ActiveStatusEnum.ACTIVE;
         }
-        return this.courseModel.find({ _match }).exec();
+        return this.courseModel.find(_match).exec();
     }
 }
