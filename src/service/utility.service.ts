@@ -17,14 +17,14 @@ export class UtilityService {
         return date;
     }
     static getOrderNumber(refno: string, count: number) {
-        let _y = new Date().getFullYear().toString();
+        // let _y = new Date().getFullYear().toString();
         // let _m = String(new Date().getMonth()).padStart(2, "0");
         // let _d = String(new Date().getDate()).padStart(2, "0");
         // let _hh = String(new Date().getHours()).padStart(2, "0");
         // let _mm = String(new Date().getMinutes()).padStart(2, "0");
         // let _ss = String(new Date().getSeconds()).padStart(2, "0");
         // let _sss = String(new Date().getMilliseconds()).padStart(3, "0");
-        return `${_y.substring(2)}-${refno}-${String(count + 1).padStart(4, "0")}`;
+        return `${refno}-${String(count + 1).padStart(4, "0")}`;
 
     }
     static setEndHour(date: Date, timezone: number) {
@@ -165,19 +165,19 @@ export class UtilityService {
             "Size": "",
             "Hood": "",
             "Course": "",
-            "Guest": "Last Name",
-            "Guest Name": "First Name",
-            "Guest Email": "Email",
-            "Guest Ticket": "Ticket",
+            // "Guest": "Last Name",
+            // "Guest Name": "First Name",
+            // "Guest Email": "Email",
+            // "Guest Ticket": "Ticket",
         }
         let _excelData: any[] = [];
         _excelData.push(_header);
         let _merge = [];
-        for (let i = 0; i < 9; i++) {
-            _merge.push({ s: { r: 0, c: i }, e: { r: 1, c: i } });
-        }
-        _merge.push({ s: { r: 0, c: 9 }, e: { r: 0, c: 12 } });
-        let _rn = 2;
+        // for (let i = 0; i < 9; i++) {
+        //     _merge.push({ s: { r: 0, c: i }, e: { r: 1, c: i } });
+        // }
+        // _merge.push({ s: { r: 0, c: 9 }, e: { r: 0, c: 12 } });
+        let _rn = 1;
         let _dateGroup = UtilityService.groupBy(data, 'date');
         for (let _key in _dateGroup) {
             let _dateData = _dateGroup[_key];
@@ -185,7 +185,11 @@ export class UtilityService {
             for (let _timeKey in _timeGroup) {
                 let _timeData: any[] = _timeGroup[_timeKey];
                 let _dtRow = {
-                    "Order": `${_key} ${_timeKey}`,
+                    "Order": `${new Date(_key).toLocaleDateString("en-us", {
+                        year: "numeric",
+                        month: "short",
+                        day: "2-digit",
+                    })} ${_timeKey}`,
                     "Ref": "",
                     "Last Name": "",
                     "First Name": "",
@@ -194,13 +198,13 @@ export class UtilityService {
                     "Size": "",
                     "Hood": "",
                     "Course": "",
-                    "Guest": "",
-                    "Guest Name": "",
-                    "Guest Email": "",
-                    "Guest Ticket": "",
+                    // "Guest": "",
+                    // "Guest Name": "",
+                    // "Guest Email": "",
+                    // "Guest Ticket": "",
                 }
                 _excelData.push(_dtRow)
-                _merge.push({ s: { r: _rn, c: 0 }, e: { r: _rn, c: 12 } });
+                _merge.push({ s: { r: _rn, c: 0 }, e: { r: _rn, c: 8 } });
                 _rn++;
                 for (let i = 0; i < _timeData.length; i++) {
                     let _rowData: any = _timeData[i];
@@ -214,37 +218,37 @@ export class UtilityService {
                         "Size": _rowData.size,
                         "Hood": _rowData.hood,
                         "Course": _rowData.course.name,
-                        "Guest": "",
-                        "Guest Name": "",
-                        "Guest Email": "",
-                        "Guest Ticket": "",
+                        // "Guest": "",
+                        // "Guest Name": "",
+                        // "Guest Email": "",
+                        // "Guest Ticket": "",
                     }
-                    if (_rowData.guest.length > 0) {
-                        for (let g = 0; g < _rowData.guest.length; g++) {
-                            let _grow = {
-                                ..._row,
-                                "Guest": _rowData.guest[g].lastName,
-                                "Guest Name": _rowData.guest[g].firstName,
-                                "Guest Email": _rowData.guest[g].email,
-                                "Guest Ticket": _rowData.guest[g].ticket,
-                            }
-                            _excelData.push(_grow)
-                        }
-                        if (_rowData.guest.length > 1) {
-                            let _hc = _rowData.guest.length;
-                            for (let ri = 0; ri < 9; ri++) {
-                                _merge.push({ s: { r: _rn, c: ri }, e: { r: _rn + _hc - 1, c: ri } });
-                            }
-                            _rn = _rn + _hc;
-                        }
-                        else {
-                            _rn++;
-                        }
-                    }
-                    else {
-                        _excelData.push(_row)
-                        _rn++;
-                    }
+                    // if (_rowData.guest.length > 0) {
+                    //     for (let g = 0; g < _rowData.guest.length; g++) {
+                    //         let _grow = {
+                    //             ..._row,
+                    //             "Guest": _rowData.guest[g].lastName,
+                    //             "Guest Name": _rowData.guest[g].firstName,
+                    //             "Guest Email": _rowData.guest[g].email,
+                    //             "Guest Ticket": _rowData.guest[g].ticket,
+                    //         }
+                    //         _excelData.push(_grow)
+                    //     }
+                    //     if (_rowData.guest.length > 1) {
+                    //         let _hc = _rowData.guest.length;
+                    //         for (let ri = 0; ri < 9; ri++) {
+                    //             _merge.push({ s: { r: _rn, c: ri }, e: { r: _rn + _hc - 1, c: ri } });
+                    //         }
+                    //         _rn = _rn + _hc;
+                    //     }
+                    //     else {
+                    //         _rn++;
+                    //     }
+                    // }
+                    // else {
+                    _excelData.push(_row)
+                    _rn++;
+                    // }
                 }
             }
         }
@@ -258,9 +262,9 @@ export class UtilityService {
         let _header = {
             "Order": "",
             "Ref": "",
-            "Ceremony": "",
-            "Ceremony Date": "",
-            "Ceremony Time": "",
+            "Institute": "",
+            "Date": "",
+            "Time": "",
             "Last Name": "",
             "First Name": "",
             "Qualification": "",
@@ -277,9 +281,13 @@ export class UtilityService {
             let _row = {
                 "Order": _rowData.orderNumber,
                 "Ref": _rowData.refno,
-                "Ceremony": _rowData.institute.name,
-                "Ceremony Date": _rowData.date,
-                "Ceremony Time": _rowData.time,
+                "Institute": _rowData.institute.name,
+                "Date": (_rowData.date).toLocaleDateString("en-us", {
+                    year: "numeric",
+                    month: "short",
+                    day: "2-digit",
+                }),
+                "Time": _rowData.time,
                 "Last Name": _rowData.lastName,
                 "First Name": _rowData.firstName,
                 "Qualification": _rowData.qualification,

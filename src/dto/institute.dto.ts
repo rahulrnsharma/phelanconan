@@ -22,6 +22,5 @@ export class InstituteDto extends ImageOptionalDto {
 }
 export class InstituteImageDto {
     @ApiProperty({ type: 'array', items: { type: 'file', format: 'binary' }, required: true })
-    @IsArray()
     gallery: Express.Multer.File[];
 }
