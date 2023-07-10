@@ -43,7 +43,7 @@ export class ReportService {
             $facet: {
                 count: [{ $count: "total" }],
                 data: [
-                    UtilityService.getSortPipeline('createdAt', 'desc'),
+                    UtilityService.getSortPipeline('refno', 'asc'),
                     UtilityService.getSkipPipeline(searchDto.currentPage, searchDto.pageSize),
                     UtilityService.getLimitPipeline(searchDto.pageSize),
                     UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1 })]),
@@ -82,12 +82,11 @@ export class ReportService {
             _match.institute = new Types.ObjectId(user.institute);
         }
         let query: PipelineStage[] = [UtilityService.getMatchPipeline(_match)];
-        console.log(query)
         query.push({
             $facet: {
                 count: [{ $count: "total" }],
                 data: [
-                    UtilityService.getSortPipeline('createdAt', 'desc'),
+                    UtilityService.getSortPipeline('refno', 'asc'),
                     UtilityService.getSkipPipeline(searchDto.currentPage, searchDto.pageSize),
                     UtilityService.getLimitPipeline(searchDto.pageSize),
                     UtilityService.getLookupPipeline("institutes", "institute", "_id", "institute", [UtilityService.getProjectPipeline({ name: 1 })]),

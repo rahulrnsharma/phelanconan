@@ -142,9 +142,8 @@ export class PaymentService {
         )
     }
     async initiatAuthenticate(data: PaymentAuthenticationDto) {
-        console.log("initiate");
         return this._initiatAuthenticate(data).pipe(
-            catchError((err: any) => { console.log(err); throw new BadRequestException(err.response.data.error_description) }),
+            catchError((err: any) => { throw new BadRequestException(err.response.data.error_description) }),
             map(async (res: any) => {
                 await this.transactionModel.findOneAndUpdate({ transactionId: data.server_trans_id }, { $set: { authenticate: res.data } }).exec();
                 return res.data;
