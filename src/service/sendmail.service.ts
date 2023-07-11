@@ -5,10 +5,28 @@ import { generatePdf } from "html-pdf-node";
 export class SendMailService {
     constructor(private mailerService: MailerService) { }
     async studentGownBooking(data: any) {
+        const subject = `Order Confirmation ${data.orderNumber} `
+
+        const body = `Dear ${data.firstName},
+        Thank you for booking your Academic robes with Phelan Conan Limited.
+        Your order reference no is ${data.orderNumber}
+        Please keep this reference number safe, as you will need to bring this number with you on the day of the graduation you are attending to collect your robes.
+        Your Robes will be available for collection in the Staff Robing area at least 1 hour before the graduation commences.
+        When collecting your robes please go directly to the area marked "ACADEMIC STAFF ROBES".
+
+        Thanks,
+        Phelan Conan Limited,
+        44 Fashion City,
+        Ballymount,
+        Dublin 24,
+        Ireland
+        Phone: +353 1 429 5300
+        Fax: +353 1 4295791
+        Email: info@phelanconan.com `
+
         let _html = `<html>
 <body style="background-color: #f7f7f7; padding: 20px;">
     <div style="display: flex; margin: 0px auto; width: 50%; align-items: center; ">
-    <img src="C:\Users\ADMIN\Downloads\cropped-logo.webp" alt="" style="text-align: center; width: 15%; ; ">
     <h2>Phelan Conan Ltd.</h2>
 </div>
 <h1 style="text-align: center;">Gown Hire  Details for Graduated Ceremony</h1>
@@ -115,9 +133,27 @@ export class SendMailService {
 </body>
 </html>`
         let _pdf = await generatePdf({ content: _html }, { format: 'A4' })
-        this.send([data.email], "Gown Booking Detail", "Your gown has been booked. Find the attachment for mor detail.", [{ filename: `booking.pdf`, content: _pdf }], false);
+        this.send([data.email], subject, body, [{ filename: `booking.pdf`, content: _pdf }], false);
     }
     async staffGownBooking(data: any) {
+        const subject = `Order Confirmation ${data.orderNumber} `
+        const body = `Dear ${data.firstName},
+        Thank you for booking your Academic robes with Phelan Conan Limited.
+        Your order reference no is ${data.orderNumber}
+        Please keep this reference number safe, as you will need to bring this number with you on the day of the graduation you are attending to collect your robes.
+        Your Robes will be available for collection in the Staff Robing area at least 1 hour before the graduation commences.
+        When collecting your robes please go directly to the area marked "ACADEMIC STAFF ROBES".
+
+        Thanks,
+        Phelan Conan Limited,
+        44 Fashion City,
+        Ballymount,
+        Dublin 24,
+        Ireland
+        Phone: +353 1 429 5300
+        Fax: +353 1 4295791
+        Email: info@phelanconan.com `
+        
         let _html = `<html>
         <body style="background-color: #f7f7f7; padding: 20px;">
             <div style="display: flex; margin: 0px auto; width: 50%; align-items: center; ">
@@ -209,7 +245,7 @@ export class SendMailService {
         </body>
     </html>`
         let _pdf = await generatePdf({ content: _html }, { format: 'A4' })
-        this.send([data.email], "Gown Booking Detail", "Your gown has been booked. Find the attachment for mor detail.", [{ filename: `booking.pdf`, content: _pdf }], false);
+        this.send([data.email], subject,body, [{ filename: `booking.pdf`, content: _pdf }], false);
     }
     async staffRegister(data: any) {
         this.send([data.email], "Registration successfuly.", "Your registration has been done and under review.", [], false);
@@ -217,9 +253,10 @@ export class SendMailService {
     private async send(to: string[], subject: string, body: string, attachment: any[], bodyIsHtml: boolean = false) {
         let mailOption: any = {
             to: to,
-            from: 'rahulrnsharma@gmail.com',
+            from: {name: 'Phelanconan', address: 'rahulrnsharma@gmail.com'},
             subject: subject,
-            attachments: attachment
+            attachments: attachment,
+        
         }
         if (bodyIsHtml)
             mailOption['html'] = body;
