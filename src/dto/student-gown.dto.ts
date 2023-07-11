@@ -12,10 +12,11 @@ export class GuestDto {
     @IsString({ message: 'First Name Should be string' })
     @IsNotEmpty({ message: 'Frist Name is required' })
     firstName: string;
-    @ApiProperty()
+    @ApiPropertyOptional()
     @IsString({ message: 'last Name Should be string' })
     @IsNotEmpty({ message: 'last Name is required' })
-    lastName: string;
+    @ValidateIf(o => o.lastName)
+    lastName?: string;
     @ApiProperty()
     @IsEmail()
     @IsNotEmpty({ message: 'email is required' })

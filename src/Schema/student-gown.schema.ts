@@ -8,7 +8,7 @@ export type StudentGownDocument = HydratedDocument<StudentGown>
 export class Guest {
     @Prop({ type: String, required: true })
     firstName: string;
-    @Prop({ type: String, required: true })
+    @Prop({ type: String, default: "" })
     lastName: string;
     @Prop({ type: String, required: true, trim: true })
     email: string

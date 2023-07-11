@@ -55,8 +55,8 @@ export class GownService {
             ]
             let _data: any[] = await this.staffGownModel.aggregate(data).exec();
             this.sendmailService.staffGownBooking(_data[0])
-            return { sucess: true };
         }
+        return staffGown;
     }
     async getAllStudentGown(searchDto: SearchGownDto) {
 
