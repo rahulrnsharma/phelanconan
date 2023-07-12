@@ -107,6 +107,14 @@ export class CeremonyController {
         return this.ceremonyService.getAllStaffCeremony(searchDto)
     }
 
+    @HasRoles(RoleEnum.ADMIN)
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Get('staff/sample')
+    getStaffCeremonySample() {
+        return this.ceremonyService.getStaffCeremonySample()
+    }
+
 
     @HasRoles(RoleEnum.ADMIN)
     @ApiBearerAuth()
@@ -117,6 +125,13 @@ export class CeremonyController {
         return this.ceremonyService.getByIdStaffCeremony(id);
     }
 
+    @HasRoles(RoleEnum.ADMIN)
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Get('sample')
+    getStudentCeremonySample() {
+        return this.ceremonyService.getStudentCeremonySample()
+    }
     @HasRoles(RoleEnum.ADMIN)
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard, RolesGuard)

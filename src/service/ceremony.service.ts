@@ -655,5 +655,11 @@ export class CeremonyService {
         }
         return { already };
     }
+    async getStudentCeremonySample() {
+        return UtilityService.getStudentCeremonySample();
+    }
+    async getStaffCeremonySample() {
+        return UtilityService.getStaffCeremonySample();
+    }
 }
 

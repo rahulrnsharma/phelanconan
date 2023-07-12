@@ -305,4 +305,27 @@ export class UtilityService {
         return XLSX.write(wb, { type: "buffer" });;
     }
 
+    static getStudentCeremonySample() {
+        const _sample = [
+            {
+                "Institution": "", "Price": "", "Reference No": "", "Graduation Date": "", "Ceremony Time": "", "Faculty": "", "Course": "", "Image": "", "Collection Location": "", "Collection Time": "", "Cap": "", "Return Location": "", "Deadline": ""
+            }
+        ]
+        const ws = XLSX.utils.json_to_sheet(_sample);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Student On-Site");
+        return XLSX.write(wb, { type: "buffer" });
+    }
+    static getStaffCeremonySample() {
+        const _sample = [
+            {
+                "Institution": "", "Graduation Date": "", "Ceremony Time": "", "Image": "", "Hire duration": "", "Reference No": "", "Deadline": ""
+            }
+        ]
+        const ws = XLSX.utils.json_to_sheet(_sample);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Staff On-Site");
+        return XLSX.write(wb, { type: "buffer" });;
+    }
+
 }
