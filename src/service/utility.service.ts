@@ -171,7 +171,7 @@ export class UtilityService {
             // "Guest Ticket": "Ticket",
         }
         let _excelData: any[] = [];
-        _excelData.push(_header);
+        // _excelData.push(_header);
         let _merge = [];
         // for (let i = 0; i < 9; i++) {
         //     _merge.push({ s: { r: 0, c: i }, e: { r: 1, c: i } });
