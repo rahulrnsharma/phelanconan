@@ -216,6 +216,9 @@ export class CeremonyService {
     }
     async verify(file: any) {
         let _data: any[] = UtilityService.readExcelFileData(file);
+        if (_data.length == 0) {
+            throw new BadRequestException(`Uploaded sheet is empty.`)
+        }
         const _header = ["Institution", "Price", "Reference No", "Graduation Date", "Ceremony Time", "Faculty", "Course", "Image", "Collection Location", "Collection Time", "Cap", "Return Location", "Deadline"];
         if (!UtilityService.validExcelHeader(_header, _data[0])) {
             throw new BadRequestException(`Excel sheet header should be ${_header}`)
@@ -543,6 +546,9 @@ export class CeremonyService {
     }
     async verifyStaffCeremony(file: any) {
         let _data: any[] = UtilityService.readExcelFileData(file);
+        if (_data.length == 0) {
+            throw new BadRequestException(`Uploaded sheet is empty.`)
+        }
         const _header = ["Institution", "Graduation Date", "Ceremony Time", "Image", "Hire duration", "Reference No", "Deadline"];
         if (!UtilityService.validExcelHeader(_header, _data[0])) {
             throw new BadRequestException(`Excel sheet header should be ${_header}`)

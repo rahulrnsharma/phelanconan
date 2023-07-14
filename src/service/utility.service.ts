@@ -75,7 +75,7 @@ export class UtilityService {
     static readExcelFileData(file: any) {
         var workbook = XLSX.read(file.buffer);
         const sheetName = workbook.SheetNames;
-        return XLSX.utils.sheet_to_json(workbook.Sheets[sheetName[0]]);
+        return XLSX.utils.sheet_to_json(workbook.Sheets[sheetName[0]], { defval: "" });
     }
     static excelDate(value: number, offset: number) {
         return new Date(0, 0, value - 1, 0, -offset, 0);
