@@ -66,8 +66,8 @@ export class UtilityService {
     static excelFileFilter() {
         return {
             fileFilter: (req: any, file: any, cb: any) => {
-                if (['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'].indexOf(file.mimetype) == -1)
-                    cb(new BadRequestException('Only xlsx or xls are allowed.'), false);
+                if (['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'text/csv'].indexOf(file.mimetype) == -1)
+                    cb(new BadRequestException('Only .xlsx, .xls or .csv file type are allowed.'), false);
                 cb(null, true);
             }
         }

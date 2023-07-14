@@ -64,11 +64,30 @@ export class GownService {
         if (searchDto.status) {
             _match.isActive = searchDto.status == ActiveStatusEnum.ACTIVE;
         }
-        // if (searchDto.search) {
-        //     _match.name = {
-        //         $regex: new RegExp(`${searchDto.search}`, "ig"),
-        //     }
-        // }
+        if (searchDto.search) {
+            _match["$or"] = [
+                {
+                    "firstName": {
+                        $regex: new RegExp(`${searchDto.search}`, "ig"),
+                    }
+                },
+                {
+                    "lastName": {
+                        $regex: new RegExp(`${searchDto.search}`, "ig"),
+                    }
+                },
+                {
+                    "email": {
+                        $regex: new RegExp(`${searchDto.search}`, "ig"),
+                    }
+                },
+                {
+                    "orderNumber": {
+                        $regex: new RegExp(`${searchDto.search}`, "ig"),
+                    }
+                }
+            ]
+        }
         let query: PipelineStage[] = [UtilityService.getMatchPipeline(_match)];
         query.push({
             $facet: {
@@ -100,11 +119,30 @@ export class GownService {
         if (searchDto.status) {
             _match.isActive = searchDto.status == ActiveStatusEnum.ACTIVE;
         }
-        // if (searchDto.search) {
-        //     _match.name = {
-        //         $regex: new RegExp(`${searchDto.search}`, "ig"),
-        //     }
-        // }
+        if (searchDto.search) {
+            _match["$or"] = [
+                {
+                    "firstName": {
+                        $regex: new RegExp(`${searchDto.search}`, "ig"),
+                    }
+                },
+                {
+                    "lastName": {
+                        $regex: new RegExp(`${searchDto.search}`, "ig"),
+                    }
+                },
+                {
+                    "email": {
+                        $regex: new RegExp(`${searchDto.search}`, "ig"),
+                    }
+                },
+                {
+                    "orderNumber": {
+                        $regex: new RegExp(`${searchDto.search}`, "ig"),
+                    }
+                }
+            ]
+        }
         let query: PipelineStage[] = [UtilityService.getMatchPipeline(_match)];
         query.push({
             $facet: {
